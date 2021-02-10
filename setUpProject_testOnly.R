@@ -1,16 +1,17 @@
 
-# Set up a project
+# Set up a project - see the below link fir directions.
 #https://happygitwithr.com/rstudio-git-github.html
 
-# 1.	Set up a Git repo
-# 2.	Create the project in R
-# 3.	Create a bunch of directories automatically
+# 1.	Set up a Git repo on GitHub.
+# 2.	Create the project in R - New Project - VErsion Control - Git
+# 3.	Create a bunch of directories automatically (see below)
 
 
 rm(list=ls())
 
 #libraries
 library(readr)
+library(dplyr)
 library(ggplot2)
 
 #put this file in the folder where you want to create a subfolder containing the project
@@ -20,9 +21,96 @@ if(!dir.exists("output"))dir.create("output") # for tables and figures
 if(!dir.exists("ms"))dir.create("ms")
 if(!dir.exists("report"))dir.create("report") #for rmd report
 
-#load larval density data
-
-ld <- read_csv("data/larvae.csv")
+##read larval density data----
+#read and check data
+ld  <- read_csv("data/larvae.csv", col_types = cols(
+  year = col_integer(),
+  avg_density = col_double()
+))
 str(ld)
 
-test
+#summary stats
+summary(ld)
+quantile(ld$avg_density, c(0.1, 0.9))
+
+#create a rank column
+ld$rank <- rank(ld$avg_density)
+arrange(ld, rank)
+
+#basic plot of year v density
+plot(ld$year, ld$avg_density)
+
+#basic plot of rank v. density with 10, 50, and 90th percentiles
+plot(ld$rank, ld$avg_density)
+abline(v=2.8)
+abline(v = 18.5)
+abline(v = 9.8)
+
+## read in capelin data----
+#read and check data
+cap <- read_csv("data/capelin-2019.csv", col_types = cols(
+  year = col_integer()
+))
+str(cap)
+
+#summary stats
+summary(cap)
+quantile(cap$abundance_med, na.rm = T)
+
+#create a rank colum
+cap$rank <- rank(cap$abundance_med)
+arrange(cap, rank)
+View(cap)
+
+#plot biomass and abundance
+plot(cap$abundance_med, cap$biomass_med)
+
+#basic plot of year v capelin abundance
+plot(cap$year, cap$abundance_med)
+
+#basic plot of rank v capelin abundance
+plot(cap$rank, cap$abundance_med)
+abline(v = 22.5) #everything to the right is pre1991
+
+
+##First stab at a S-R relationship----
+View(cap)
+cap$biomass_med_lead <- lead(cap$biomass_med, 2)
+
+plot(cap$biomass_med, cap$biomass_med_lead, na.rm = T)
+
+cap_preCollapse <- filter(cap, year < 1991)
+plot(cap_preCollapse$biomass_med, cap_preCollapse$biomass_med_lead, na.rm = T)
+
+cap_postCollapse <- filter(cap, year >= 1991)
+plot(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, na.rm = T)
+cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, na.rm = T)
+summary(lm(cap_postCollapse$biomass_med ~ cap_postCollapse$abundance_med, na.rm = T))
+
+
+plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead, na.rm = T)
+
+
+
+##first stab at Haddock type approach----
+
+capMean <- mean(cap$biomass_med_lead, na.rm = T)
+capSD <- sd(cap$biomass_med_lead, na.rm = T)
+
+#all
+cap$anomaly <- "NA"
+cap$anomaly <- (cap$biomass_med - capMean)/capSD
+quantile(cap$anomaly, c(0.1, 0.9), na.rm = T)
+plot(cap$year, cap$anomaly)
+abline(h = 1.856)
+
+#post collapse
+capMeanPost <- mean(cap_postCollapse$biomass_med_lead, na.rm = T)
+capSDPost <- sd(cap_postCollapse$biomass_med_lead, na.rm = T)
+
+cap_postCollapse$anomaly <- "NA"
+cap_postCollapse$anomaly <- (cap_postCollapse$biomass_med - capMeanPost)/capSDPost
+quantile(cap_postCollapse$anomaly, c(0.1, 0.9), na.rm = T)
+plot(cap_postCollapse$year, cap_postCollapse$anomaly)
+abline(h = 1.53)
+View(cap_postCollapse)

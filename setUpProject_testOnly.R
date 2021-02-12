@@ -141,6 +141,9 @@ capSDPost <- sd(cap_postCollapse$biomass_med_lead, na.rm = T)
 cap_postCollapse$anomaly <- "NA"
 cap_postCollapse$anomaly <- (cap_postCollapse$biomass_med_lead - capMeanPost)/capSDPost
 quantile(cap_postCollapse$anomaly, c(0.1, 0.9), na.rm = T)
+str(quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T))
+biomass90 <- quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T)[2]
+
 plot(cap_postCollapse$year, cap_postCollapse$anomaly)
 abline(h = 1.61)
 #View(cap_postCollapse)
@@ -153,19 +156,24 @@ p <- p + xlab("Year")
 p <- p + ylab("Recruitment anomolies")
 p <- p + theme_bw()
 p
-
 ggsave("figs/3-Biomass-year-anomaly.pdf")
+
 plot(cap_postCollapse$year, cap_postCollapse$biomass_med_lead)
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
+
+
+  y <- subset(cap_postCollapse, biomass_med_lead >= biomass90, na.rm = T)
+  z <- min(y$biomass_med)
+
 
 # Wheeland/Haddock type plot Fig. 8
 p <- ggplot(cap_postCollapse, aes(x = biomass_med, y = biomass_med_lead))
 p <- p + geom_point()
-p <- p + geom_vline(xintercept = 210)
+p <- p + geom_vline(xintercept = z) #document where this came from - soft code it
 p <- p + xlab("Index (ktonnes)") 
 p <- p + ylab("Recruitment (ktonnes)")
 p <- p + theme_bw()
 p
 
 ggsave("figs/4-Biomass-index-recruit.pdf")
-test
+#test

@@ -54,6 +54,8 @@ p <- p + scale_colour_continuous(type = "viridis")
 p <- p + theme_bw()
 p
 
+ggsave("figs/1-larvae-density-rank.pdf")
+
 ## read in capelin data----
 #read and check data
 cap <- read_csv("data/capelin-2019.csv", col_types = cols(
@@ -88,6 +90,7 @@ p <- p + scale_colour_continuous(type = "viridis")
 p <- p + theme_bw()
 p
 
+ggsave("figs/2-Abundance-rank-year.pdf")
 
 ##First stab at a S-R relationship----
 #View(cap)
@@ -151,7 +154,7 @@ p <- p + ylab("Recruitment anomolies")
 p <- p + theme_bw()
 p
 
-
+ggsave("figs/3-Biomass-year-anomaly.pdf")
 plot(cap_postCollapse$year, cap_postCollapse$biomass_med_lead)
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 
@@ -164,4 +167,5 @@ p <- p + ylab("Recruitment (ktonnes)")
 p <- p + theme_bw()
 p
 
-#test
+ggsave("figs/4-Biomass-index-recruit.pdf")
+test

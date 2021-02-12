@@ -46,6 +46,14 @@ abline(v=2.8)
 abline(v = 18.5)
 abline(v = 9.8)
 
+#Make above plot nice
+p <- ggplot(ld, aes(x = rank, y = avg_density, colour = year))
+p <- p + geom_point()
+p <- p + scale_colour_continuous(type = "viridis")
+#p <- p + scale_colour_gradient(low = "yellow", high = "darkgreen")
+p <- p + theme_bw()
+p
+
 ## read in capelin data----
 #read and check data
 cap <- read_csv("data/capelin-2019.csv", col_types = cols(
@@ -60,7 +68,7 @@ quantile(cap$abundance_med, na.rm = T)
 #create a rank colum
 cap$rank <- rank(cap$abundance_med)
 arrange(cap, rank)
-View(cap)
+#View(cap)
 
 #plot biomass and abundance
 plot(cap$abundance_med, cap$biomass_med)
@@ -72,9 +80,17 @@ plot(cap$year, cap$abundance_med)
 plot(cap$rank, cap$abundance_med)
 abline(v = 22.5) #everything to the right is pre1991
 
+#pretty graph
+p <- ggplot(cap, aes(x = rank, y = abundance_med, colour = year))
+p <- p + geom_point()
+p <- p + scale_colour_continuous(type = "viridis")
+#p <- p + scale_colour_gradient(low = "yellow", high = "darkgreen")
+p <- p + theme_bw()
+p
+
 
 ##First stab at a S-R relationship----
-View(cap)
+#View(cap)
 
 #all data
 cap$biomass_med_lead <- lead(cap$biomass_med, 2)
@@ -95,6 +111,9 @@ cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, use = "complet
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T)
 quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
+#assuiming that i've done this right, not much here
+
+
 
 ##first stab at Haddock type approach----
 
@@ -121,8 +140,9 @@ cap_postCollapse$anomaly <- (cap_postCollapse$biomass_med_lead - capMeanPost)/ca
 quantile(cap_postCollapse$anomaly, c(0.1, 0.9), na.rm = T)
 plot(cap_postCollapse$year, cap_postCollapse$anomaly)
 abline(h = 1.61)
-View(cap_postCollapse)
+#View(cap_postCollapse)
 
+# Wheeland/Haddock type plot Fig. 7
 p <- ggplot(cap_postCollapse, aes(x = year, y = anomaly))
 p <- p + geom_bar(stat = "identity")
 p <- p + geom_hline(yintercept = 1.61)
@@ -135,6 +155,7 @@ p
 plot(cap_postCollapse$year, cap_postCollapse$biomass_med_lead)
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 
+# Wheeland/Haddock type plot Fig. 8
 p <- ggplot(cap_postCollapse, aes(x = biomass_med, y = biomass_med_lead))
 p <- p + geom_point()
 p <- p + geom_vline(xintercept = 210)

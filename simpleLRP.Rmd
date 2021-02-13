@@ -1,0 +1,155 @@
+---
+title: "simpleLRP"
+author: "Keith Lewis"
+date: "2/13/2021"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+library(knitr)
+library(plotly)
+library(ggplot2)
+#library(crosstalk)
+#library(xtable)
+#library(tidyverse)
+#library(lubridate)
+#library(kableExtra)
+#library(DT)
+#library(ezknitr)
+#library(here)
+source("setUpProject_testOnly.R")
+```
+
+# Larval Density-CapelinIndex
+
+Column
+-------------------------------------
+
+### Capelin Index
+
+```{r fig-1}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+p <- ggplot(ld, aes(x = rank, y = avg_density, colour = year, text = paste(
+  "Year: ", year, "\n",
+  "Density: ", avg_density, "\n",
+  "Rank: ", rank,
+  sep = ""
+)))
+p <- p + geom_point()
+p <- p + scale_colour_continuous(type = "viridis")
+#p <- p + scale_colour_gradient(low = "yellow", high = "darkgreen")
+p <- p + theme_bw()
+
+ggplotly(p, tooltip = "text")
+```
+
+Column
+-------------------------------------
+  
+### Capelin Index
+  
+```{r fig-2}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+p <- ggplot(cap, aes(x = rank, y = abundance_med, colour = year, text = paste(
+  "Year: ", year, "\n",
+  "Abundance: ", abundance_med, "\n",
+  "Rank: ", rank,
+  sep = ""
+)))
+p <- p + geom_point()
+p <- p + scale_colour_continuous(type = "viridis")
+#p <- p + scale_colour_gradient(low = "yellow", high = "darkgreen")
+p <- p + theme_bw()
+
+ggplotly(p, tooltip = "text")
+```
+
+
+
+# Brecover - Haddock approach
+Column {.tabset}
+-------------------------------------
+  
+### All data: anomalies
+  
+```{r fig-3}
+p <- ggplot(cap, aes(x = year, y = anomaly, text = paste(
+  "Year: ", year, "\n",
+  "abund: ", abundance_med, "\n",
+  "Anomaly: ", anomaly, "\n",
+  "Rank: ", rank,
+  sep = ""
+)))
+p <- p + geom_bar(stat = "identity")
+p <- p + geom_hline(yintercept = 1.61)
+p <- p + xlab("Year") 
+p <- p + ylab("Recruitment anomolies")
+p <- p + theme_bw()
+
+ggplotly(p, tooltip = "text")
+```
+
+### All data: stock-recruit
+
+```{r fig-4}
+p <- ggplot(cap, aes(x = biomass_med, y = biomass_med_lead, text = paste(
+  "Year: ", year, "\n",
+  "Recruitment: ", biomass_med_lead, "\n",
+  "Biomass: ", biomass_med, "\n",
+  "Rank: ", rank,
+  sep = ""
+)))
+p <- p + geom_point()
+p <- p + geom_vline(xintercept = z1) #document where this came from - soft code it
+p <- p + xlab("Index (ktonnes)") 
+p <- p + ylab("Recruitment (ktonnes)")
+p <- p + theme_bw()
+
+ggplotly(p, tooltip = "text")
+```
+
+Column {.tabset}
+-------------------------------------
+  
+### Post collapse: anomalies
+  
+```{r fig-5}
+p <- ggplot(cap_postCollapse, aes(x = year, y = anomaly, text = paste(
+  "Year: ", year, "\n",
+  "abund: ", abundance_med, "\n",
+  "Anomaly: ", anomaly, "\n",
+  "Rank: ", rank,
+  sep = ""
+)))
+p <- p + geom_bar(stat = "identity")
+p <- p + geom_hline(yintercept = 1.61)
+p <- p + xlab("Year") 
+p <- p + ylab("Recruitment anomolies")
+p <- p + theme_bw()
+
+ggplotly(p, tooltip = "text")
+```
+
+### Post collapse: stock-recruit 
+
+```{r fig-6}
+p <- ggplot(cap_postCollapse, aes(x = biomass_med, y = biomass_med_lead, text = paste(
+  "Year: ", year, "\n",
+  "Recruitment: ", biomass_med_lead, "\n",
+  "Biomass: ", biomass_med, "\n",
+  "Rank: ", rank,
+  sep = ""
+)))
+p <- p + geom_point()
+p <- p + geom_vline(xintercept = z) #document where this came from - soft code it
+p <- p + xlab("Index (ktonnes)") 
+p <- p + ylab("Recruitment (ktonnes)")
+p <- p + theme_bw()
+
+ggplotly(p, tooltip = "text")
+```

@@ -166,9 +166,9 @@ ggsave("figs/3-Biomass_all-year-anomaly.pdf")
 
 
 #get the value for the lowest index to generate large recruitment (or a large index)
-biomass90 <- quantile(cap, c(0.1, 0.9), na.rm = T)[2]
-y <- subset(cap, biomass_med_lead >= biomass90, na.rm = T)
-z <- min(y$biomass_med)
+biomass90_1 <- quantile(cap, c(0.1, 0.9), na.rm = T)[2]
+y1 <- subset(cap, biomass_med_lead >= biomass90_1, na.rm = T)
+z1 <- min(y1$biomass_med)
 
 
 # Wheeland/Haddock type plot Fig. 8
@@ -180,7 +180,7 @@ p <- ggplot(cap, aes(x = biomass_med, y = biomass_med_lead, text = paste(
   sep = ""
 )))
 p <- p + geom_point()
-p <- p + geom_vline(xintercept = z) #document where this came from - soft code it
+p <- p + geom_vline(xintercept = z1) #document where this came from - soft code it
 p <- p + xlab("Index (ktonnes)") 
 p <- p + ylab("Recruitment (ktonnes)")
 p <- p + theme_bw()
@@ -222,7 +222,7 @@ p <- p + theme_bw()
 p
 
 ggplotly(p, tooltip = "text")
-ggsave("figs/3-Biomass_postCollapse-year-anomaly.pdf")
+ggsave("figs/5-Biomass_postCollapse-year-anomaly.pdf")
 
 plot(cap_postCollapse$year, cap_postCollapse$biomass_med_lead)
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
@@ -248,6 +248,6 @@ p <- p + theme_bw()
 p
 
 ggplotly(p, tooltip = "text")
-ggsave("figs/4-Biomass_postCollapse-index-recruit.pdf")
+ggsave("figs/6-Biomass_postCollapse-index-recruit.pdf")
 
 #test

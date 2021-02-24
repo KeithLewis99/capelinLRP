@@ -23,7 +23,7 @@ library(ggplot2)
 source("simpleLRP_dat.R")
 ```
 
-# Larval Density-CapelinIndex
+# Larval Density-Capelin Index
 
 Column
 -------------------------------------
@@ -46,7 +46,7 @@ Column
 par(mar= c(5, 4, 4, 2) + 0.1)
 
 Scatter1(df = cap, xaxis = rank, yaxis = abundance_med, colour = year, 
-                     c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin abundance (millions?)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
+         c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin abundance (millions?)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
 ```
 
 
@@ -58,7 +58,7 @@ Column {.tabset}
 Vertical and Horizontal lines are 90th percentiles
 
 ### All data: anomalies
-  
+
 ```{r fig-3}
 Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
 ```

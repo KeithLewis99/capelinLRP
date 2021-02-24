@@ -207,5 +207,5 @@ plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 
 
 # Wheeland/Haddock type plot Fig. 8
-an
+SR_all <- Scatter2(df = cap_postCollapse, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline = v90, filename = "figs/6-Biomass_all-index-recruit.pdf", save = "yes")
 SR_all

@@ -6,6 +6,7 @@
 #' @param xaxis - variable used in xaxis and in plotly label
 #' @param yaxis - variable used in yaxis and in plotly label
 #' @param colour - variable used for fill - usually year
+#' @param c1 - variable used for the label in plotly - corresponds to colour
 #' @param c2 - name used for the label in plotly - corresponds to xaxis
 #' @param c3 - name used for the label in plotly - corresponds to yaxis
 #' @param xlab - label for xaxis
@@ -19,10 +20,10 @@
 #' @examples 
 #' LD_rank <- Scatter1(df = ld, xaxis = rank, yaxis = abundance_med, colour = year, c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin abundance (millions?)", filename = "figs/2-Abundance-rank-year.pdf", save = "yes")
 
-Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = colour, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, filename = filename, save = save){
+Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = colour, c1 = c1, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, filename = filename, save = save){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, colour = {{colour}}, text = paste(
-    "Year: ", year, "\n",
+    c1, {{colour}}, "\n",
     c2, {{xaxis}}, "\n",
     c3, {{yaxis}}, "\n",  
     sep = ""

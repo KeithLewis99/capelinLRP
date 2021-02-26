@@ -62,11 +62,16 @@ abline(v = 18.5)
 abline(v = 9.8)
 
 #pretty plot of rank v. density
-LD_rank <- Scatter1(df = ld, xaxis = rank, yaxis = avg_density, colour = year, c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
+LD_rank <- Scatter1(df = ld, xaxis = rank, yaxis = avg_density, colour = year, 
+                    c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     
+                    xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
                     filename = "figs/1-larvae-density-rank.pdf", save = "yes")
 LD_rank
 
-
+ld_YEAR <- Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank, 
+                      c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", xlab = "Year", 
+                      ylab = "Larval Density (#/m^-3)",
+                      filename = "figs/2-cond-year-rank.pdf", save = "yes")
 
 
 ## read in capelin data----
@@ -98,12 +103,56 @@ plot(cap$rank, cap$abundance_med)
 abline(v = 22.5) #everything to the right is pre1991
 
 #pretty plot of rank v capelin abundance
+source("simpleLRP_FUN.R")
 cap_rank <- Scatter1(df = cap, xaxis = rank, yaxis = abundance_med, colour = year, 
-                     c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin abundance (millions?)",
+                     c1 = "Year: ", c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", 
+                     ylab = "Capelin abundance (millions?)",
                      filename = "figs/2-Abundance-rank-year.pdf", save = "yes")
 cap_rank
 
+cap_Year <- Scatter1(df = cap, xaxis = year, yaxis = abundance_med, colour = rank, 
+                      c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+                     xlab = "Year", ylab = "Capelin abundance (millions?)",
+                      filename = "figs/2-cond-rank-year.pdf", save = "yes")
 
+
+## read in ice data----
+#read and check data
+ice <- read_csv("data/capelin-m1-2020.csv", col_types = cols(
+  year = col_integer()
+))
+str(ice)
+
+#create a rank colum
+ice$rank <- rank(ice$tice)
+
+tice_rank <- Scatter1(df = ice, xaxis = rank, yaxis = tice, colour = year, 
+                     c1 = "Year: ", c2 = "Rank: ", c3 = "tice: ", 
+                     xlab = "Rank", ylab = "Ice retreat (tice - DOY)",
+                     filename = "figs/2-tice-rank-year.pdf", save = "yes")
+
+tice_YEAR <- Scatter1(df = ice, xaxis = year, yaxis = tice, colour = rank, 
+                      c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
+                      xlab = "Year", ylab = "Ice retreat (tice - DOY)",
+                      filename = "figs/2-cond-year-rank.pdf", save = "yes")
+
+
+## read in condition data----
+#read and check data
+cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
+  year = col_integer()
+))
+str(cond)
+
+cond$rank <- rank(cond$meanCond)
+source("simpleLRP_FUN.R")
+cond_rank <- Scatter1(df = cond, xaxis = rank, yaxis = meanCond, colour = year, 
+                      c1 = "Year: ", c2 = "Rank: ", c3 = "Cond: ", xlab = "Rank", ylab = "Condition ()",
+                      filename = "figs/2-cond-rank-year.pdf", save = "yes")
+
+cond_YEAR <- Scatter1(df = cond, xaxis = year, yaxis = meanCond, colour = rank, 
+                      c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition ()",
+                      filename = "figs/2-cond-year-rank.pdf", save = "yes")
 
 
 ## S-R relationship----
@@ -209,3 +258,4 @@ plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 # Wheeland/Haddock type plot Fig. 8
 SR_all <- Scatter2(df = cap_postCollapse, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline = v90, filename = "figs/6-Biomass_all-index-recruit.pdf", save = "yes")
 SR_all
+

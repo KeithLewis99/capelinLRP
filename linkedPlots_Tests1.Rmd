@@ -1,0 +1,104 @@
+---
+title: "Untitled"
+author: "Keith Lewis"
+date: "2/13/2021"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+library(knitr)
+library(plotly)
+library(ggplot2)
+library(crosstalk)
+#library(xtable)
+#library(tidyverse)
+#library(lubridate)
+#library(kableExtra)
+#library(DT)
+#library(ezknitr)
+#library(here)
+source("simpleLRP_dat.R")
+shD <- SharedData$new(df_lag)
+```
+
+# Test 1
+
+Column
+-------------------------------------
+
+```{r}
+library(d3scatter)
+shared_iris <- SharedData$new(iris)
+bscols(
+  d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width="100%", height=300),
+  d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width="100%", height=300)
+)
+```
+
+# Test 2
+
+Row
+-------------------------------------
+
+```{r}
+bscols(widths = c(3, NA, NA), 
+       list(filter_slider("year", "Year", shD, ~year)),
+  Scatter1(df = shD, xaxis = year, yaxis = avg_density_lag2, colour = NULL, 
+           c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
+           ylab = "Larval Density (#/m^-3)",
+           filename = "figs/2-cond-year-rank.pdf", save = "no"),
+  Scatter1(df = shD, xaxis = year, yaxis = tice, colour = NULL, 
+           c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
+           xlab = "Year", ylab = "Ice retreat (tice - DOY)",
+           filename = "figs/2-cond-year-rank.pdf", save = "no")
+)
+```
+
+# Test 3
+
+Column
+-------------------------------------
+
+```{r out.width = '80%', out.height = '80%'}
+
+df_lag %>%
+  select(abundance_med, avg_density_lag2, tice, cond_lag1, mat2_lag1) %>%
+  GGally::ggpairs() %>%
+  ggplotly() %>%
+  highlight(on = "plotly_selected", off = "plotly_doubleclick")
+```
+
+
+# Test 4
+
+Column
+-------------------------------------
+
+```{r}
+a <- Scatter1(df = shD, xaxis = year, yaxis = avg_density_lag2, colour = NULL, 
+           c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
+           ylab = "Larval Density (#/m^-3)",
+           filename = "figs/2-cond-year-rank.pdf", save = "no")
+b <- Scatter1(df = shD, xaxis = year, yaxis = tice, colour = NULL, 
+           c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
+           xlab = "Year", ylab = "Ice retreat (tice - DOY)",
+           filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+subplot(a,b) %>% highlight(on = 'plotly_selected', off = 'plotly_deselect') %>% hide_legend()
+```
+
+# Test 5
+
+```{r}
+
+d <- highlight_key(mtcars)
+s <- subplot(
+  qplot(data = d, x = mpg, y = wt),
+  qplot(data = d, x = mpg, y = vs)
+)
+
+highlight(s, "plotly_selected")
+```

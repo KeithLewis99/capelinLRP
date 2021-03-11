@@ -37,14 +37,38 @@ knitr::include_graphics("images/map_inset.png")
 
 ```
 
-Column
--------------------------------------
-
-### The data
+### The data: temporal relationships
 
 ```{r}
 
 knitr::include_graphics("images/variables_plus_fish.png")
+
+```
+
+Column {.tabset}
+-------------------------------------
+
+### Dome model
+
+```{r}
+
+knitr::include_graphics("images/Buren2015fig5_dome.png")
+
+```
+
+### Larval density and recruitment
+
+```{r}
+
+knitr::include_graphics("images/Murphy2018FishRes_fig2.png")
+
+```
+
+### Condition
+
+```{r}
+
+knitr::include_graphics("images/Buren_fig6-cond.png")
 
 ```
 
@@ -55,6 +79,7 @@ knitr::include_graphics("images/variables_plus_fish.png")
 knitr::include_graphics("images/credInt.png")
 
 ```
+
 
 # Larval Density-Capelin Index
 
@@ -88,7 +113,7 @@ Scatter1(df = cap, xaxis = rank, yaxis = abundance_med, colour = year,
 Column
 -------------------------------------
   
-### Capelin Index
+### Capelin Index (t)
   
 ```{r fig-3}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -100,7 +125,7 @@ Scatter1(df = cap, xaxis = year, yaxis = abundance_med, colour = rank,
 
 ```
 
-### Larval Index
+### Larval Index (t-2)
 
 ```{r fig-4}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -115,7 +140,7 @@ Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank,
 Column
 -------------------------------------
   
-### ice Index
+### ice Index (t)
   
 ```{r fig-5}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -126,7 +151,7 @@ Scatter1(df = ice, xaxis = year, yaxis = tice, colour = rank,
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 ```
 
-### condition Index
+### condition Index (t-1)
 
 ```{r fig-6}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -140,10 +165,10 @@ Scatter1(df = cond, xaxis = year, yaxis = meanCond, colour = rank,
 
 # Indices Lagged
 
-Column {data-width=400 data-height=400}
+Column {data-width=600 data-height=400}
 -------------------------------------
   
-### Capelin Index
+### Capelin Index (t)
   
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -158,26 +183,26 @@ Scatter1(df = df_lag, xaxis = year, yaxis = abundance_med, colour = NULL,
 Column
 -------------------------------------
   
-### Larval Index
+### Larval Index (t-2)
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
 Scatter1(df = df_lag, xaxis = year, yaxis = avg_density_lag2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
-         ylab = "Larval Density (#/m^-3)",
+         ylab = "Larval Density (#/m^-3: t-2)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```
 
-### ice Index
+### ice Index (t)
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
 Scatter1(df = df_lag, xaxis = year, yaxis = tice, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
-         xlab = "Year", ylab = "Ice retreat (tice - DOY)",
+         xlab = "Year", ylab = "Ice retreat (tice - DOY: t)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 ```
 
@@ -185,22 +210,22 @@ Scatter1(df = df_lag, xaxis = year, yaxis = tice, colour = NULL,
 Column
 -------------------------------------
 
-### Condition Index
+### Condition Index (t-1)
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 Scatter1(df = df_lag, xaxis = year, yaxis = cond_lag1, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition ()",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (x: t-1)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```
 
-### % Maturity (Age 2) Index
+### % Immature @ Age 2 (t-3)
 
 ```{r fig-7}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = age2, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "%Age_2: ", xlab = "Year", ylab = "Age 2 Mature (%)",
+Scatter1(df = df_lag, xaxis = year, yaxis = immat_lag3, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```

@@ -183,6 +183,29 @@ mat3_YEAR <- Scatter1(df = matA, xaxis = year, yaxis = age3, colour = rank,
                       filename = "figs/2-mat3-year-rank.pdf", save = save)
 
 
+## #read in age disaggregated data----
+ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
+  year = col_integer()
+))
+str(ageD)
+
+# year	=	Year
+# stratum	=	 My stratum
+# age	=	 Age
+# n	=	 N (millions)
+# proportion	=	 Proportion
+# n_mat	=	 N mature (millions)
+# prop_mat	=	 Proportion mature
+# weight	=	 Weight (tonnes)
+# mean_length	=	 Mean length (mm)
+# mean_weight	=	 Mean weight (g)
+
+#manipulate 
+
+#make variables
+matA$rank <- rank(matA$age2)
+matA$mat2_lag1 <- lag(matA$age2, 1)
+
 
 ## join all dataframes with lags----
 # this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year.
@@ -209,6 +232,11 @@ df_lag$abundance_med_t2 <- lag(df_lag$abundance_med,2)
 
 # this is the strength of the AGe 3 cohort; lagged two years so that it can be compared to the index for a S-R relationship
 df_lag$SRt3 <- lag(df_lag$abundance_med*(1-(df_lag$age2*0.01)), 3)
+
+# relationship between immature at age 2 that will influence recruits in 3 years and mature at age 2 that will influence recruits in 2 years
+df_lag$immat_lag3 <- lag((100-df_lag$age2), 3)
+plot(df_lag$immat_lag3[c(7:34)], df_lag$abundance_med[c(7:34)])
+summary(lm(df_lag$abundance_med ~ df_lag$immat_lag3 + df_lag$mat2_lag1))
 
 #this is the strength of the Age 2 cohort, lagged one year
 df_lag$SRt2 <- lag(df_lag$abundance_med*(df_lag$age2*0.01), 2)

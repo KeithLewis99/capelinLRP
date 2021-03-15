@@ -110,7 +110,7 @@ Scatter1(df = cap, xaxis = rank, yaxis = abundance_med, colour = year,
 
 # Indices by year
 
-Column
+Column {data-width=600 data-height=400}
 -------------------------------------
   
 ### Capelin Index (t)
@@ -125,6 +125,9 @@ Scatter1(df = cap, xaxis = year, yaxis = abundance_med, colour = rank,
 
 ```
 
+Column
+-------------------------------------
+
 ### Larval Index (t-2)
 
 ```{r fig-4}
@@ -137,9 +140,6 @@ Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank,
 
 ```
 
-Column
--------------------------------------
-  
 ### ice Index (t)
   
 ```{r fig-5}
@@ -151,16 +151,28 @@ Scatter1(df = ice, xaxis = year, yaxis = tice, colour = rank,
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 ```
 
+Column
+-------------------------------------
+
 ### condition Index (t-1)
 
 ```{r fig-6}
 par(mar= c(5, 4, 4, 2) + 0.1)
 Scatter1(df = cond, xaxis = year, yaxis = meanCond, colour = rank, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition ()",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```
 
+### % Mature @ Age 2 (t-3)
+
+```{r}
+par(mar= c(5, 4, 4, 2) + 0.1)
+Scatter1(df = df_lag, xaxis = year, yaxis = age2, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+```
 
 
 # Indices Lagged
@@ -215,7 +227,7 @@ Column
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 Scatter1(df = df_lag, xaxis = year, yaxis = cond_lag1, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (x: t-1)",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```

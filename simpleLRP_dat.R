@@ -71,6 +71,7 @@ LD_rank <- Scatter1(df = ld, xaxis = rank, yaxis = avg_density, colour = year,
 LD_rank
 
 
+
 ld_YEAR <- Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank, 
                       c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", xlab = "Year", 
                       ylab = "Larval Density (#/m^-3)",

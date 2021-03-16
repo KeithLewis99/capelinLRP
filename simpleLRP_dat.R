@@ -53,6 +53,14 @@ ld$rank <- rank(ld$avg_density)
 arrange(ld, rank)
 ld$avg_density_lag2 <- lag(ld$avg_density, 2)
 
+#basic plot of year v density
+plot(ld$year, ld$avg_density)
+
+#basic plot of rank v. density with 10, 50, and 90th percentiles
+plot(ld$rank, ld$avg_density)
+abline(v=2.8)
+abline(v = 18.5)
+abline(v = 9.8)
 
 
 
@@ -73,6 +81,15 @@ arrange(cap, rank)
 cap$abundance_med_lag2 <- lag(cap$abundance_med, 2)
 #View(cap)
 
+#plot biomass and abundance
+plot(cap$abundance_med, cap$biomass_med)
+
+#basic plot of year v capelin abundance
+plot(cap$year, cap$abundance_med)
+
+#basic plot of rank v capelin abundance
+plot(cap$rank, cap$abundance_med)
+abline(v = 22.5) #everything to the right is pre1991
 
 
 
@@ -116,8 +133,10 @@ matA$mat2_lag1 <- lag(matA$age2, 1)
 
 
 ## #read in age disaggregated data----
+# deleted the "Unknown" from row 105, col "age"
 ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
-  year = col_integer()
+  year = col_integer(),
+  age = col_integer()
 ))
 str(ageD)
 
@@ -166,6 +185,7 @@ df_lag$abundance_med_t2 <- lag(df_lag$abundance_med,2)
 df_lag$SRt3 <- lag(df_lag$abundance_med*(1-(df_lag$age2*0.01)), 3)
 
 # relationship between immature at age 2 that will influence recruits in 3 years and mature at age 2 that will influence recruits in 2 years
+df_lag$immat_lag3 <- "NA"
 df_lag$immat_lag3 <- lag((100-df_lag$age2), 3)
 plot(df_lag$immat_lag3[c(7:34)], df_lag$abundance_med[c(7:34)])
 summary(lm(df_lag$abundance_med ~ df_lag$immat_lag3 + df_lag$mat2_lag1))
@@ -268,9 +288,6 @@ quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
 # calculate anomalies - get mean and SD
 cap <- anomaly(cap, "biomass_med_lead")
 
-# simple test plot
-plot(cap$year, cap$anomaly)
-abline(h = h90)
 
 # get the quantile and extract the 90th for the hline
 h90 <- quantile(cap$anomaly, c(0.1, 0.9), na.rm = T)[2]
@@ -279,14 +296,18 @@ quantile(cap$anomaly, c(0.1, 0.9), na.rm = T)
 
 
 # simple test plot
-plot(cap$biomass_med, cap$biomass_med_lead)
-abline(v = v90)
+plot(cap$year, cap$anomaly)
+abline(h = h90)
+
 
 #get the value for the lowest index to generate large recruitment (or a large index)
 biomass90_1 <- quantile(cap$biomass_med, c(0.1, 0.9), na.rm = T)[2]
 y1 <- subset(cap, biomass_med_lead >= biomass90_1, na.rm = T)
 v90 <- min(y1$biomass_med)
 
+# simple test plot
+plot(cap$biomass_med, cap$biomass_med_lead)
+abline(v = v90)
 
 
 
@@ -315,4 +336,6 @@ v90_post <- min(y1$biomass_med)
 plot(cap_postCollapse$year, cap_postCollapse$biomass_med_lead)
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 
-
+# simple test plot
+plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
+abline(v = v90_post)

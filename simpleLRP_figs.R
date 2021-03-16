@@ -18,19 +18,12 @@ rm(list=ls())
 
 # Source files
 source("simpleLRP_FUN.R")
+source("simpleLRP_dat.R")
 save <- "no"
 
 
 
 ## Plots of larval density----
-#basic plot of year v density
-plot(ld$year, ld$avg_density)
-
-#basic plot of rank v. density with 10, 50, and 90th percentiles
-plot(ld$rank, ld$avg_density)
-abline(v=2.8)
-abline(v = 18.5)
-abline(v = 9.8)
 
 #pretty plot of rank v. density
 LD_rank <- Scatter1(df = ld, xaxis = rank, yaxis = avg_density, colour = year, 
@@ -49,15 +42,6 @@ ld_YEAR <- Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank,
 
 
 ## Plots of capelin abundance----
-#plot biomass and abundance
-plot(cap$abundance_med, cap$biomass_med)
-
-#basic plot of year v capelin abundance
-plot(cap$year, cap$abundance_med)
-
-#basic plot of rank v capelin abundance
-plot(cap$rank, cap$abundance_med)
-abline(v = 22.5) #everything to the right is pre1991
 
 #pretty plot of rank v capelin abundance
 cap_rank <- Scatter1(df = cap, xaxis = rank, yaxis = abundance_med, colour = year, 

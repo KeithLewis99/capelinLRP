@@ -21,6 +21,7 @@ library(crosstalk)
 #library(ezknitr)
 #library(here)
 source("simpleLRP_dat.R")
+source("simpleLRP_figs.R")
 shD <- SharedData$new(df_lag)
 ```
 
@@ -200,7 +201,7 @@ Column
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_lag, xaxis = year, yaxis = avg_density_lag2, colour = NULL, 
+Scatter1(df = df_lag, xaxis = year, yaxis = avg_densityt_2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
          ylab = "Larval Density (#/m^-3: t-2)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -226,7 +227,7 @@ Column
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = cond_lag1, colour = NULL, 
+Scatter1(df = df_lag, xaxis = year, yaxis = cond_lagt_1, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -236,7 +237,7 @@ Scatter1(df = df_lag, xaxis = year, yaxis = cond_lag1, colour = NULL,
 
 ```{r fig-7}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = immat_lag3, colour = NULL, 
+Scatter1(df = df_lag, xaxis = year, yaxis = immat_t3, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 

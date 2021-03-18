@@ -178,71 +178,43 @@ Scatter1(df = df_lag, xaxis = year, yaxis = age2, colour = NULL,
 
 # Indices Lagged
 
-Column {data-width=600 data-height=400}
--------------------------------------
-  
-### Capelin Index (t)
-  
 ```{r}
-par(mar= c(5, 4, 4, 2) + 0.1)
+d <- highlight_key(df_lag)
 
-Scatter1(df = df_lag, xaxis = year, yaxis = abundance_med, colour = NULL, 
+cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Capelin abundance (millions?)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
-```
-
-Column
--------------------------------------
-  
-### Larval Index (t-2)
-
-```{r}
-par(mar= c(5, 4, 4, 2) + 0.1)
-
-Scatter1(df = df_lag, xaxis = year, yaxis = avg_densityt_2, colour = NULL, 
+ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_densityt_2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
          ylab = "Larval Density (#/m^-3: t-2)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-```
 
-### ice Index (t)
-
-```{r}
-par(mar= c(5, 4, 4, 2) + 0.1)
-
-Scatter1(df = df_lag, xaxis = year, yaxis = tice, colour = NULL, 
+ice_fig <- Scatter1(df = d, xaxis = year, yaxis = tice, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
          xlab = "Year", ylab = "Ice retreat (tice - DOY: t)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
-```
 
+sp1 <- subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE)
 
-Column
--------------------------------------
-
-### Condition Index (t-1)
-
-```{r}
-par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = cond_lagt_1, colour = NULL, 
+cond_fig <- Scatter1(df = d, xaxis = year, yaxis = condt_1, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-```
-
-### % Immature @ Age 2 (t-3)
-
-```{r fig-7}
-par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = immat_t3, colour = NULL, 
+immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_t3, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-```
+sp2 <- subplot(cond_fig, immat_fig, nrows=2, titleX = TRUE, titleY = TRUE)
 
+subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), titleX = TRUE, titleY = TRUE) %>%
+#  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
+#  subplot(cond_fig, immat_fig,  nrows=1, titleX = TRUE, titleY = TRUE) %>%
+  highlight("plotly_selected", selectize = TRUE, colour = "yellow")
+
+```
 
 # Brecover - Haddock approach
 Column {.tabset}

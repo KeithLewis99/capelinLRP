@@ -114,7 +114,7 @@ cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
 str(cond)
 
 cond$rank <- rank(cond$meanCond)
-cond$cond_lagt_1 <- lag(cond$meanCond)
+cond$condt_1 <- lag(cond$meanCond)
 
 
 
@@ -144,7 +144,7 @@ str(ageD)
 # stratum	=	 My stratum
 # age	=	 Age
 # n	=	 N (millions)
-# proportion	=	 Proportion
+# proportion	=	 Proportion by age in that strata
 # n_mat	=	 N mature (millions)
 # prop_mat	=	 Proportion mature
 # weight	=	 Weight (tonnes)
@@ -152,6 +152,10 @@ str(ageD)
 # mean_weight	=	 Mean weight (g)
 
 #manipulate 
+
+temp <- ageD %>%
+  group_by(year, age) %>%
+  summarise(abun=sum(n), biomass=sum(weight*0.001))
 
 
 #make variables
@@ -164,7 +168,7 @@ str(ageD)
 
 ls <- list(cap, ld, ice, cond, matA)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
-  select(year, abundance_med, avg_densityt_2, tice, cond_lagt_1, age2, mat2t_1)
+  select(year, abundance_med, avg_densityt_2, tice, condt_1, age2, mat2t_1)
 str(df_lag)
 
 
@@ -245,8 +249,8 @@ ggplotly(temp4)
 # BAsed on the logic that late tice > 80 days, and only <80 days has produced the "large" numbers
 temp5 <- df_lag %>%
   filter(year > 1990 & avg_densityt_2 > 2000) %>%
-  ggplot(aes(cond_lagt_1, abundance_med, text = paste(
-    "Year", year, "\n", "Cond", cond_lagt_1, "\n",  
+  ggplot(aes(condt_1, abundance_med, text = paste(
+    "Year", year, "\n", "Cond", condt_1, "\n",  
     sep = ""))) + geom_point()
 
 ggplotly(temp5)

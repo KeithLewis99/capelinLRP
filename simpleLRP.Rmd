@@ -209,11 +209,12 @@ immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_t3, colour = NULL,
 
 sp2 <- subplot(cond_fig, immat_fig, nrows=2, titleX = TRUE, titleY = TRUE)
 
-subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), titleX = TRUE, titleY = TRUE) %>%
+subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), heights = 0.9, titleX = TRUE, titleY = TRUE) %>%
 #  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
 #  subplot(cond_fig, immat_fig,  nrows=1, titleX = TRUE, titleY = TRUE) %>%
   highlight("plotly_selected", selectize = TRUE, colour = "yellow")
-
+# 
+#
 ```
 
 # Brecover - Haddock approach

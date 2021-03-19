@@ -248,7 +248,7 @@ ggplotly(temp4)
 
 # BAsed on the logic that late tice > 80 days, and only <80 days has produced the "large" numbers
 temp5 <- df_lag %>%
-  filter(year > 1990 & avg_densityt_2 > 2000) %>%
+  filter(year > 1990 & avg_densityt_2 > 2000 & tice <85) %>%
   ggplot(aes(condt_1, abundance_med, text = paste(
     "Year", year, "\n", "Cond", condt_1, "\n",  
     sep = ""))) + geom_point()

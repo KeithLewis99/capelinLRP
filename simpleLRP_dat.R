@@ -23,6 +23,7 @@ if(!dir.exists("report"))dir.create("report") #for rmd report
 #libraries
 library(readr)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(plotly)
 library(purrr)
@@ -153,9 +154,38 @@ str(ageD)
 
 #manipulate 
 
-temp <- ageD %>%
+# get biomass and abundance by strata and year
+temp1 <- ageD %>%
   group_by(year, age) %>%
-  summarise(abun=sum(n), biomass=sum(weight*0.001))
+  #select(n, weight, proportion) %>%
+  mutate(abun=sum(n), biomass=sum(weight*0.000001))
+
+# exploratory plot to look at prop mature at age by stratum and year
+p <- ggplot(ageD, aes(x = factor(year), y = prop_mat, colour = factor(age), text = paste(year, "Year")))
+p <- p + geom_point(position = "jitter")
+p
+ggplotly(p, tooltip = "text")
+
+
+# get total biomass and abundance by year
+temp2 <- temp1 %>%
+  group_by(year) %>%
+  summarize (abun = sum(abun), biomass = sum(biomass))
+
+ageD %>% select(year, stratum, age, prop_mat) %>% filter(age ==1 & prop_mat > 0.1)
+
+
+
+# prop mature
+
+temp4 <- temp1 %>%
+  group_by(year)
+
+# experiment with "spread" to produce a table of prop_mat
+temp3 <- temp1 %>%
+  select(year, stratum, age, prop_mat) %>%
+  pivot_wider(id_cols = c(year, stratum), names_from = age, values_from = prop_mat)
+
 
 
 #make variables

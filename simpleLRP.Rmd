@@ -25,7 +25,19 @@ source("simpleLRP_figs.R")
 shD <- SharedData$new(df_lag)
 ```
 
-# Intro
+Background {data-navmenu="Menu A"}
+=====
+
+This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
+
+References {data-navmenu="Menu A"}
+=====
+
+Tables {data-navmenu="Menu A"}
+====
+
+Study area and Data {data-navmenu="Menu A"}
+=====
 
 Column
 -------------------------------------

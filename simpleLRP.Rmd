@@ -5,6 +5,7 @@ date: "2/13/2021"
 output:
   flexdashboard::flex_dashboard:
     theme: yeti
+bibliography: test.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -30,8 +31,12 @@ Background {data-navmenu="Menu A"}
 
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
 
-References {data-navmenu="Menu A"}
+Capelin biomass depends on larval density [@murphy2018re]
+
+References {- data-navmenu="Menu A"}
 =====
+<div id="refs"></div>
+
 
 Tables {data-navmenu="Menu A"}
 ====

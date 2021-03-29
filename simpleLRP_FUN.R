@@ -34,7 +34,7 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = 
   p <- p + ylab(ylab)
   p <- p + theme_bw()
   
-  if(save == "yes"){
+  if(!! save == "yes"){
     ggsave(paste(filename))
     return(ggplotly(p, tooltip = "text"))  
   } else {

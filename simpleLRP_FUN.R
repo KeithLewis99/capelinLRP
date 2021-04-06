@@ -79,7 +79,7 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab =
   p <- p + theme_bw()
   
   
-  if(save == "yes"){
+  if(!! save == "yes"){
     ggsave(paste(filename))
     return(ggplotly(p, tooltip = "text"))  
   } else {

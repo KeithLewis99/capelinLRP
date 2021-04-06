@@ -257,6 +257,11 @@ temp1d <- df_lag %>%
     ggplot(aes(SR_age3_t3, lag(avg_densityt_2, 1),  text = paste("Year", year))) + geom_point()
   ggplotly(temp1d)
   
+# note on the dashboard the strong decline in larval density from 2005 onwards - this is to try to relate it to maturity at age 2 and tehre seems to be some relation
+plot(df_lag$age2[21:34], df_lag$avg_densityt_2[21:34])
+summary(lm(df_lag$avg_densityt_2[21:34] ~ df_lag$age2[21:34]))
+plot(df_lag$year[23:34], df_lag$avg_densityt_2[23:34])
+summary(lm(df_lag$avg_densityt_2[23:34] ~ df_lag$year[23:34]))
 
 ## tiered approach----  
 # start with the relationship between LD (t-2) and capelin abundance

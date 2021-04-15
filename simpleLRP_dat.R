@@ -28,10 +28,6 @@ library(ggplot2)
 library(plotly)
 library(purrr)
 
-#clear environment
-rm(list=ls())
-
-
 # Source files
 source("simpleLRP_FUN.R")
 save <- "no"
@@ -48,6 +44,22 @@ str(ld)
 #summary stats
 summary(ld)
 quantile(ld$avg_density, c(0.1, 0.9))
+quant <- quantile(ld$avg_density, c(0.1, 0.9))
+
+m1 <- mean(ld$avg_density)
+median(ld$avg_density)
+sd1 <- sd(ld$avg_density)
+3*sd(ld$avg_density)
+# 68-95-99.7
+
+m1-3*sd1
+
+#Brecover
+ld[10:11,]
+
+p <- ggplot(data = ld, aes(x = avg_density))
+p <- p + geom_density()
+
 
 #create a rank column
 ld$rank <- rank(ld$avg_density)

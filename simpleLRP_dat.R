@@ -11,11 +11,13 @@
 
 #Create a "name_dat.R" file
 #put this file in the folder with the project and create the following subfolders
+if(!dir.exists("archive"))dir.create("archive")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("figs"))dir.create("figs") #for publication quality only
 if(!dir.exists("output"))dir.create("output") # for tables and figures
 if(!dir.exists("ms"))dir.create("ms") # manuscript
 if(!dir.exists("report"))dir.create("report") #for rmd report
+if(!dir.exists("refs"))dir.create("refs") #for rmd report
 
 
 ## Start----
@@ -55,11 +57,12 @@ sd1 <- sd(ld$avg_density)
 m1-3*sd1
 
 #Brecover
-ld[10:11,]
+ld[10:15,]
+mean(ld$avg_densityt_2[10:12])
 
 p <- ggplot(data = ld, aes(x = avg_density))
 p <- p + geom_density()
-
+p
 
 #create a rank column
 ld$rank <- rank(ld$avg_density)

@@ -5,7 +5,7 @@ date: "2/13/2021"
 output:
   flexdashboard::flex_dashboard:
     theme: yeti
-bibliography: test.bib
+bibliography: refs/simpleLRP.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -44,6 +44,35 @@ References {- data-navmenu="Background"}
 Tables {data-navmenu="Background"}
 ====
 Do we need a metadata page??
+
+The Roadmap {data-navmenu="Background"}
+====
+1.	“Simple” approach
+    i. SR relationship
+        A.	Have completed preliminary work
+        B.	Working on an age disaggregated approach
+    ii.	B-RECOVER 
+        A.	Haddock approach: Done – see dashboard
+        B.	Multivariate – see snow crab
+        C.	Hierarchical - Done preliminary work
+    iii.	BLOSS  Barents Sea/Iceland
+        A.	Iceland at 150,000 t based on a BLOSS approach
+2.	“Complex” approach
+    i.	State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
+    ii.	Ecopath (Rajeev)
+    iii.	MSE approach (Maritimes – Herring)
+    iv.	Deep learning – see Krista Baker
+    v.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
+
+Supporting Research {data-navmenu="Background"}
+====
+*	Ice-plankton-capelin: critical for multivariate approach
+*	Coral productivity: how extensive is the regime shift - is it community wide or the whole system
+*	All biomass !=: more important for cod but gets at importance of older fish
+*	Others:
+  +	Are there good larval years – Hannah is looking after this.
+  +	Seabird capelin consumption - a hole to plug?
+
 
 Study area and Data {data-navmenu="Background"}
 =====
@@ -220,7 +249,7 @@ ice_fig <- Scatter1(df = d, xaxis = year, yaxis = tice, colour = NULL,
          xlab = "Year", ylab = "Ice retreat (tice - DOY: t)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-sp1 <- subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE)
+sp1 <- subplot(ld_fig, ice_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
 
 cond_fig <- Scatter1(df = d, xaxis = year, yaxis = condt_1, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
@@ -230,9 +259,9 @@ immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_t3, colour = NULL,
          c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-sp2 <- subplot(cond_fig, immat_fig, nrows=2, titleX = TRUE, titleY = TRUE)
+sp2 <- subplot(cond_fig, immat_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
 
-subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), heights = 0.9, titleX = TRUE, titleY = TRUE) %>%
+subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), heights = 0.8, titleX = TRUE, titleY = TRUE) %>%
 #  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
 #  subplot(cond_fig, immat_fig,  nrows=1, titleX = TRUE, titleY = TRUE) %>%
   highlight("plotly_selected", selectize = TRUE, colour = "yellow")

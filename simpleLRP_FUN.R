@@ -67,9 +67,9 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab =
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     "Year: ", year, "\n",
-    c2, abundance_med, "\n",
+    c2, biomass_med, "\n",
     c3, {{yaxis}}, "\n",  
-    "Rank: ", rank,
+    "Rank: ", rankB,
     sep = ""
   )))
   p <- p + geom_bar(stat = "identity")

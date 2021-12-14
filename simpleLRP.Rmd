@@ -59,6 +59,9 @@ The Roadmap {data-navmenu="Background"}
         A.	Iceland at 150,000 t based on a BLOSS approach
 2.	“Complex” approach
     i.	State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
+    ii. Delayed Difference
+    iii. Age-structured
+    iv. 
     ii.	Ecopath (Rajeev)
     iii.	MSE approach (Maritimes – Herring)
     iv.	Deep learning – see Krista Baker

@@ -58,14 +58,17 @@ The Roadmap {data-navmenu="Background"}
     iii.	BLOSS  Barents Sea/Iceland
         A.	Iceland at 150,000 t based on a BLOSS approach
 2.	“Complex” approach
-    i.	State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
-    ii. Delayed Difference
-    iii. Age-structured
-    iv. 
-    ii.	Ecopath (Rajeev)
-    iii.	MSE approach (Maritimes – Herring)
-    iv.	Deep learning – see Krista Baker
-    v.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
+    i.	Single Species
+        a. State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
+        b. Delayed Difference
+        c. Age-structured
+        d. IPM
+    ii.	Ecosystem approach
+        a. Ecopath/MICE (Rajeev, Divya, Matt Robertson)
+    iii.	Others
+        a. MSE approach (Maritimes – Herring)
+        b.	Deep learning – see Krista Baker
+        c.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
 
 Supporting Research {data-navmenu="Background"}
 ====

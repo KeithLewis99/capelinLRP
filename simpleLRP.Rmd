@@ -301,4 +301,3 @@ Bar1(df = cap_postCollapse, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c
 ```{r fig-11}
 Scatter2(df = cap_postCollapse, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline = v90_post, filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
-

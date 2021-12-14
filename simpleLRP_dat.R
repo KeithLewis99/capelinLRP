@@ -341,6 +341,7 @@ quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
 ## Haddock type approach - all data----
 
 # calculate anomalies - get mean and SD
+source("simpleLRP_FUN.R")
 cap <- anomaly(cap, "biomass_med_lead")
 
 
@@ -394,4 +395,3 @@ plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 # simple test plot
 plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
 abline(v = v90_post)
-

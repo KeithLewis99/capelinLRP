@@ -57,9 +57,6 @@ sd1 <- sd(ld$avg_density)
 m1-3*sd1
 
 #Brecover
-ld[10:15,]
-mean(ld$avg_densityt_2[10:12])
-
 p <- ggplot(data = ld, aes(x = avg_density))
 p <- p + geom_density()
 p
@@ -68,6 +65,9 @@ p
 ld$rank <- rank(ld$avg_density)
 arrange(ld, rank)
 ld$avg_densityt_2 <- lag(ld$avg_density, 2)
+
+ld[10:15,]
+mean(ld$avg_densityt_2[10:12])
 
 #basic plot of year v density
 plot(ld$year, ld$avg_density)

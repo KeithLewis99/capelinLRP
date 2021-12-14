@@ -22,7 +22,7 @@ library(crosstalk)
 #library(ezknitr)
 #library(here)
 source("simpleLRP_dat.R")
-source("simpleLRP_figs.R")
+#source("simpleLRP_figs.R")
 shD <- SharedData$new(df_lag)
 ```
 
@@ -162,8 +162,8 @@ Column
 ```{r fig-2}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = cap, xaxis = rank, yaxis = abundance_med, colour = year, 
-         c1 = "Year: ", c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin abundance (millions?)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
+Scatter1(df = cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
+         c1 = "Year: ", c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin biomass (ktonnes)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
 ```
 
 
@@ -177,9 +177,9 @@ Column {data-width=600 data-height=400}
 ```{r fig-3}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = cap, xaxis = year, yaxis = abundance_med, colour = rank, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (millions?)",
+Scatter1(df = cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
 ```
@@ -240,8 +240,8 @@ Scatter1(df = df_lag, xaxis = year, yaxis = age2, colour = NULL,
 d <- highlight_key(df_lag)
 
 cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (millions?)",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
 ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_densityt_2, colour = NULL, 

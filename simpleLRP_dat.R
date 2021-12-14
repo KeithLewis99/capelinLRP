@@ -92,8 +92,9 @@ summary(cap)
 quantile(cap$abundance_med, na.rm = T)
 
 #create a rank colum
-cap$rank <- rank(cap$abundance_med)
-arrange(cap, rank)
+cap$rankA <- rank(cap$abundance_med)
+cap$rankB <- rank(cap$biomass_med)
+arrange(cap, rankB)
 cap$abundance_med_lag2 <- lag(cap$abundance_med, 2)
 #View(cap)
 
@@ -104,7 +105,7 @@ plot(cap$abundance_med, cap$biomass_med)
 plot(cap$year, cap$abundance_med)
 
 #basic plot of rank v capelin abundance
-plot(cap$rank, cap$abundance_med)
+plot(cap$rankA, cap$abundance_med)
 abline(v = 22.5) #everything to the right is pre1991
 
 
@@ -213,7 +214,7 @@ temp3 <- temp1 %>%
 
 ls <- list(cap, ld, ice, cond, matA)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
-  select(year, abundance_med, avg_densityt_2, tice, condt_1, age2, mat2t_1)
+  select(year, abundance_med, biomass_med, rankB, avg_densityt_2, tice, condt_1, age2, mat2t_1)
 str(df_lag)
 
 

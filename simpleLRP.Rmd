@@ -284,7 +284,7 @@ Vertical and Horizontal lines are 90th percentiles
 ### All data: anomalies
 
 ```{r fig-8}
-Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
+Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Biomass: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
 ```
 
 ### All data: stock-recruit
@@ -299,7 +299,7 @@ Column {.tabset}
 ### Post collapse: anomalies
 
 ```{r fig-10}
-Bar1(df = cap_postCollapse, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
+Bar1(df = cap_postCollapse, xaxis = year, yaxis = anomaly, c2 = "Biomass: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90_post, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
 ```
 
 ### Post collapse: stock-recruit 

@@ -283,7 +283,7 @@ summary(lm(df_lag$avg_densityt_2[23:34] ~ df_lag$year[23:34]))
 # start with the relationship between LD (t-2) and capelin abundance
 temp3 <- df_lag %>%
   filter(year > 1990) %>%
-  ggplot(aes(avg_densityt_2, abundance_med, text = paste("Year", year))) + geom_point()
+  ggplot(aes(avg_densityt_2, biomass_med, text = paste("Year", year))) + geom_point()
 
 ggplotly(temp3)
 

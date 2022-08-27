@@ -129,3 +129,34 @@ Anomaly_year_post
 SR_all <- Scatter2(df = cap_postCollapse, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline = v90, filename = "figs/6-Biomass_all-index-recruit.pdf", save = save)
 SR_all
 
+
+# just a quick test of Aaron's idea of an NMDS
+library(vegan)
+
+str(ice)
+str(df_lag)
+str(cond)
+
+head(df_lag)
+
+df_nmds <- df_lag %>%
+  select(biomass_med, avg_densityt_2, tice, condt_1, mat2t_1)
+
+
+dfs_nmds <- decostand(df_nmds, "rank", na.rm=TRUE)
+
+df_dist <- 
+  vegdist(dfs_nmds, method = "bray", na.rm = TRUE)
+
+tmp <- metaMDS(df_dist,
+               distance = "bray",
+               k = 2,
+               maxit = 9999, 
+               trymax = 1000,
+               wascores = TRUE, 
+               na.rm = TRUE)
+
+# this runs but I'm not sure about the proper transform or what the distance matrix is doing.  
+plot(tmp, type = "n")
+points(tmp, display = "sites", cex = 0.8, pch=21, col="red", bg="yellow")
+text(tmp, display = "spec", cex=0.7, col="blue")

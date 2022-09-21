@@ -8,6 +8,7 @@
 *.pptx
 *.msg
 *.jags
+*.png
 data/
 figs/
 images/
@@ -15,3 +16,6 @@ setUpProject_testOnly.R
 linkedPlots_Tests1.Rmd
 archive/
 refs/
+
+debug.log
+scratch_pad.R

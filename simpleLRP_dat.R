@@ -1,3 +1,4 @@
+# The purpose of this file is to import data and do some simple exploratory analyses in the effort to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc.
 
 # Set up a project - see the below link fir directions.
 #https://happygitwithr.com/rstudio-git-github.html
@@ -219,18 +220,19 @@ str(df_lag)
 
 # derived variables ----
 # Create indicator (index) of abundance next year based on % of immature Age 2 (1-age 2) that are will mature the next year. This is probably not quite right as the AGe 1's are still in but it assumes that the Age 3+ add very little.
-df_lag$abundAge3_t <- "NA"
-
-df_lag$abundAge3_t <- ((1-(df_lag$mat2t_1*0.01))*lag(df_lag$abundance_med, 1))
-plot(df_lag$mat2t_1, df_lag$abundance_med)
+##### Note in Aug 2022  - the below was fine for when I first made this in early 2021.  But not needed given the age disaggregated data.
+# df_lag$abundAge3_t <- "NA"
+# 
+# df_lag$abundAge3_t <- ((1-(df_lag$mat2t_1*0.01))*lag(df_lag$abundance_med, 1))
+# plot(df_lag$mat2t_1, df_lag$abundance_med)
 #m1 <- lm(df_lag$abundance_med ~ df_lag$mat2t_1)
 #left_join(tibble::rownames_to_column(df_lag), as.data.frame(m1$fitted.values), by = c("rowname" = "Symbol"))
 #lines(df_lag$mat2t_1, m1$fitted.values, col = 'red', na.rm = T)
-plot(df_lag$abundAge3_t, df_lag$abundance_med)
-
-abund_age3_YEAR <- Scatter1(df = df_lag, xaxis = year, yaxis = abundAge3_t, colour = NULL, 
-                      c1 = "Rank: ", c2 = "Year: ", c3 = "Abund_Age_3: ", xlab = "Year", ylab = "Abundance Age 3",
-                      filename = "figs/2-abund3-year.pdf", save = save)
+# plot(df_lag$abundAge3_t, df_lag$abundance_med)
+# 
+# abund_age3_YEAR <- Scatter1(df = df_lag, xaxis = year, yaxis = abundAge3_t, colour = NULL, 
+#                       c1 = "Rank: ", c2 = "Year: ", c3 = "Abund_Age_3: ", xlab = "Year", ylab = "Abundance Age 3",
+#                       filename = "figs/2-abund3-year.pdf", save = save)
 
 
 # This is the abundance at t-2 - useful for a crude S-R relationship
@@ -283,8 +285,9 @@ summary(lm(df_lag$avg_densityt_2[21:34] ~ df_lag$age2[21:34]))
 plot(df_lag$year[23:34], df_lag$avg_densityt_2[23:34])
 summary(lm(df_lag$avg_densityt_2[23:34] ~ df_lag$year[23:34]))
 
-## multivariate approach----  
+# multivariate approach----  
 # start with the relationship between LD (t-2) and capelin abundance
+
 temp3 <- df_lag %>%
   filter(year > 1990) %>%
   ggplot(aes(avg_densityt_2, biomass_med, text = paste("Year", year))) + geom_point()
@@ -314,7 +317,8 @@ ggplotly(temp5)
 
 # the problem with this approach is the small sample size and uncertainty, i.e., driven by 2013-2015 and that some low abundance year had good condition and "good" tice.
 
-## S-R relationship (crude) ----
+# S-R relationships---- 
+### (crude) ----
 # NOTE THAT THE S-R RELATIONSHIPS ARE IN THE BELOW AND IN THE DASHBOARD
 
 #all data
@@ -351,124 +355,5 @@ str(df_dis_all)
 df_mat <- left_join(df_dis_all, ld, by = 'year')
 str(df_mat)
 
-# Age 2 ~ LD - recreate Hannah's work
-plot(df_mat$avg_densityt_2[19:33], df_mat$age2[19:33])
-m1 <- lm(df_mat$age2[19:33] ~ df_mat$avg_densityt_2[19:33])
-summary(m1)
-
-# as m1 but without the 2014 outlier
-m2 <- lm(df_mat$age2[c(19:29, 31:33)] ~ df_mat$avg_densityt_2[c(19:29, 31:33)])
-summary(m2)
-
-# Try to expand Hannah's work 
-## But first, a little EDA, what is the relationship between the number of fish and the age 2 percent mature
-plot(df_mat$age2PerMat[17:33], df_mat$perAge2[17:33])
-plot(df_mat$age2PerMat[17:33], rowSums(df_mat[17:33, 3:5]))
-
-# N2-N4 - what is the relationship between percent mature N2 as a function of populatoin size for AGes 2-4
-m3 <- lm(df_mat$age2PerMat[17:33] ~ rowSums(df_mat[17:33, 3:5]))
-summary(m3)
-
-# N3-N4: as above but just Ages 3-4
-m4 <- lm(df_mat$age2PerMat[17:33] ~ rowSums(df_mat[17:33, 4:5]))
-summary(m4)
 
 
-# relationship between mature age 2 and larval density
-plot(df_mat$avg_densityt_2[19:33], df_mat$age2[19:33]*df_mat$age2PerMat[19:33])
-m5 <- lm(df_mat$age2[19:33]*df_mat$age2PerMat[19:33] ~ df_mat$avg_densityt_2[19:33])
-summary(m5)
-
-# # relationship between mature age 2 and larval density and populatoin size of N3-N4
-m6 <- lm(df_mat$age2[19:33]*df_mat$age2PerMat[19:33] ~ df_mat$avg_densityt_2[19:33] + rowSums(df_mat[19:33, 4:5]))
-summary(m6)
-
-p <- ggplot(df_mat[19:33,], aes(x = avg_densityt_2, y= age2*age2PerMat, colour = rowSums(df_mat[19:33,4:5])))
-p <- p + geom_point()
-p <- p + scale_colour_continuous(name = "N3+N4", type = "viridis")
-p
-ggplotly(p, tooltip = "text")     
-
-# as with m6 but without 2014 outlier       
-m7 <- lm(df_mat$age2[c(19:29, 31:33)]*df_mat$age2PerMat[c(19:29, 31:33)] ~ df_mat$avg_densityt_2[c(19:29, 31:33)] + rowSums(df_mat[c(19:29, 31:33), 4:5]))
-summary(m7)
-
-p <- ggplot(df_mat[c(19:29, 31:33),], aes(x = avg_densityt_2, y= age2*age2PerMat, colour = rowSums(df_mat[c(19:29, 31:33),4:5])))
-p <- p + geom_point()
-p <- p + scale_colour_continuous(name = "N3+N4", type = "viridis")
-p
-ggplotly(p, tooltip = "text")     
-
-
-## S-R Approach II ----
-
-
-
-## Haddock type approach - all data----
-
-
-# calculate anomalies - get mean and SD
-source("simpleLRP_FUN.R")
-cap <- anomaly(cap, "biomass_med_lead")
-
-
-# get the quantile and extract the 90th for the hline
-h90 <- quantile(cap$anomaly, c(0.1, 0.9), na.rm = T)[2]
-h50 <- quantile(cap$anomaly, c(0.1, 0.9), na.rm = T)[2]
-# confirm above value and check on plot
-quantile(cap$anomaly, c(0.1, 0.9), na.rm = T)
-
-
-# simple test plot
-plot(cap$year, cap$anomaly)
-abline(h = h90)
-
-
-#get the value for the lowest index to generate large recruitment (or a large index)
-biomass90_1 <- quantile(cap$biomass_med, c(0.1, 0.5, 0.9), na.rm = T)
-y1 <- subset(cap, biomass_med_lead >= biomass90_1[3], na.rm = T)
-v90 <- min(y1$biomass_med)
-
-y2 <- subset(cap, biomass_med_lead >= biomass90_1[2], na.rm = T)
-v50 <- min(y2$biomass_med, na.rm = T)
-
-# simple test plot
-plot(cap$biomass_med, cap$biomass_med_lead)
-abline(v = v90)
-abline(v = v50, lty=2)
-
-Scatter2(df = cap, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline1 = v90, vline2 = v50, filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
-
-
-## Haddock type approach - post collapse----
-### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
-
-#calculate anomalies - get mean and SD
-cap_postCollapse <- anomaly(cap_postCollapse, "biomass_med_lead")
-
-
-# get the quantile and extract the 90th for the hline
-h90_post <- quantile(cap_postCollapse$anomaly, c(0.1, 0.9), na.rm = T)[2]
-# confirm above value and check on plot
-quantile(cap_postCollapse$anomaly, c(0.1, 0.9), na.rm = T)
-
-plot(cap_postCollapse$year, cap_postCollapse$anomaly)
-abline(h = h90_post)
-
-
-#get the value for the lowest index to generate large recruitment (or a large index)
-biomass90_1 <- quantile(cap_postCollapse$biomass_med, c(0.1, 0.5, 0.9), na.rm = T)
-y1 <- subset(cap_postCollapse, biomass_med_lead >= biomass90_1[3], na.rm = T)
-y2 <- subset(cap_postCollapse, biomass_med_lead >= biomass90_1[2], na.rm = T)
-v90_post <- min(y1$biomass_med)
-v50_post <- min(y2$biomass_med, na.rm = T)
-
-
-# simple test plot
-plot(cap_postCollapse$year, cap_postCollapse$biomass_med_lead)
-plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
-
-# simple test plot
-plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
-abline(v = v90_post)
-abline(v = v50_post)

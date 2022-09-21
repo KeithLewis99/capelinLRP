@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.docx
+*.Rproj
+*.html
+*.pptx
+*.msg
+*.jags
+data/
+figs/
+images/
+setUpProject_testOnly.R
+linkedPlots_Tests1.Rmd
+archive/
+refs/

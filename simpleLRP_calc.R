@@ -1,17 +1,25 @@
 # this file is meant to calculate LRPs for the simple approaches as outlined in the NAP SAR.
 
-
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(plotly)
 library(purrr)
+library(magrittr)
+
+# for FSA
+library(FSA)
+library(car)
+library(plotrix)
+library(nlstools)
+library(lsmeans)
+
 
 #clear environment
 rm(list=ls())
 
 
-# Source files
+# Source files ----
 source("simpleLRP_FUN.R")
 source("simpleLRP_dat.R")
 
@@ -20,49 +28,17 @@ source("simpleLRP_dat.R")
 
 # X% Rmax ----
 ## Some other common approaches to defining LRPs are based on the biomass at a predefined percentage (X%) of Rmax, the maximum predicted recruitment from a SRR, or other thresholds to impaired recruitment 
-## BH
 
-### Abundance by year and age.  Just plotting this to get a sense of the abundance by year but this is only from 2014-2019 - still, most of the immatures will be age 2 and the age 3/4/5 have only a fraction that are immature.
-
-ageYear <- ageD %>%
-  group_by(year, age) %>%
-  summarize(abund = sum(n)) %>%
-  ggplot(aes(x = year, y = abund, colour = as.factor(age))) + 
-  geom_point()
-ageYear
-
-# the above plot by strata
-p <- ggplot(data = ageD, aes(x = year, y = n, colour = as.factor(age)))
-p <- p + geom_point()
-p
-
-
-# the 2 year lead [t-2] of the mature capelin ages 2/3/4 and the abundance of mature capelin [t]. Note that the code is moving the mature age 2 back in time so that they correspond to the abundance at time t - probably easier to see this in JAGS
-plot(lead(df_mat$age2, 2)*lead(df_mat$age2PerMat, 2), df_mat$age2*df_mat$age2PerMat+df_mat$age3+df_mat$age4)
-
-
-# make a smaller dataframe of the relevant variables
-sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = df_lag$biomass_med[1:33]))
-str(sr)
-sr$R <- sr$age2*sr$age2PerMat
-str(sr)
-
-
-# as per Hilborn and Walters on pg ~ 269, plot biomass v R
-plot(sr$biomass, sr$R)
-# from 269 - biomass v logaritm of S/R
-plot(sr$biomass, log(sr$R))
-# log biomass v log S/R (this may not be right)
-plot(log(sr$biomass), log(sr$R))
 
 ## Ricker model ----
-# Also Ogle pg 257
 # https://notendur.hi.is/gunnar/kennsla/fii/lorna/fish480.pdf  File: fish480.pdf
 # https://www.fao.org/3/X8498E/x8498e0e.htm
 
+### Ricker 1 ----
 sr1 <- lm(log(R/biomass) ~ biomass, data = sr)
 summary(sr1)
 
+# join the dataframe "sr" with the predicted values from the lm "sr1"
 sr <- left_join(tibble::rownames_to_column(sr), tibble::rownames_to_column(as.data.frame(predict(sr1))), by = c("rowname"))
 sr <- rename(sr, predict = "predict(sr1)")
 
@@ -71,10 +47,8 @@ plot(sr$biomass, log(sr$R/sr$biomass))
 lines(sr$biomass, sr$predict)
 
 
-# Trying to get spawners v recruits
-plot(sr$biomass, log(sr$R))
-
 # From H&W pg 269, 
+plot(sr$biomass, sr$R)
 Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
 a <- sr1$coefficients[[1]]  # get it off log scale
 b <- -a/sr1$coefficients[[2]]   # this matches 
@@ -89,7 +63,7 @@ abline(v = b*(0.5-0.07*a))
 abline(v = 0.4*(b*(0.5-0.07*a)), col = "red") # the standard in Canada
 Rmax = a/b*exp(-1) # Barrett WP 2022- Table 3 - no idea what this means.
 
-SRR_dat <- as.data.frame(cbind(Sp, Rp))
+
 
 # Plot of R v biomass
 p <- ggplot(data = sr, aes(x = biomass, y = R, text = paste(
@@ -103,6 +77,8 @@ p
 ggplotly(p, tooltip = "text")
 
 # Plot of R v biomass with SR curve and Smsy
+SRR_dat <- as.data.frame(cbind(Sp, Rp))
+
 p <- ggplot(data = sr, aes(x = biomass, y = R))
 p <- p + geom_point()
 p <- p + geom_line(data = SRR_dat, aes(x=Sp, y = Rp))
@@ -110,10 +86,7 @@ p <- p + geom_vline(xintercept = 0.4*(b*(0.5-0.07*a))) # 0.4Bmsy
 p
 ggplotly(p)
 
-
-
-
-
+### Ricker 2 ----
 # OK, this works.  https://notendur.hi.is/gunnar/kennsla/fii/lorna/fish480.pdf  Not sure I understand the Ricker formulation or all the work below but it is identical to what I have above and this is how I figured out how to plot this. 
 a <- exp(sr1$coefficients[1])  # get it off log scale
 b <- -1/sr1$coefficients[2]   # this matches 
@@ -124,6 +97,11 @@ plot(sr$biomass, sr$R)
 lines(Sp, Rp)
 
 # from Fish480.pdf
+# Fmed is the fishing mortality which corresponds to the median observed slopes from data in an S-R plot. From file:///C:/Users/lewiske/Downloads/fish5106stockrec-pdf%20(2).pdf
+# I think that this is a bit dangerous.  We have to accept the index as a proxy for SSB. Then, our catch has to be considered a portion of that.  And we need to feel that we can fish to modify the SSB/R ratio??????
+SSB <- sr$biomass
+R <- sr$R
+
 Fmed <- median(SSB/R, na.rm = T)
 Fhigh <- quantile(SSB/R, probs = 0.9, na.rm = T)
 Flow <- quantile(SSB/R, probs = 0.1, na.rm = T)
@@ -139,151 +117,177 @@ srFuns("Ricker")
 rckr <- srFuns("Ricker")
 rckr(S=135, a = svR$a, svR$b)
 
+# non-linear regression
 srR <- nls(R ~ rckr(biomass, a, b), data = na.omit(sr), start=svR)
 
+# get parameters estimates and confidence intervals
 cbind(estimates=coef(srR), confint(srR))
+
+
 coef_srR <- coef(srR)
 rckr(S=135, a = coef(srR))
-a <- coef_srR[[1]]
-b <- coef_srR[[2]]
+a_r <- coef_srR[[1]]
+b_r <- coef_srR[[2]]
 # my code
 #plot(sr$biomass, log(sr$R), ylim=c(0,12))
 plot(sr$biomass, sr$R)
 
 # bootstrap from book
 ## note that this works for the figure!!!
-x <- seq(0, max(sr$biomass, na.rm = T), 1)
-pR <- rckr(x, a = coef(srR))
-lines(pR~x, col="red")
+xr <- seq(0, max(sr$biomass, na.rm = T), 1)
+pR <- rckr(xr, a = coef(srR))
+lines(pR~xr, col="red")
 abline(h=max(pR))
-abline(v = 1/coef_srR[[2]]) # from H&W table 7.2 Smax
+abline(h=0.5*(max(pR)))
+abline(v = 1/coef_srR[[2]]) # from H&W table 7.2 Smax and I derived this independently - see notes.
+abline(v = 0.4*(1/coef_srR[[2]])) # so this would be 0.4 of Bmsy I think
 #abline(v = b*(0.5-0.07*a))  # from H&W table 7.2 Smsy
 #abline(v = 0.4*(b*(0.5-0.07*a)))  # from standard for Bmsy
-abline(v = (log(a)/b)*(0.5-0.07*log(a)))    # from H&W table 7.2 Smsy
-abline(v = 0.4*(log(a)/b)*(0.5-0.07*log(a)))  # from standard for Bmsy = 261
+abline(v = (log(a_r)/b)*(0.5-0.07*log(a_r)))    # from H&W table 7.2 Smsy
+abline(v = 0.5*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for %Rmax = 326
+
+BmsyRkr <- 0.5*(log(a_r)/b_r)*(0.5-0.07*log(a_r))
+
+# Visualizing model fit
+
+bootR <- nlsBoot(srR)
+cbind(estimates = coef(srR), confint(bootR))
+
+LCI_r <- UCI_r <- numeric(length(xr))
+for(i in 1:length(xr)){
+  tmp <- apply(bootR$coefboot, MARGIN = 1, FUN = rckr, S = xr[i])
+  LCI_r[i] <- quantile(tmp, 0.025)
+  UCI_r[i] <- quantile(tmp, 0.975)
+} 
+
+ylmts_r <- range(c(pR, LCI_r, UCI_r, sr$R), na.rm=T)
+xlmts_r <- range(c(xr, sr$biomass), na.rm = T)
+
+plot(sr$biomass, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
+points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2))
+lines(pR~xr, lwd=2)
+abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
+
+
+# resids
+tmp <- na.omit(sr) %>%
+  dplyr::mutate(fits=fitted(srR),
+                resids=resid(srR),
+                sresids=nlstools::nlsResiduals(srR)$resi2[,"Standardized residuals"])
+peek(tmp,n=8)
+
+ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +
+  geom_point() +
+  geom_hline(yintercept=0,linetype="dashed")
+
+
+ggplot(data=tmp,mapping=aes(x=resids)) +
+  geom_histogram(color="gray30") 
 
 
 
 ## B-H ----
 # https://github.com/fishR-Core-Team/FSA/blob/master/R/srStarts.R
-sr2 <- lm(I(1/(age2*age2PerMat)) ~ I(1/biomass), data = sr)
-summary(sr2)
-slope = sr2$coefficients[[1]]
-intercept = sr2$coefficients[[2]]/sr2$coefficients[[1]]
+### BH1 ----
+#### This doesn't work
 
-tmp <- nls(age2*age2PerMat ~ biomass*slope/(1 + biomass/intercept), data = srBH, start = list(slope = 5, intercept = 50))
-
-srBH <- sr[,1:5]
-srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr2))), by = c("rowname"))
-srBH <- rename(srBH, predict = "predict(sr2)")
-
-# plot biomass v R/S and overlay predicted values
-plot(srBH$biomass, log(srBH$age2*srBH$age2PerMat/srBH$biomass))
-lines(srBH$biomass, srBH$predict)
-
-plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
-Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
-#a <- 1/sr2$coefficients[1]  # get it off log scale
-#b <- 1/(sr2$coefficients[1]/sr1$coefficients[2])   # this matches 
-a <- 1/sr2$coefficients[2]  # get it off log scale
-b <- sr2$coefficients[1]*a   # this matches 
-
-Rp <- a/b
-#Rp <- 1/((1/a + Sp/(a*b))*Sp)
-lines(Sp, Rp, col = "red")
-
-
-lines(srBH$biomass, 1/srBH$predict)
-srBH <- sr[,1:5]
-srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr2))), by = c("rowname"))
-srBH <- rename(srBH, predict = "predict(sr2)")
-
-
+# sr2 <- lm(I(1/(age2*age2PerMat)) ~ I(1/biomass), data = sr)
+# summary(sr2)
+# slope = sr2$coefficients[[1]]
+# intercept = sr2$coefficients[[2]]/sr2$coefficients[[1]]
 # 
-Sp <- seq(0, max(srBH$biomass, na.rm = T), 100)
-a <- coef(tmp)[[1]]  # get it off log scale
-b <- -a/coef(tmp)[[2]]   # this matches 
-Rp <- (a*Sp)/(b+Sp)
-lines(Sp, Rp, col = "red")
+# # make a new data set
+# srBH <- sr[,1:5]
+# 
+# tmp <- nls(age2*age2PerMat ~ biomass*slope/(1 + biomass/intercept), data = srBH, start = list(slope = 5, intercept = 50))
+# 
+# 
+# srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr2))), by = c("rowname"))
+# srBH <- rename(srBH, predict = "predict(sr2)")
+# 
+# # plot biomass v R/S and overlay predicted values
+# plot(srBH$biomass, log(srBH$age2*srBH$age2PerMat/srBH$biomass))
+# lines(srBH$biomass, srBH$predict)
+# 
+# plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
+# Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
+# #a <- 1/sr2$coefficients[1]  # get it off log scale
+# #b <- 1/(sr2$coefficients[1]/sr1$coefficients[2])   # this matches 
+# a <- 1/sr2$coefficients[2]  # get it off log scale
+# b <- sr2$coefficients[1]*a   # this matches 
+# 
+# Rp <- a/b
+# #Rp <- 1/((1/a + Sp/(a*b))*Sp)
+# #lines(Sp, Rp, col = "red")
+# 
+# 
+# lines(srBH$biomass, 1/srBH$predict)
+# srBH <- sr[,1:5]
+# srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr2))), by = c("rowname"))
+# srBH <- rename(srBH, predict = "predict(sr2)")
+# 
+# 
+# # 
+# Sp <- seq(0, max(srBH$biomass, na.rm = T), 100)
+# a <- coef(tmp)[[1]]  # get it off log scale
+# b <- -a/coef(tmp)[[2]]   # this matches 
+# Rp <- (a*Sp)/(b+Sp)
+# lines(Sp, Rp, col = "red")
 
+### BH2----
 # https://books.google.ca/books?id=9Aq5k0hZLykC&pg=PA106&lpg=PA106&dq=beverton--holt+estimate+parameter+nls&source=bl&ots=jbtI6VEkf6&sig=ACfU3U0k7HRVfcMqThBOIaXjwRSDK6q9VA&hl=en&sa=X&ved=2ahUKEwjG286-lfH5AhUnpIkEHcuBC6M4HhDoAXoECBUQAw#v=onepage&q=beverton--holt%20estimate%20parameter%20nls&f=false
-tmp <- nls(age2*age2PerMat ~ biomass*alpha/(1 + biomass/k), data = srBH, start = list(alpha = 5, k = 50))
+# tmp <- nls(age2*age2PerMat ~ biomass*alpha/(1 + biomass/k), data = srBH, start = list(alpha = 5, k = 50))
+# 
+# 
+# # Trying to get spawners v recruits
+# plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
+# 
+# 
+# plot(srBH$biomass, log(srBH$age2*srBH$age2PerMat/srBH$biomass))
+# lines(srBH$biomass, srBH$predict)
+# 
+# 
+# srBH$R <- sr$age2*sr$age2PerMat
+# 
+# sr2 <- lm(I(1/(age2*age2PerMat)) ~ I(1/biomass), data = sr)
+# summary(sr2)                 
+# 
+# # this is as close as I can get to something sensible
+# sr3 <- lm(biomass/(age2*age2PerMat) ~ biomass, data = sr)            
+# summary(sr3)     
+# 
+# 
+ srBH <- sr[,1:5]
+# srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr3))), by = c("rowname"))
+# srBH <- rename(srBH, predict = "predict(sr3)")
+# 
+# # plot biomass v R/S and overlay predicted values
+# plot(srBH$biomass, srBH$age2*srBH$age2PerMat/srBH$biomass)
+# lines(srBH$biomass, 1/srBH$predict)
+# 
+# 
+# plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
+# Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
+# a <- 1/sr3$coefficients[1]  # get it off log scale
+# b <- sr3$coefficients[2]*a   # this matches 
+# 
+# Rp <- a*Sp/(1+b*Sp)
+# #Rp <- 1/((1/a + Sp/(a*b))*Sp)
+# lines(Sp, Rp, col = "red")                 
+# 
+#bh.fit = nls(srBH$age2*srBH$age2PerMat ~ a * srBH$biomass/(1 + (a/b) *srBH$biomass), start = c(a = 0.696, b = 9.79))
+#bh.fit
 
 
-# Trying to get spawners v recruits
-plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
+### FSA ----
+#### this seems to wrok
+srBH$R <- srBH$age2*1000*srBH$age2PerMat*0.01
+svBH <- srStarts(R ~ biomass, data = na.omit(srBH), type = "BevertonHolt", na.rm=T)
 
 
-plot(srBH$biomass, log(srBH$age2*srBH$age2PerMat/srBH$biomass))
-lines(srBH$biomass, srBH$predict)
-
-
-srBH$R <- sr$age2*sr$age2PerMat
-test <- srStarts(R~biomass, data = srBH, type = "BevertonHolt")
-
-
-sr2 <- lm(I(1/(age2*age2PerMat)) ~ I(1/biomass), data = sr)
-summary(sr2)                 
-
-# this is as close as I can get to something sensible
-sr3 <- lm(biomass/(age2*age2PerMat) ~ biomass, data = sr)            
-summary(sr3)     
-
-
-srBH <- sr[,1:5]
-srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr3))), by = c("rowname"))
-srBH <- rename(srBH, predict = "predict(sr3)")
-
-# plot biomass v R/S and overlay predicted values
-plot(srBH$biomass, srBH$age2*srBH$age2PerMat/srBH$biomass)
-lines(srBH$biomass, 1/srBH$predict)
-
-
-plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
-Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
-a <- 1/sr3$coefficients[1]  # get it off log scale
-b <- sr3$coefficients[2]*a   # this matches 
-
-Rp <- a*Sp/(1+b*Sp)
-#Rp <- 1/((1/a + Sp/(a*b))*Sp)
-lines(Sp, Rp, col = "red")                 
-
-bh.fit = nls(srBH$age2*srBH$age2PerMat ~ a * srBH$biomass/(1 + (a/b) *srBH$biomass), start = c(a = 0.696, b = 9.79))
-bh.fit
-
-
-#https://rpubs.com/bbolker/7916
-bevholt = function(S, a, b) {
-  S * a/(b + S)
-}
-
-par(las = 1, bty = "l")
-plot(Y ~ X, data = dat)
-maxY <- max(dat$Y)
-curve(bevholt(x, a = maxY, b = maxY), add = TRUE)
-
-par(las = 1, bty = "l")
-plot(age2*age2PerMat ~ biomass, data = srBH)
-maxY <- max(srBH$age2*srBH$age2PerMat)
-curve(bevholt(x, a = S, b = S), add = TRUE)
-
-#Assuming no SRR, R/S = a, therefore, R=a*S
-m1 <- lm(age2*age2PerMat ~ 0 + biomass, data = srBH)
-a <- m1$coefficients[[1]]
-
-
-library(FSA)
-library(car)
-library(magrittr)
-library(plotrix)
-library(nlstools)
-library(lsmeans)
-srBH$R <- srBH$age2*srBH$age2PerMat
-sBH <- srStarts(R ~ biomass, data = na.omit(srBH), type = "BevertonHolt", na.rm=T)
-
-
-svBH <- srStarts(R~biomass,data=na.omit(sr),type="BevertonHolt",2)
-srFuns("BevertonHolt",3)
+svBH <- srStarts(R~biomass,data=na.omit(srBH),type="BevertonHolt",2)
+srFuns("BevertonHolt",2)
 bhr <- srFuns("BevertonHolt" ,2)
 bhr(S=135, a = svBH$a, svBH$Rp)
 
@@ -301,7 +305,7 @@ plot(sr$biomass, sr$R)
 
 # bootstrap from book
 ## note that this works for the figure!!!
-x <- seq(0, max(sr$biomass, na.rm = T), 1)
+x <- seq(0, max(srBH$biomass, na.rm = T), 1)
 pBH <- bhr(x, a = coef(srBH1))
 lines(pBH~x, col="red")
 abline(h=max(pBH))
@@ -309,11 +313,114 @@ abline(h=max(pBH))
 # from H&W table 7.2 Smax is infinite
 abline(v = b*sqrt(1/a)-b/a)  # from H&W table 7.2 Smsy
 abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy
+abline(v = max(pBH)/(a*(1-max(pBH)/b))) # I derived this equation myself - see notes but need confirmation that it is correct.
+
+bootR <- nlsBoot(srBH1)
+cbind(estimates = coef(srBH1), confint(bootR))
+
+LCI <- UCI <- numeric(length(x))
+for(i in 1:length(x)){
+  tmp <- apply(bootR$coefboot, MARGIN = 1, FUN = bhr, S = x[i])
+  LCI[i] <- quantile(tmp, 0.025)
+  UCI[i] <- quantile(tmp, 0.975)
+} 
+
+ylmts <- range(c(pBH, LCI, UCI, sr$R), na.rm=T)
+xlmts <- range(c(x, sr$biomass), na.rm = T)
+
+plot(sr$biomass, sr$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
+points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2))
+lines(pBH~x, lwd=2)
+abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy = 118
+
+BmsyBH <- 0.4*(b*sqrt(1/a)-b/a)
+
+# compare models to an indpendent one, i.e., a regression
+ind <- srFuns("independence")
+svI <- srStarts(R~biomass,data=na.omit(sr),type="independence")
+srI <- nls(R ~ ind(biomass, a), data = na.omit(sr), start=svI)
+extraSS(srI, com=srR)
+extraSS(srI, com=srBH1)
 
 
+summary(srR, correlation = T)
 
-## Ricker
-## Hockey stick
+
+# resids
+tmp <- na.omit(sr) %>%
+  dplyr::mutate(fits=fitted(srBH1),
+                resids=resid(srBH1),
+                sresids=nlstools::nlsResiduals(srBH1)$resi2[,"Standardized residuals"])
+
+
+ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +
+  geom_point() +
+  geom_hline(yintercept=0,linetype="dashed")
+
+
+ggplot(data=tmp,mapping=aes(x=resids)) +
+  geom_histogram(color="gray30") 
+
+### FSA 2 ----
+#### This is for calculations in the spreadsheet which use a different formulation of BH
+svBH2 <- srStarts(R~biomass,data=na.omit(srBH),type="BevertonHolt", 1)
+srFuns("BevertonHolt",1)
+bhr2 <- srFuns("BevertonHolt" , 1)
+bhr2(S=135, a = svBH2$a, svBH2$b)
+
+srBH2 <- nls(R ~ bhr2(biomass, a, b), data = na.omit(srBH), start=svBH2)
+
+cbind(estimates=coef(srBH2), confint(srBH2))
+
+coef_srBH2 <- coef(srBH2)
+a <- coef_srBH2[[1]]
+(a <- coef_srBH2[[1]])
+b <- coef_srBH2[[2]]
+(b <- coef_srBH2[[2]])
+
+# my code
+#plot(sr$biomass, log(sr$R), ylim=c(0,12))
+plot(srBH$biomass, srBH$R)
+
+# bootstrap from book
+## note that this works for the figure!!!
+x <- seq(0, max(sr$biomass, na.rm = T), 1)
+pBH <- bhr2(x, a = coef(srBH2))
+lines(pBH~x, col="red")
+abline(h=max(pBH))
+
+
+### FSA 2-ln ----
+#### This is for calculations in the spreadsheet which use a different formulation of BH
+srBH$logR <- log(srBH$R)
+svBH2 <- srStarts(R~biomass,data=na.omit(srBH),type="BevertonHolt", 1)
+bhr2 <- srFuns("BevertonHolt" , 1)
+bhr2(S=135, a = svBH2$a, svBH2$b)
+
+# something wrong with this - perhaps because it is with log - not sure why
+#srBH2 <- nls(logR ~ log(bhr2(biomass, a, b)), data = na.omit(srBH), start=svBH2)
+
+cbind(estimates=coef(srBH2), confint(srBH2))
+
+coef_srBH2 <- coef(srBH2)
+a <- coef_srBH2[[1]]
+(a <- coef_srBH2[[1]])
+b <- coef_srBH2[[2]]
+(b <- coef_srBH2[[2]])
+
+# my code
+#plot(sr$biomass, log(sr$R), ylim=c(0,12))
+plot(srBH$biomass, srBH$R)
+
+# bootstrap from book
+## note that this works for the figure!!!
+x <- seq(0, max(sr$biomass, na.rm = T), 1)
+pBH <- bhr2(x, a = coef(srBH2))
+lines(pBH~x, col="red")
+abline(h=max(pBH))
+
+## Hockey stick ----
 
 
 # Brecover from models ----
@@ -326,14 +433,18 @@ abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy
 
 
 
-## Bmin is the lowest observed biomass from which a recovery to average has been observed
+## Bmin ----
+### Bmin is the lowest observed biomass from which a recovery to average has been observed
+
 ## Other minimum biomass that produced “good” recruitment 
+
+
+
 ## ICES Type I ----
 ### Haddock type approach - all data
 ### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 # calculate anomalies - get mean and SD
-source("simpleLRP_FUN.R")
 cap <- anomaly(cap, "biomass_med_lead")
 
 
@@ -529,3 +640,4 @@ Bmin$`2011-2018`[4] <- 0.4*B0_bio_recent
 
 # Multivariate ----
 ## see dashboard.  Need to come up with some sort of proposal here
+

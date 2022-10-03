@@ -318,6 +318,29 @@ subplot(sp1, sp2, widths = c(0.4, 0.4), heights = 0.8, titleX = TRUE, titleY = T
 
 # X% Rmax
 
+Column
+-------------------------------------
+Ricker Bmsy = `r BmsyRkr`
+```{r}
+plot(sr$biomass, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
+points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2))
+lines(pR~xr, lwd=2)
+abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
+```
+
+Column
+-------------------------------------
+BH, Bmsy = `r BmsyBH`
+```{r}
+plot(sr$biomass, sr$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
+points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2))
+lines(pBH~x, lwd=2)
+abline(v = BmsyBH)  # from standard for Bmsy = 118
+```
+
+
 # Brecover from models
 Bloss
 Brecover

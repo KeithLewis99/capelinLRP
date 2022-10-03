@@ -317,9 +317,7 @@ ggplotly(temp5)
 
 # the problem with this approach is the small sample size and uncertainty, i.e., driven by 2013-2015 and that some low abundance year had good condition and "good" tice.
 
-# S-R relationships---- 
-### (crude) ----
-# NOTE THAT THE S-R RELATIONSHIPS ARE IN THE BELOW AND IN THE DASHBOARD
+# Brecover ---- 
 
 #all data
 cap$biomass_med_lead <- lead(cap$biomass_med, 2)
@@ -345,8 +343,8 @@ quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
 # NOTE THAT THE S-R RELATIONSHIPS ARE IN THE BELOW AND IN THE DASHBOARD
 
 
-## S-R Approach 1----
-
+# S-R Approach----
+### this is for the 
 # bring in age disaggregated data
 df_dis_all <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin_age_disaggregate_abundance.csv")
 str(df_dis_all)
@@ -355,5 +353,58 @@ str(df_dis_all)
 df_mat <- left_join(df_dis_all, ld, by = 'year')
 str(df_mat)
 
+# the 2 year lead [t-2] of the mature capelin ages 2/3/4 and the abundance of mature capelin [t]. Note that the code is moving the mature age 2 back in time so that they correspond to the abundance at time t - probably easier to see this in JAGS
+plot(lead(df_mat$age2, 2)*lead(df_mat$age2PerMat, 2), df_mat$age2*df_mat$age2PerMat+df_mat$age3+df_mat$age4)
 
 
+# make a smaller dataframe of the relevant variables
+sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = df_lag$biomass_med[1:33]))
+str(sr)
+sr$R <- sr$age2*1000*sr$age2PerMat*0.01 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
+str(sr)
+
+#write.csv(sr, "data_for_Tim.csv")
+
+# exploratory - as per Hilborn and Walters on pg ~ 269, plot biomass v R
+plot(sr$biomass, sr$R)
+# from 269 - biomass v logaritm of S/R - spawners v recruits
+plot(sr$biomass, log(sr$R))
+# log biomass v log S/R (this may not be right)
+plot(log(sr$biomass), log(sr$R))
+
+
+
+### Abundance by year and age.  Just plotting this to get a sense of the abundance by year but this is only from 2014-2019 - still, most of the immatures will be age 2 and the age 3/4/5 have only a fraction that are immature.
+
+ageYear <- ageD %>%
+  group_by(year, age) %>%
+  summarize(abund = sum(n)) %>%
+  ggplot(aes(x = year, y = abund, colour = as.factor(age))) + 
+  geom_point()
+ageYear
+
+# the above plot by strata
+p <- ggplot(data = ageD, aes(x = year, y = n, colour = as.factor(age)))
+p <- p + geom_point()
+p
+
+
+# Time to do this right - need 
+# just rename matA so that the join goes more smoothly
+# not sure if this makes sense at all given the Recovery issue.
+matA1 <- rename(matA, mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5)
+
+tmp <- left_join(df_dis_all, matA1, by = "year")
+str(tmp)
+tmp <- tmp %>% mutate(R = age2*mat2)
+str(tmp)
+
+cbind(((100-tmp$mat2)/100)*tmp$age2, tmp$age3)
+
+plot((100-mat2)/100*age2 ~ age3, data = tmp)
+abline(a=0, b=1)
+
+
+
+
+                                                                                                                                

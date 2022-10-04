@@ -39,6 +39,12 @@ ld_YEAR <- Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank,
                     ylab = "Larval Density (#/m^-3)",
                     filename = "figs/2-cond-year-rank.pdf", save = save)
 
+# larval densit with the error bars
+p <- ggplot(data = df_ld)
+p <- p + geom_errorbar(aes(x = year, ymin = larvae-se_auc, ymax=larvae+se_auc))
+p <- p + geom_point(aes(x = year, y = larvae))
+p <- p + ylab ("Larval density m^3") + xlab("Year") + theme_bw()
+p
 
 
 ## Plots of capelin abundance----

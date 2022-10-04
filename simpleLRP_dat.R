@@ -79,7 +79,36 @@ abline(v=2.8)
 abline(v = 18.5)
 abline(v = 9.8)
 
+# larval density but with error bars
+df_ld  <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/larvae2001_2022.csv")
+str(df_ld)
 
+disaggregated == "1985-present"
+
+# add extra years to start the time series
+if(disaggregated == "1985-present") {
+  df_tmp <- as.data.frame(matrix(NA, 16, 3))
+  df_tmp[, 1] <- c(1985:2000)
+  names(df_tmp) <- names(df_ld)
+  df_ld <- rbind(df_tmp, df_ld)
+} else {
+  df_tmp <- df_ld[1:2,]
+  df_tmp[, 1:3] <- NA
+  df_tmp$SurveyYear[1:2] <- c(1999,2000)
+  df_tmp
+  df_ld <- rbind(df_tmp, df_ld)
+} 
+
+# change column names
+# df_ld <- df_ld %>% rename(year = SurveyYear,
+#                           larvae = `Bellevue_larvae_m-3`,
+#                           log_larvae = `log_Bellevue_larvae_m-3`) 
+# df_ld$lnlarvae <- log(df_ld$larvae)
+
+df_ld <- df_ld %>% rename(year = `Year`,
+                          larvae = `Larval densities_ind_m-3`,
+                          se_auc = `SE_AUC`) 
+df_ld$lnlarvae <- log(df_ld$larvae)
 
 ## read in capelin data----
 #read and check data

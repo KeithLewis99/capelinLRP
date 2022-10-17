@@ -41,7 +41,7 @@ ld_YEAR <- Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank,
 
 # larval densit with the error bars
 p <- ggplot(data = df_ld)
-p <- p + geom_errorbar(aes(x = year, ymin = larvae-se_auc, ymax=larvae+se_auc))
+p <- p + geom_errorbar(aes(x = year, ymin = larvae-1.96*se_auc, ymax=larvae+1.96*se_auc))
 p <- p + geom_point(aes(x = year, y = larvae))
 p <- p + ylab ("Larval density m^3") + xlab("Year") + theme_bw()
 p

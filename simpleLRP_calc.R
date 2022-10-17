@@ -112,6 +112,7 @@ abline(0,1/quantile(SSB/R, probs=0.9, na.rm = T), col=4) #Flow
 
 ### FSA----
 # trying to replicate the above but with FSA from Ogle book
+library(FSA)
 svR <- srStarts(R~biomass,data=na.omit(sr),type="Ricker", na.rm=T)
 srFuns("Ricker")
 rckr <- srFuns("Ricker")
@@ -149,7 +150,6 @@ abline(v = 0.5*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for %Rmax = 
 BmsyRkr <- 0.5*(log(a_r)/b_r)*(0.5-0.07*log(a_r))
 
 # Visualizing model fit
-
 bootR <- nlsBoot(srR)
 cbind(estimates = coef(srR), confint(bootR))
 
@@ -287,6 +287,7 @@ svBH <- srStarts(R ~ biomass, data = na.omit(srBH), type = "BevertonHolt", na.rm
 
 
 svBH <- srStarts(R~biomass,data=na.omit(srBH),type="BevertonHolt",2)
+svBH$a <- 1
 srFuns("BevertonHolt",2)
 bhr <- srFuns("BevertonHolt" ,2)
 bhr(S=135, a = svBH$a, svBH$Rp)

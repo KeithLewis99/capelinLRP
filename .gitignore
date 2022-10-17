@@ -9,8 +9,10 @@
 *.msg
 *.jags
 *.png
+
 data/
 figs/
+Barrett/
 images/
 setUpProject_testOnly.R
 linkedPlots_Tests1.Rmd
@@ -19,3 +21,4 @@ refs/
 
 debug.log
 scratch_pad.R
+tmp.Rmd

@@ -31,6 +31,8 @@ library(ggplot2)
 library(plotly)
 library(purrr)
 
+options(dplyr.print_max = 1e9)
+
 # Source files
 source("simpleLRP_FUN.R")
 save <- "no"
@@ -75,6 +77,8 @@ plot(ld$year, ld$avg_density)
 
 #basic plot of rank v. density with 10, 50, and 90th percentiles
 plot(ld$rank, ld$avg_density)
+quantile(ld$rank, c(0.1, 0.5, 0.9))
+# not quite sure where I got these values but they are close to the above
 abline(v=2.8)
 abline(v = 18.5)
 abline(v = 9.8)
@@ -83,7 +87,7 @@ abline(v = 9.8)
 df_ld  <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/larvae2001_2022.csv")
 str(df_ld)
 
-disaggregated == "1985-present"
+disaggregated <- "1985-present"
 
 # add extra years to start the time series
 if(disaggregated == "1985-present") {
@@ -166,7 +170,7 @@ cond$condt_1 <- lag(cond$meanCond)
 
 
 ## read in maturity data----
-#read and check data
+#read and check data - note that these are percentages
 matA <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
   year = col_integer()
 ))
@@ -201,6 +205,7 @@ str(ageD)
 #manipulate 
 
 # get biomass and abundance by strata and year
+## n_mat is a percentage
 temp1 <- ageD %>%
   group_by(year, age) %>%
   #select(n, weight, proportion) %>%
@@ -223,7 +228,7 @@ ageD %>% select(year, stratum, age, prop_mat) %>% filter(age ==1 & prop_mat > 0.
 
 
 # prop mature
-
+## n_mat is a percentage
 temp4 <- temp1 %>%
   group_by(year)
 
@@ -240,7 +245,7 @@ temp3 <- temp1 %>%
 
 
 # join all dataframes with lags----
-# this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year.
+# this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year, i.e., abundance and biomass are at time t, larval density is t-2 and condition is t-1.
 
 ls <- list(cap, ld, ice, cond, matA)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
@@ -383,23 +388,27 @@ df_mat <- left_join(df_dis_all, ld, by = 'year')
 str(df_mat)
 
 # the 2 year lead [t-2] of the mature capelin ages 2/3/4 and the abundance of mature capelin [t]. Note that the code is moving the mature age 2 back in time so that they correspond to the abundance at time t - probably easier to see this in JAGS
-plot(lead(df_mat$age2, 2)*lead(df_mat$age2PerMat, 2), df_mat$age2*df_mat$age2PerMat+df_mat$age3+df_mat$age4)
+plot(lead(df_mat$age2, 2)*lead(df_mat$age2PerMat*0.01, 2), df_mat$age2*df_mat$age2PerMat+df_mat$age3+df_mat$age4)
 
 
 # make a smaller dataframe of the relevant variables
-sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = df_lag$biomass_med[1:33]))
+sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = lag(df_lag$biomass_med[1:33], 2)))
 str(sr)
+ sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = df_lag$biomass_med[1:33]))
+
 sr$R <- sr$age2*1000*sr$age2PerMat*0.01 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
 str(sr)
 
-#write.csv(sr, "data_for_Tim.csv")
+#write.csv(sr, "Barrett/data_for_Tim.csv")
 
 # exploratory - as per Hilborn and Walters on pg ~ 269, plot biomass v R
 plot(sr$biomass, sr$R)
+plot(sr$biomass, sr$age2)
+plot(lag(sr$biomass, 2), sr$age2)
 # from 269 - biomass v logaritm of S/R - spawners v recruits
-plot(sr$biomass, log(sr$R))
+plot(lag(sr$biomass, 2) , log(sr$R))
 # log biomass v log S/R (this may not be right)
-plot(log(sr$biomass), log(sr$R))
+plot(lag(log(sr$biomass), 2), log(sr$R))
 
 
 
@@ -421,6 +430,7 @@ p
 # Time to do this right - need 
 # just rename matA so that the join goes more smoothly
 # not sure if this makes sense at all given the Recovery issue.
+## these are all percentages
 matA1 <- rename(matA, mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5)
 
 tmp <- left_join(df_dis_all, matA1, by = "year")
@@ -428,6 +438,7 @@ str(tmp)
 tmp <- tmp %>% mutate(R = age2*mat2)
 str(tmp)
 
+# convert maturity to a proportion
 cbind(((100-tmp$mat2)/100)*tmp$age2, tmp$age3)
 
 plot((100-mat2)/100*age2 ~ age3, data = tmp)

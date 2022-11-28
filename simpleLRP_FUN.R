@@ -13,14 +13,15 @@
 #' @param ylab - label for yaxis
 #' @param filename - name of file to be produced - naming convention (folder/[figure # in order of data file-][xaxis][yaxis].file type )
 #' @param save - save file as pdf or not. "Yes" in run of simpleLRP_dat, no in simpleLRP.Rmd
+#' @param errorbar - "yes" for graph to include an errorbar, else "no"
 #' 
 #' @return - plotly figure
 #' @export
 #'
 #' @examples 
-#' LD_rank <- Scatter1(df = ld, xaxis = rank, yaxis = abundance_med, colour = year, c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin abundance (millions?)", filename = "figs/2-Abundance-rank-year.pdf", save = "yes")
+#' Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", filename = "figs/1-larvae-density-rank.pdf", save = "no")
 
-Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = c1, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, filename = filename, save = save){
+Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = c1, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, filename = filename, save = save, errorbar = "no", ymin = NULL, ymax = NULL){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, colour = {{colour}}, text = paste(
     c1, {{colour}}, "\n",
@@ -30,11 +31,14 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = 
   )))
   p <- p + geom_point()
   p <- p + scale_colour_continuous(type = "viridis")
+  if(!! errorbar == "yes"){
+    p <- p + geom_errorbar(aes(ymin = {{yaxis}}-{{ymin}}*1.96, ymax = {{yaxis}}+{{ymin}}*1.96))
+  }
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)
   p <- p + theme_bw()
   
-  if(!! save == "yes"){
+  if(!! save == "yes"){  # the !! just unquotes the arguement
     ggsave(paste(filename))
     return(ggplotly(p, tooltip = "text"))  
   } else {
@@ -155,3 +159,6 @@ anomaly <- function(df, x){
   df$anomaly <- round((df[[x]] - dfMean)/dfSD, 2)
   return(df)
 }
+
+
+

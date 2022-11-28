@@ -79,8 +79,7 @@ df_ld <- df_ld %>% rename(year = `Year`,
 
 df_ld$lnlarvae <- log(df_ld$avg_density)
 
-### EDA LD----
-#summary stats
+## summary stats and figures
 summary(df_ld)
 quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
 quant <- quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
@@ -93,21 +92,21 @@ sd1 <- sd(df_ld$avg_density)
 
 m1-3*sd1
 
-#Brecover
+## Brecover
 p <- ggplot(data = df_ld, aes(x = avg_density))
 p <- p + geom_density()
 p
 
-#create a rank column
+## create a rank column
 df_ld$rank <- rank(df_ld$avg_density)
 arrange(df_ld, rank)
-# create a lag column so that avg_density[t-2] corresponds to year[t]
+## create a lag column so that avg_density[t-2] corresponds to year[t]
 df_ld$avg_densityt_2 <- lag(df_ld$avg_density, 2)
 
-#basic plot of year v density
+## basic plot of year v density
 plot(df_ld$year, df_ld$avg_density)
 
-#basic plot of rank v. density with 10, 50, and 90th percentiles
+## basic plot of rank v. density with 10, 50, and 90th percentiles
 plot(df_ld$rank, df_ld$avg_density)
 quantile(df_ld$rank, c(0.1, 0.5, 0.9))
 # not quite sure where I got these values but they are close to the above
@@ -115,7 +114,7 @@ abline(v = quantile(df_ld$rank, c(0.1)))
 abline(v = quantile(df_ld$rank, c(0.5)))
 abline(v = quantile(df_ld$rank, c(0.9)))
 
-# plot year v density couloured by rank
+## plot year v density couloured by rank
 Scatter1(df = df_ld, 
          xaxis = year, 
          yaxis = avg_density, 
@@ -135,43 +134,43 @@ Scatter1(df = df_ld,
 
 ## read in capelin data----
 #read and check data
-cap <- read_csv("data/capelin-2019.csv", col_types = cols(
+df_cap <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin-2021.csv", col_types = cols(
   year = col_integer()
 ))
-str(cap)
+str(df_cap)
 
-#summary stats
-summary(cap)
-quantile(cap$abundance_med, na.rm = T)
+# summary stats
+summary(df_cap)
+quantile(df_cap$abundance_med, na.rm = T)
 
-#create a rank column
-cap$rankA <- rank(cap$abundance_med)
-cap$rankB <- rank(cap$biomass_med)
-arrange(cap, rankB)
-cap$abundance_med_lag2 <- lag(cap$abundance_med, 2)
-#View(cap)
+# create a rank column
+df_cap$rankA <- rank(df_cap$abundance_med)
+df_cap$rankB <- rank(df_cap$biomass_med)
+arrange(df_cap, rankB)
+df_cap$abundance_med_lag2 <- lag(df_cap$abundance_med, 2)
+#View(df_cap)
 
-#plot biomass and abundance
-plot(cap$abundance_med, cap$biomass_med)
+# plot biomass and abundance
+plot(df_cap$abundance_med, df_cap$biomass_med)
 
-#basic plot of year v capelin abundance
-plot(cap$year, cap$abundance_med)
+# basic plot of year v capelin abundance
+plot(df_cap$year, df_cap$abundance_med)
 
-#basic plot of rank v capelin abundance
-plot(cap$rankA, cap$abundance_med)
+# basic plot of rank v capelin abundance
+plot(df_cap$rankA, df_cap$abundance_med)
 abline(v = 22.5) #everything to the right is pre1991
 
 
 
 ## read in ice data----
 #read and check data
-ice <- read_csv("data/capelin-m1-2020.csv", col_types = cols(
+df_ice <- read_csv("data/capelin-m1-2021.csv", col_types = cols(
   year = col_integer()
 ))
-str(ice)
+str(df_ice)
 
 #create a rank colum
-ice$rank <- rank(ice$tice)
+df_ice$rank <- rank(df_ice$tice)
 
 
 
@@ -266,7 +265,7 @@ matA$mat2t_1 <- lag(matA$age2, 1)
 # join all dataframes with lags----
 # this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year, i.e., abundance and biomass are at time t, larval density is t-2 and condition is t-1.
 
-ls <- list(cap, df_ld, ice, cond, matA)
+ls <- list(df_cap, df_ld, df_ice, cond, matA)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
   select(year, abundance_med, biomass_med, rankB, avg_densityt_2, tice, condt_1, age2, mat2t_1)
 str(df_lag)
@@ -375,16 +374,16 @@ ggplotly(temp5)
 # Brecover ---- 
 
 #all data
-cap$biomass_med_lead <- lead(cap$biomass_med, 2)
-plot(cap$biomass_med, cap$biomass_med_lead)
+df_cap$biomass_med_lead <- lead(df_cap$biomass_med, 2)
+plot(df_cap$biomass_med, df_cap$biomass_med_lead)
 
 #Based on the above, it seems to make sense to divide this across the regmime change
 #pre collapse
-cap_preCollapse <- filter(cap, year < 1991)
+cap_preCollapse <- filter(df_cap, year < 1991)
 plot(cap_preCollapse$biomass_med, cap_preCollapse$biomass_med_lead)
 
 #post collapse with correlation between abundance and biomasss
-cap_postCollapse <- filter(cap, year >= 1991)
+cap_postCollapse <- filter(df_cap, year >= 1991)
 plot(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med)
 cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, use = "complete.obs", method = c("pearson"))
 

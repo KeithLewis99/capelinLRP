@@ -46,42 +46,6 @@ ld  <- read_csv("data/larvae.csv", col_types = cols(
 ))
 str(ld)
 
-#summary stats
-summary(ld)
-quantile(ld$avg_density, c(0.1, 0.9))
-quant <- quantile(ld$avg_density, c(0.1, 0.9))
-
-m1 <- mean(ld$avg_density)
-median(ld$avg_density)
-sd1 <- sd(ld$avg_density)
-3*sd(ld$avg_density)
-# 68-95-99.7
-
-m1-3*sd1
-
-#Brecover
-p <- ggplot(data = ld, aes(x = avg_density))
-p <- p + geom_density()
-p
-
-#create a rank column
-ld$rank <- rank(ld$avg_density)
-arrange(ld, rank)
-ld$avg_densityt_2 <- lag(ld$avg_density, 2)
-
-ld[10:15,]
-mean(ld$avg_densityt_2[10:12])
-
-#basic plot of year v density
-plot(ld$year, ld$avg_density)
-
-#basic plot of rank v. density with 10, 50, and 90th percentiles
-plot(ld$rank, ld$avg_density)
-quantile(ld$rank, c(0.1, 0.5, 0.9))
-# not quite sure where I got these values but they are close to the above
-abline(v=2.8)
-abline(v = 18.5)
-abline(v = 9.8)
 
 # larval density but with error bars
 df_ld  <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/larvae2001_2022.csv")
@@ -110,9 +74,64 @@ if(disaggregated == "1985-present") {
 # df_ld$lnlarvae <- log(df_ld$larvae)
 
 df_ld <- df_ld %>% rename(year = `Year`,
-                          larvae = `Larval densities_ind_m-3`,
-                          se_auc = `SE_AUC`) 
-df_ld$lnlarvae <- log(df_ld$larvae)
+                          avg_density = `Larval densities_ind_m-3`,
+                          se_auc = `SE_AUC`)
+
+df_ld$lnlarvae <- log(df_ld$avg_density)
+
+### EDA LD----
+#summary stats
+summary(df_ld)
+quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
+quant <- quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
+
+m1 <- mean(df_ld$avg_density)
+median(df_ld$avg_density)
+sd1 <- sd(df_ld$avg_density)
+3*sd(df_ld$avg_density)
+# 68-95-99.7
+
+m1-3*sd1
+
+#Brecover
+p <- ggplot(data = df_ld, aes(x = avg_density))
+p <- p + geom_density()
+p
+
+#create a rank column
+df_ld$rank <- rank(df_ld$avg_density)
+arrange(df_ld, rank)
+# create a lag column so that avg_density[t-2] corresponds to year[t]
+df_ld$avg_densityt_2 <- lag(df_ld$avg_density, 2)
+
+#basic plot of year v density
+plot(df_ld$year, df_ld$avg_density)
+
+#basic plot of rank v. density with 10, 50, and 90th percentiles
+plot(df_ld$rank, df_ld$avg_density)
+quantile(df_ld$rank, c(0.1, 0.5, 0.9))
+# not quite sure where I got these values but they are close to the above
+abline(v = quantile(df_ld$rank, c(0.1)))
+abline(v = quantile(df_ld$rank, c(0.5)))
+abline(v = quantile(df_ld$rank, c(0.9)))
+
+# plot year v density couloured by rank
+Scatter1(df = df_ld, 
+         xaxis = year, 
+         yaxis = avg_density, 
+         colour = rank,
+         c1 = "Rank: ",
+         c2 = "Year: ", 
+         c3 = "Density: ", 
+         xlab = "Year", 
+         ylab = "Larval Density (#/m^3)", 
+         filename = "figs/2-Abundance-rank-year.pdf", 
+         save = "no", 
+         errorbar = "yes", 
+         ymin= se_auc, 
+         ymax = se_auc)
+
+
 
 ## read in capelin data----
 #read and check data
@@ -125,7 +144,7 @@ str(cap)
 summary(cap)
 quantile(cap$abundance_med, na.rm = T)
 
-#create a rank colum
+#create a rank column
 cap$rankA <- rank(cap$abundance_med)
 cap$rankB <- rank(cap$biomass_med)
 arrange(cap, rankB)
@@ -185,11 +204,11 @@ matA$mat2t_1 <- lag(matA$age2, 1)
 
 ## #read in age disaggregated data----
 # deleted the "Unknown" from row 105, col "age"
-ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
-  year = col_integer(),
-  age = col_integer()
-))
-str(ageD)
+# ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
+#   year = col_integer(),
+#   age = col_integer()
+# ))
+# str(ageD)
 
 # year	=	Year
 # stratum	=	 My stratum
@@ -206,36 +225,36 @@ str(ageD)
 
 # get biomass and abundance by strata and year
 ## n_mat is a percentage
-temp1 <- ageD %>%
-  group_by(year, age) %>%
-  #select(n, weight, proportion) %>%
-  mutate(abun=sum(n), biomass=sum(weight*0.000001))
-
-# exploratory plot to look at prop mature at age by stratum and year
-p <- ggplot(ageD, aes(x = factor(year), y = prop_mat, colour = factor(age), text = paste(year, "Year")))
-p <- p + geom_point(position = "jitter")
-p
-ggplotly(p, tooltip = "text")
-
-
-# get total biomass and abundance by year
-temp2 <- temp1 %>%
-  group_by(year) %>%
-  summarize (abun = sum(abun), biomass = sum(biomass))
-
-ageD %>% select(year, stratum, age, prop_mat) %>% filter(age ==1 & prop_mat > 0.1)
-
-
-
-# prop mature
-## n_mat is a percentage
-temp4 <- temp1 %>%
-  group_by(year)
-
-# experiment with "spread" to produce a table of prop_mat
-temp3 <- temp1 %>%
-  select(year, stratum, age, prop_mat) %>%
-  pivot_wider(id_cols = c(year, stratum), names_from = age, values_from = prop_mat)
+# temp1 <- ageD %>%
+#   group_by(year, age) %>%
+#   #select(n, weight, proportion) %>%
+#   mutate(abun=sum(n), biomass=sum(weight*0.000001))
+# 
+# # exploratory plot to look at prop mature at age by stratum and year
+# p <- ggplot(ageD, aes(x = factor(year), y = prop_mat, colour = factor(age), text = paste(year, "Year")))
+# p <- p + geom_point(position = "jitter")
+# p
+# ggplotly(p, tooltip = "text")
+# 
+# 
+# # get total biomass and abundance by year
+# temp2 <- temp1 %>%
+#   group_by(year) %>%
+#   summarize (abun = sum(abun), biomass = sum(biomass))
+# 
+# ageD %>% select(year, stratum, age, prop_mat) %>% filter(age ==1 & prop_mat > 0.1)
+# 
+# 
+# 
+# # prop mature
+# ## n_mat is a percentage
+# temp4 <- temp1 %>%
+#   group_by(year)
+# 
+# # experiment with "spread" to produce a table of prop_mat
+# temp3 <- temp1 %>%
+#   select(year, stratum, age, prop_mat) %>%
+#   pivot_wider(id_cols = c(year, stratum), names_from = age, values_from = prop_mat)
 
 
 
@@ -247,7 +266,7 @@ temp3 <- temp1 %>%
 # join all dataframes with lags----
 # this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year, i.e., abundance and biomass are at time t, larval density is t-2 and condition is t-1.
 
-ls <- list(cap, ld, ice, cond, matA)
+ls <- list(cap, df_ld, ice, cond, matA)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
   select(year, abundance_med, biomass_med, rankB, avg_densityt_2, tice, condt_1, age2, mat2t_1)
 str(df_lag)
@@ -319,6 +338,8 @@ summary(lm(df_lag$avg_densityt_2[21:34] ~ df_lag$age2[21:34]))
 plot(df_lag$year[23:34], df_lag$avg_densityt_2[23:34])
 summary(lm(df_lag$avg_densityt_2[23:34] ~ df_lag$year[23:34]))
 
+
+
 # multivariate approach----  
 # start with the relationship between LD (t-2) and capelin abundance
 
@@ -384,7 +405,7 @@ df_dis_all <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin_age_
 str(df_dis_all)
 
 # join age disaggregated data with larval density
-df_mat <- left_join(df_dis_all, ld, by = 'year')
+df_mat <- left_join(df_dis_all, df_ld, by = 'year')
 str(df_mat)
 
 # the 2 year lead [t-2] of the mature capelin ages 2/3/4 and the abundance of mature capelin [t]. Note that the code is moving the mature age 2 back in time so that they correspond to the abundance at time t - probably easier to see this in JAGS

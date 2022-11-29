@@ -177,27 +177,27 @@ df_ice$rank <- rank(df_ice$tice)
 
 ## read in condition data----
 #read and check data
-cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
+df_cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
   year = col_integer()
 ))
-str(cond)
+str(df_cond)
 
-cond$rank <- rank(cond$meanCond)
-cond$condt_1 <- lag(cond$meanCond)
+
+df_cond$rank <- rank(df_cond$meanCond)
+df_cond$condt_1 <- lag(df_cond$meanCond)
 
 
 
 ## read in maturity data----
 #read and check data - note that these are percentages
-matA <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
+df_mat <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
   year = col_integer()
 ))
-str(matA)
+str(df_mat)
 
 #make variables
-matA$rank <- rank(matA$age2)
-matA$mat2t_1 <- lag(matA$age2, 1)
-
+df_mat$rank <- rank(df_mat$age2)
+df_mat$mat2t_1 <- lag(df_mat$age2, 1)
 
 
 
@@ -259,13 +259,13 @@ matA$mat2t_1 <- lag(matA$age2, 1)
 
 #make variables
 #ageD$rank <- rank(ageD$age2)
-#matA$mat2_lag1 <- lag(matA$age2, 1)
+#df_mat$mat2_lag1 <- lag(df_mat$age2, 1)
 
 
 # join all dataframes with lags----
 # this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year, i.e., abundance and biomass are at time t, larval density is t-2 and condition is t-1.
 
-ls <- list(df_cap, df_ld, df_ice, cond, matA)
+ls <- list(df_cap, df_ld, df_ice, df_cond, df_mat)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
   select(year, abundance_med, biomass_med, rankB, avg_densityt_2, tice, condt_1, age2, mat2t_1)
 str(df_lag)
@@ -448,12 +448,12 @@ p
 
 
 # Time to do this right - need 
-# just rename matA so that the join goes more smoothly
+# just rename df_mat so that the join goes more smoothly
 # not sure if this makes sense at all given the Recovery issue.
 ## these are all percentages
-matA1 <- rename(matA, mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5)
+df_mat1 <- rename(df_mat, mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5)
 
-tmp <- left_join(df_dis_all, matA1, by = "year")
+tmp <- left_join(df_dis_all, df_mat1, by = "year")
 str(tmp)
 tmp <- tmp %>% mutate(R = age2*mat2)
 str(tmp)

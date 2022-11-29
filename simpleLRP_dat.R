@@ -261,6 +261,17 @@ df_mat$mat2t_1 <- lag(df_mat$age2, 1)
 #ageD$rank <- rank(ageD$age2)
 #df_mat$mat2_lag1 <- lag(df_mat$age2, 1)
 
+# bring in age disaggregated data
+# df_dis_all <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin_age_disaggregate_abundance.csv")
+# str(df_dis_all)
+
+df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/capelin_abundance_1985-2021.csv")
+str(df_dis) 
+
+# join age disaggregated data with larval density
+df_dis <- left_join(df_dis_all, df_ld, by = 'year')
+str(df_dis)
+
 
 # join all dataframes with lags----
 # this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year, i.e., abundance and biomass are at time t, larval density is t-2 and condition is t-1.
@@ -399,24 +410,21 @@ quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
 
 # S-R Approach----
 ### this is for the 
-# bring in age disaggregated data
-df_dis_all <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin_age_disaggregate_abundance.csv")
-str(df_dis_all)
-
-# join age disaggregated data with larval density
-df_mat <- left_join(df_dis_all, df_ld, by = 'year')
-str(df_mat)
 
 # the 2 year lead [t-2] of the mature capelin ages 2/3/4 and the abundance of mature capelin [t]. Note that the code is moving the mature age 2 back in time so that they correspond to the abundance at time t - probably easier to see this in JAGS
-plot(lead(df_mat$age2, 2)*lead(df_mat$age2PerMat*0.01, 2), df_mat$age2*df_mat$age2PerMat+df_mat$age3+df_mat$age4)
+plot(lead(df_dis$age2, 2)*lead(df_dis$age2PerMat*0.01, 2), # mature 2 year olds
+  df_dis$age2*(1-df_dis$age2PerMat*0.01)+df_dis$age3+df_dis$age4) # 
 
 
 # make a smaller dataframe of the relevant variables
-sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = lag(df_lag$biomass_med[1:33], 2)))
+sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat =
+  df_dis$age2PerMat, biomass = lag(df_lag$biomass_med[1:33], 2)))
 str(sr)
- sr <- as.data.frame(cbind(year = df_mat$year, age2 = df_mat$age2, age2PerMat = df_mat$age2PerMat, biomass = df_lag$biomass_med[1:33]))
 
-sr$R <- sr$age2*1000*sr$age2PerMat*0.01 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
+sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat = df_dis$age2PerMat, biomass = df_lag$biomass_med[1:33]))
+
+sr$R <- sr$age2*1000 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
+# sr$R <- sr$age2*1000*sr$age2PerMat*0.01
 str(sr)
 
 #write.csv(sr, "Barrett/data_for_Tim.csv")
@@ -430,40 +438,46 @@ plot(lag(sr$biomass, 2) , log(sr$R))
 # log biomass v log S/R (this may not be right)
 plot(lag(log(sr$biomass), 2), log(sr$R))
 
+# trying for Barents Sea plot
 
+p <- ggplot(data = sr, aes(x = lag(biomass,2), y = R, label = year))
+p <- p + geom_point()
+p <- p + geom_text(size = 3, hjust = 0, vjust = 0, nudge_x = 0.1, nudge_y = 0.1)
+p
+ggplotly(p)
 
 ### Abundance by year and age.  Just plotting this to get a sense of the abundance by year but this is only from 2014-2019 - still, most of the immatures will be age 2 and the age 3/4/5 have only a fraction that are immature.
 
-ageYear <- ageD %>%
-  group_by(year, age) %>%
-  summarize(abund = sum(n)) %>%
-  ggplot(aes(x = year, y = abund, colour = as.factor(age))) + 
-  geom_point()
-ageYear
+# ageYear <- ageD %>%
+#   group_by(year, age) %>%
+#   summarize(abund = sum(n)) %>%
+#   ggplot(aes(x = year, y = abund, colour = as.factor(age))) + 
+#   geom_point()
+# ageYear
+# 
+# # the above plot by strata
+# p <- ggplot(data = ageD, aes(x = year, y = n, colour = as.factor(age)))
+# p <- p + geom_point()
+# p
+# 
 
-# the above plot by strata
-p <- ggplot(data = ageD, aes(x = year, y = n, colour = as.factor(age)))
-p <- p + geom_point()
-p
-
-
-# Time to do this right - need 
-# just rename df_mat so that the join goes more smoothly
+# Time to do this right - need ####OK NOTE SURE WHAT i DID BELOW BUT ITS GARBAGE - BEST TO DELETE AND START OVER
+# just rename df_dis so that the join goes more smoothly
 # not sure if this makes sense at all given the Recovery issue.
 ## these are all percentages
-df_mat1 <- rename(df_mat, mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5)
-
-tmp <- left_join(df_dis_all, df_mat1, by = "year")
-str(tmp)
-tmp <- tmp %>% mutate(R = age2*mat2)
-str(tmp)
-
-# convert maturity to a proportion
-cbind(((100-tmp$mat2)/100)*tmp$age2, tmp$age3)
-
-plot((100-mat2)/100*age2 ~ age3, data = tmp)
-abline(a=0, b=1)
-
+# df_dis1 <- rename(df_dis, mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5)
+# 
+# tmp <- left_join(df_dis, df_dis1, by = "year")
+# str(tmp)
+# tmp <- tmp %>% mutate(R = age2*mat2)
+# str(tmp)
+# 
+# # convert maturity to a proportion
+# cbind(((100-tmp$mat2)/100)*tmp$age2, tmp$age3)
+# 
+# plot((100-mat2)/100*age2 ~ age3, data = tmp)
+# abline(a=0, b=1)
+# 
 
 
 

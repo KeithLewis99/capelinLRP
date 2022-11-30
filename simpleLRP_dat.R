@@ -40,14 +40,15 @@ save <- "no"
 # Data ----
 ## read larval density data----
 #read and check data
-ld  <- read_csv("data/larvae.csv", col_types = cols(
-  year = col_integer(),
-  avg_density = col_double()
-))
-str(ld)
+# ld  <- read_csv("data/larvae.csv", col_types = cols(
+#   year = col_integer(),
+#   avg_density = col_double()
+# ))
+# str(ld)
 
 
 # larval density but with error bars
+## year range: 1985-2022
 df_ld  <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/larvae2001_2022.csv")
 str(df_ld)
 
@@ -84,10 +85,10 @@ summary(df_ld)
 quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
 quant <- quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
 
-m1 <- mean(df_ld$avg_density)
-median(df_ld$avg_density)
-sd1 <- sd(df_ld$avg_density)
-3*sd(df_ld$avg_density)
+m1 <- mean(df_ld$avg_density, na.rm = TRUE)
+median(df_ld$avg_density, na.rm = TRUE)
+sd1 <- sd(df_ld$avg_density, na.rm = TRUE)
+3*sd(df_ld$avg_density, na.rm = TRUE)
 # 68-95-99.7
 
 m1-3*sd1
@@ -98,7 +99,7 @@ p <- p + geom_density()
 p
 
 ## create a rank column
-df_ld$rank <- rank(df_ld$avg_density)
+df_ld$rank <- rank(df_ld$avg_density, na.last = "keep")
 arrange(df_ld, rank)
 ## create a lag column so that avg_density[t-2] corresponds to year[t]
 df_ld$avg_densityt_2 <- lag(df_ld$avg_density, 2)
@@ -108,11 +109,11 @@ plot(df_ld$year, df_ld$avg_density)
 
 ## basic plot of rank v. density with 10, 50, and 90th percentiles
 plot(df_ld$rank, df_ld$avg_density)
-quantile(df_ld$rank, c(0.1, 0.5, 0.9))
+quantile(df_ld$rank, c(0.1, 0.5, 0.9), na.rm = TRUE)
 # not quite sure where I got these values but they are close to the above
-abline(v = quantile(df_ld$rank, c(0.1)))
-abline(v = quantile(df_ld$rank, c(0.5)))
-abline(v = quantile(df_ld$rank, c(0.9)))
+abline(v = quantile(df_ld$rank, c(0.1), na.rm = TRUE))
+abline(v = quantile(df_ld$rank, c(0.5), na.rm = TRUE))
+abline(v = quantile(df_ld$rank, c(0.9), na.rm = TRUE))
 
 ## plot year v density couloured by rank
 Scatter1(df = df_ld, 
@@ -174,14 +175,12 @@ df_ice$rank <- rank(df_ice$tice)
 
 
 
-
 ## read in condition data----
 #read and check data
 df_cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
   year = col_integer()
 ))
 str(df_cond)
-
 
 df_cond$rank <- rank(df_cond$meanCond)
 df_cond$condt_1 <- lag(df_cond$meanCond)
@@ -194,10 +193,13 @@ df_mat <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
   year = col_integer()
 ))
 str(df_mat)
+df_mat <- df_mat %>%
+            rename(mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5, mat6=age6)
+
 
 #make variables
-df_mat$rank <- rank(df_mat$age2)
-df_mat$mat2t_1 <- lag(df_mat$age2, 1)
+df_mat$rank <- rank(df_mat$mat2)
+df_mat$mat2t_1 <- lag(df_mat$mat2, 1)
 
 
 
@@ -269,7 +271,8 @@ df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/capelin_abundance
 str(df_dis) 
 
 # join age disaggregated data with larval density
-df_dis <- left_join(df_dis_all, df_ld, by = 'year')
+df_dis <- left_join(df_dis, df_ld, by = 'year')
+df_dis <- left_join(df_dis, df_mat, by = 'year')
 str(df_dis)
 
 
@@ -278,7 +281,7 @@ str(df_dis)
 
 ls <- list(df_cap, df_ld, df_ice, df_cond, df_mat)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
-  select(year, abundance_med, biomass_med, rankB, avg_densityt_2, tice, condt_1, age2, mat2t_1)
+  select(year, abundance_med, biomass_med, rankB, avg_densityt_2, tice, condt_1, mat2, mat2t_1)
 str(df_lag)
 
 # derived variables ----
@@ -300,27 +303,31 @@ str(df_lag)
 
 # This is the abundance at t-2 - useful for a crude S-R relationship
 df_lag$abundance_med_t_2 <- lag(df_lag$abundance_med,2)
+plot(df_lag$abundance_med, df_lag$abundance_med_t_2)
 
 # this is the strength of the AGe 3 cohort; lagged three years so that it can be compared to the index for a S-R relationship
-df_lag$SR_age3_t3 <- lag(df_lag$abundance_med*(1-(df_lag$age2*0.01)), 3)
+## I think the idea here is that abundance_med is dominated by age-2 fish and that the immature age2[t] fish will be mature at t+1 and their offspring will recruit at t+3
+df_lag$SR_age3_t3 <- lag(df_lag$abundance_med*(1-(df_lag$mat2*0.01)), 3)
 
 # relationship between immature at age 2 that will influence recruits in 3 years and mature at age 2 that will influence recruits in 2 years
+## Not sure what this is giving us its percent age2 v abundance
 df_lag$immat_t3 <- "NA"
-df_lag$immat_t3 <- lag((100-df_lag$age2), 3)
+df_lag$immat_t3 <- lag((100-df_lag$mat2), 3)
 plot(df_lag$immat_t3[c(7:34)], df_lag$abundance_med[c(7:34)])
 summary(lm(df_lag$abundance_med ~ df_lag$immat_t3 + df_lag$mat2t_1))
 
 #this is the strength of the Age 2 cohort, lagged one year - fish that will be Age 3 the next year
-df_lag$SRage3_t1 <- lag(df_lag$abundance_med*(df_lag$age2*0.01), 1)
+## Not sure what this is giving us - its mature age -2
+df_lag$SRage3_t1 <- lag(df_lag$abundance_med*(df_lag$mat2*0.01), 1)
 
 
 # explore lagged relationships between %Mat@AG2 and abundance----
 # Influence of abundance (t) on Abundance of age 3 (t3) 
 temp1a <- df_lag %>%
   filter(year > 1992) %>%
-  ggplot(aes(abundance_med, SR_age3_t3, text = paste("Year", year))) + geom_point()
+  ggplot(aes(abundance_med, SR_age3_t3, text = paste("Year", year))) +            geom_point()
   
-  ggplotly(temp1a)
+ggplotly(temp1a)
 
 # reverse of the above graph - not sure if this has any value
 #temp1b <- df_lag %>%
@@ -332,8 +339,8 @@ temp1a <- df_lag %>%
 # Influence of the larvae (t-2) on Age3 (t3): this is a bit of a stretch.  Good correlation between ld and abundance_med but this is taking it three years beyond that  
 temp1c <- df_lag %>%
     filter(year > 1992) %>%
-    ggplot(aes(SR_age3_t3, avg_densityt_2,  text = paste("Year", year))) + geom_point()
-  ggplotly(temp1c)
+    ggplot(aes(SR_age3_t3, avg_densityt_2,  text = paste("Year", year))) +          geom_point()
+ggplotly(temp1c)
 
   
 # no idea why this is here  
@@ -343,8 +350,9 @@ temp1d <- df_lag %>%
   ggplotly(temp1d)
   
 # note on the dashboard the strong decline in larval density from 2005 onwards - this is to try to relate it to maturity at age 2 and tehre seems to be some relation
-plot(df_lag$age2[21:34], df_lag$avg_densityt_2[21:34])
-summary(lm(df_lag$avg_densityt_2[21:34] ~ df_lag$age2[21:34]))
+  ## Not sure what this is giving us -
+plot(df_lag$mat2[21:34], df_lag$avg_densityt_2[21:34])
+summary(lm(df_lag$avg_densityt_2[21:34] ~ df_lag$mat2[21:34]))
 plot(df_lag$year[23:34], df_lag$avg_densityt_2[23:34])
 summary(lm(df_lag$avg_densityt_2[23:34] ~ df_lag$year[23:34]))
 
@@ -382,16 +390,18 @@ ggplotly(temp5)
 
 # the problem with this approach is the small sample size and uncertainty, i.e., driven by 2013-2015 and that some low abundance year had good condition and "good" tice.
 
+
+
 # Brecover ---- 
 
 #all data
 df_cap$biomass_med_lead <- lead(df_cap$biomass_med, 2)
-plot(df_cap$biomass_med, df_cap$biomass_med_lead)
+plot(df_cap$biomass_med_lead, df_cap$biomass_med)
 
 #Based on the above, it seems to make sense to divide this across the regmime change
 #pre collapse
 cap_preCollapse <- filter(df_cap, year < 1991)
-plot(cap_preCollapse$biomass_med, cap_preCollapse$biomass_med_lead)
+plot(cap_preCollapse$biomass_med_lead, cap_preCollapse$biomass_med)
 
 #post collapse with correlation between abundance and biomasss
 cap_postCollapse <- filter(df_cap, year >= 1991)
@@ -400,7 +410,7 @@ cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, use = "complet
 
 
 # S-R relationship post collapse - biomasss
-plot(cap_postCollapse$biomass_med, cap_postCollapse$biomass_med_lead)
+plot(cap_postCollapse$biomass_med_lead, cap_postCollapse$biomass_med)
 quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T)
 quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
 #assuiming that i've done this right, not much here - 
@@ -412,16 +422,20 @@ quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
 ### this is for the 
 
 # the 2 year lead [t-2] of the mature capelin ages 2/3/4 and the abundance of mature capelin [t]. Note that the code is moving the mature age 2 back in time so that they correspond to the abundance at time t - probably easier to see this in JAGS
-plot(lead(df_dis$age2, 2)*lead(df_dis$age2PerMat*0.01, 2), # mature 2 year olds
-  df_dis$age2*(1-df_dis$age2PerMat*0.01)+df_dis$age3+df_dis$age4) # 
+plot(lead(df_dis$I2, 2)*lead(df_dis$mat2*0.01, 2), # mature age-2 two years in the past
+  df_dis$I2*(1-df_dis$mat2*0.01)+df_dis$I3+df_dis$I4) # immature age-2 + age3+4
 
+
+tmp <- c(NA, NA, lag(df_lag$biomass_med, 2)) # my reasoning in lagging this is that leading throws away two values
+
+tmp <- c(lag(df_lag$biomass_med, 2), NA, NA) # my reasoning in lagging this is that leading throws away two values
 
 # make a smaller dataframe of the relevant variables
-sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat =
-  df_dis$age2PerMat, biomass = lag(df_lag$biomass_med[1:33], 2)))
+sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$I2, age2PerMat =
+  df_dis$mat2, biomass = tmp))
 str(sr)
 
-sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat = df_dis$age2PerMat, biomass = df_lag$biomass_med[1:33]))
+# sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat = df_dis$age2PerMat, biomass = df_lag$biomass_med[1:33]))
 
 sr$R <- sr$age2*1000 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
 # sr$R <- sr$age2*1000*sr$age2PerMat*0.01
@@ -429,22 +443,23 @@ str(sr)
 
 #write.csv(sr, "Barrett/data_for_Tim.csv")
 
+##### Not lagging biomass bc its already lagged (or lead)
 # exploratory - as per Hilborn and Walters on pg ~ 269, plot biomass v R
 plot(sr$biomass, sr$R)
 plot(sr$biomass, sr$age2)
-plot(lag(sr$biomass, 2), sr$age2)
 # from 269 - biomass v logaritm of S/R - spawners v recruits
-plot(lag(sr$biomass, 2) , log(sr$R))
+plot(sr$biomass, log(sr$R))
 # log biomass v log S/R (this may not be right)
-plot(lag(log(sr$biomass), 2), log(sr$R))
+plot(log(sr$biomass), log(sr$R))
 
 # trying for Barents Sea plot
 
-p <- ggplot(data = sr, aes(x = lag(biomass,2), y = R, label = year))
+p <- ggplot(data = sr, aes(x = biomass, y = R, label = year))
 p <- p + geom_point()
 p <- p + geom_text(size = 3, hjust = 0, vjust = 0, nudge_x = 0.1, nudge_y = 0.1)
 p
-ggplotly(p)
+
+
 
 ### Abundance by year and age.  Just plotting this to get a sense of the abundance by year but this is only from 2014-2019 - still, most of the immatures will be age 2 and the age 3/4/5 have only a fraction that are immature.
 

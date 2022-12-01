@@ -393,15 +393,15 @@ ggplotly(temp5)
 
 
 # Brecover ---- 
-
+## the plots in this section are jsut exploratory
 #all data
-df_cap$biomass_med_lead <- lead(df_cap$biomass_med, 2)
-plot(df_cap$biomass_med_lead, df_cap$biomass_med)
+df_cap$biomass_med_tp2 <- lag(df_cap$biomass_med, 2) # tp2 = t+2
+plot(df_cap$biomass_med_tp2, df_cap$biomass_med)
 
 #Based on the above, it seems to make sense to divide this across the regmime change
 #pre collapse
 cap_preCollapse <- filter(df_cap, year < 1991)
-plot(cap_preCollapse$biomass_med_lead, cap_preCollapse$biomass_med)
+plot(cap_preCollapse$biomass_med_tp2, cap_preCollapse$biomass_med)
 
 #post collapse with correlation between abundance and biomasss
 cap_postCollapse <- filter(df_cap, year >= 1991)
@@ -410,9 +410,9 @@ cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, use = "complet
 
 
 # S-R relationship post collapse - biomasss
-plot(cap_postCollapse$biomass_med_lead, cap_postCollapse$biomass_med)
+plot(cap_postCollapse$biomass_med_tp2, cap_postCollapse$biomass_med)
 quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T)
-quantile(cap_postCollapse$biomass_med_lead, c(0.1, 0.9), na.rm = T)
+quantile(cap_postCollapse$biomass_med_tp2, c(0.1, 0.9), na.rm = T)
 #assuiming that i've done this right, not much here - 
 
 # NOTE THAT THE S-R RELATIONSHIPS ARE IN THE BELOW AND IN THE DASHBOARD
@@ -426,13 +426,13 @@ plot(lead(df_dis$I2, 2)*lead(df_dis$mat2*0.01, 2), # mature age-2 two years in t
   df_dis$I2*(1-df_dis$mat2*0.01)+df_dis$I3+df_dis$I4) # immature age-2 + age3+4
 
 
-tmp <- c(NA, NA, lag(df_lag$biomass_med, 2)) # my reasoning in lagging this is that leading throws away two values
-
 tmp <- c(lag(df_lag$biomass_med, 2), NA, NA) # my reasoning in lagging this is that leading throws away two values
 
 # make a smaller dataframe of the relevant variables
-sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$I2, age2PerMat =
-  df_dis$mat2, biomass = tmp))
+sr <- as.data.frame(cbind(year = df_dis$year, 
+                          age2 = df_dis$I2, 
+                          age2PerMat = df_dis$mat2, 
+                          biomass_tp2 = tmp))
 str(sr)
 
 # sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat = df_dis$age2PerMat, biomass = df_lag$biomass_med[1:33]))
@@ -445,16 +445,18 @@ str(sr)
 
 ##### Not lagging biomass bc its already lagged (or lead)
 # exploratory - as per Hilborn and Walters on pg ~ 269, plot biomass v R
-plot(sr$biomass, sr$R)
-plot(sr$biomass, sr$age2)
+plot(sr$biomass_tp2, sr$R)
+plot(sr$biomass_tp2, sr$age2)
+
+
 # from 269 - biomass v logaritm of S/R - spawners v recruits
-plot(sr$biomass, log(sr$R))
+plot(sr$biomass_tp2, log(sr$R))
 # log biomass v log S/R (this may not be right)
 plot(log(sr$biomass), log(sr$R))
 
 # trying for Barents Sea plot
 
-p <- ggplot(data = sr, aes(x = biomass, y = R, label = year))
+p <- ggplot(data = sr, aes(x = biomass_tp2, y = R, label = year))
 p <- p + geom_point()
 p <- p + geom_text(size = 3, hjust = 0, vjust = 0, nudge_x = 0.1, nudge_y = 0.1)
 p
@@ -494,6 +496,4 @@ p
 # abline(a=0, b=1)
 # 
 
-
-
-                                                                                                                                
+                                     

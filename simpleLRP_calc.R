@@ -175,8 +175,9 @@ abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 2
 # resids
 tmp <- na.omit(sr1) %>%
   dplyr::mutate(fits=fitted(sr1R),
-                resids=resi$),
-                sresids=nlstools::nlsResiduals(srR)$resi2[,"Standardized residuals"])
+                (resids=resid$srR),
+                sresids=nlstools::
+                  nlsResiduals(srR)$resi2[,"Standardized residuals"])
 peek(tmp,n=8)
 
 ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +

@@ -550,6 +550,49 @@ Scatter2(df = sr_post,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 
 
+# Iceland approach----
+# https://www.statology.org/piecewise-regression-in-r/
+#  https://www.r-bloggers.com/2012/08/r-for-ecologists-putting-together-a-piecewise-regression/
+# ICES may use FLR but I can't find the segmented regression associated with this; https://flr-project.org/
+
+
+library(segmented)
+
+plot(sr$biomass_tm2, sr$R)
+
+#fit simple linear regression model
+fit <- lm(R ~ biomass_tm2, data=sr)
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=1000)
+
+#view summary of segmented model
+summary(segmented.fit)
+
+#plot original data
+plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
+
+#add segmented regression model
+plot(segmented.fit, add=T)
+
+
+# post - collapse
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R)
+fit <- lm(R ~ biomass_tm2, data=sr[9:37,])
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=350)
+
+#view summary of segmented model
+summary(segmented.fit)
+
+#plot original data
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
+
+#add segmented regression model
+plot(segmented.fit, add=T)
+
+
 # Bmsy – historical proxies----
 ##A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 

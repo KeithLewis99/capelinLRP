@@ -68,12 +68,12 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = 
 #' Anomaly_year_all <- Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = hline, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "yes")
 
 Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, hline = hline, filename = filename, save = save){
-  #browser()
+  browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     "Year: ", year, "\n",
-    c2, biomass_med, "\n",
+    c2, biomass_tm2, "\n",
     c3, {{yaxis}}, "\n",  
-    "Rank: ", rankB,
+    "R: ", R,
     sep = ""
   )))
   p <- p + geom_bar(stat = "identity")
@@ -112,7 +112,11 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab =
 #' @examples 
 #' SR_all <- Scatter2(df = cap, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline = v90, filename = "figs/4-Biomass_all-index-recruit.pdf", save = "yes")
 
-Scatter2 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, vline1 = vline1, vline2 = NA, filename = filename, save = save){
+Scatter2 <- function(df = df, xaxis = xaxis, yaxis = yaxis, 
+                     c2 = c2, c3 = c3, 
+                     xlab = xlab, ylab = ylab, 
+                     vline1 = vline1, vline2 = NULL, vline3 = NULL, vline4 = NULL, 
+                     filename = filename, save = save){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     "Year: ", year, "\n",
@@ -121,12 +125,21 @@ Scatter2 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xl
     sep = ""
   )))
   p <- p + geom_point()
-  p <- p + scale_colour_continuous(type = "viridis")
+  #p <- p + scale_colour_continuous(type = "viridis")
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)
   p <- p + geom_vline(xintercept = vline1)
-  p <- p + geom_vline(xintercept = vline2, colour = 'red', linetype = "dashed")
-  p <- p + theme_bw()
+  if(is.numeric(vline2)){
+    p <- p + geom_vline(xintercept = vline2, colour = 'red', linetype = "dashed")   
+  }
+  if(is.numeric(vline3)){
+    p <- p + geom_vline(xintercept = vline3, linetype = "dashed")    
+  }
+  if(is.numeric(vline4)){
+    p <- p + geom_vline(xintercept = vline4, colour = 'purple', linetype = "dashed")
+  }
+
+    p <- p + theme_bw()
   
   
   if(save == "yes"){

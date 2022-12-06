@@ -38,16 +38,10 @@ The capelin spring survey was originally a survey of immature capelin (age 1 & 2
 
 This tab contains References, tables/metadata, as well as figures of teh study area and the above references studies.  Then, there are pages with the capelin data in chronological years, a page where all the data are lagged to the year of the survey, and a simple look at 
 
-References {- data-navmenu="Background"}
-=====
-<div id="refs"></div>
-
-Tables {data-navmenu="Background"}
-====
-Do we need a metadata page??
 
 The Roadmap {data-navmenu="Background"}
 ====
+PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE
 1.	“Simple” approach
     i. SR relationship
         A.	Have completed preliminary work
@@ -71,15 +65,6 @@ The Roadmap {data-navmenu="Background"}
         b.	Deep learning – see Krista Baker
         c.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
 
-Supporting Research {data-navmenu="Background"}
-====
-*	Ice-plankton-capelin: critical for multivariate approach
-*	Coral productivity: how extensive is the regime shift - is it community wide or the whole system
-*	All biomass !=: more important for cod but gets at importance of older fish
-*	Others:
-  +	Are there good larval years – Hannah is looking after this.
-  +	Seabird capelin consumption - a hole to plug?
-
 
 Study area and Data {data-navmenu="Background"}
 =====
@@ -95,6 +80,18 @@ knitr::include_graphics("images/map_inset.png")
 
 ```
 
+Column {.tabset}
+-------------------------------------
+
+### Time Series
+
+```{r}
+
+knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/lifeCycle_dataTimeSeries.png")
+
+```
+
+
 ### The data: temporal relationships
 
 ```{r}
@@ -103,6 +100,19 @@ knitr::include_graphics("images/variables_plus_fish.png")
 
 ```
 
+Supporting Research {data-navmenu="Background"}
+====
+
+
+Column
+-------------------------------------
+
+```{r}
+
+knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/lifeCycle_plus_Data.png")
+
+```
+  
 Column {.tabset}
 -------------------------------------
 
@@ -140,6 +150,14 @@ knitr::include_graphics("images/credInt.png")
 
 ```
 
+References {- data-navmenu="Background"}
+=====
+<div id="refs"></div>
+
+Tables {data-navmenu="Background"}
+====
+Do we need a metadata page??
+
 
 # Larval Density-Capelin Index
 
@@ -151,7 +169,7 @@ Column
 ```{r fig-1}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
+Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
                     filename = "figs/1-larvae-density-rank.pdf", save = "no")
 ```
 
@@ -163,7 +181,7 @@ Column
 ```{r fig-2}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
+Scatter1(df = df_cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin biomass (ktonnes)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
 ```
 
@@ -178,7 +196,7 @@ Column {data-width=600 data-height=400}
 ```{r fig-3}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
+Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -193,7 +211,7 @@ Column
 ```{r fig-4}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank, 
+Scatter1(df = df_ld, xaxis = year, yaxis = avg_density, colour = rank, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", xlab = "Year", 
          ylab = "Larval Density (#/m^-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -205,7 +223,7 @@ Scatter1(df = ld, xaxis = year, yaxis = avg_density, colour = rank,
 ```{r fig-5}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = ice, xaxis = year, yaxis = tice, colour = rank, 
+Scatter1(df = df_ice, xaxis = year, yaxis = tice, colour = rank, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
          xlab = "Year", ylab = "Ice retreat (tice - DOY)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -218,7 +236,7 @@ Column
 
 ```{r fig-6}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = cond, xaxis = year, yaxis = meanCond, colour = rank, 
+Scatter1(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -228,7 +246,7 @@ Scatter1(df = cond, xaxis = year, yaxis = meanCond, colour = rank,
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = age2, colour = NULL, 
+Scatter1(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "%Mmat_A2: ", xlab = "Year", ylab = "Age 2 Mature (%: t-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -241,11 +259,11 @@ Scatter1(df = df_lag, xaxis = year, yaxis = age2, colour = NULL,
 d <- highlight_key(df_lag)
 
 cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+         xlab = "Year", ylab = "Capelin abundance (billions)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
-ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_densityt_2, colour = NULL, 
+ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_density_tm2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
          ylab = "Larval Density (#/m^-3: t-2)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -258,11 +276,11 @@ ice_fig <- Scatter1(df = d, xaxis = year, yaxis = tice, colour = NULL,
 
 sp1 <- subplot(ld_fig, ice_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
 
-cond_fig <- Scatter1(df = d, xaxis = year, yaxis = condt_1, colour = NULL, 
+cond_fig <- Scatter1(df = d, xaxis = year, yaxis = cond_tm1, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_t3, colour = NULL, 
+immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_tm3, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -284,7 +302,7 @@ d_ld <- df_lag %>% filter(year > 2000)
 d_co <- df_lag %>% filter(year > 1993)
 d <- highlight_key(df_lag)
 
-bio_ld <- Scatter1(df = d_ld, xaxis = avg_densityt_2, yaxis = biomass_med, colour = year, 
+bio_ld <- Scatter1(df = d_ld, xaxis = avg_density_tm2, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Density: ", c3 = "Biomass: ", 
          xlab = "Larval Density (#/m^-3: t-2)", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -295,12 +313,12 @@ bio_tice <- Scatter1(df = d, xaxis = tice, yaxis = biomass_med, colour = year,
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 
-bio_cond <- Scatter1(df = d_co, xaxis = condt_1, yaxis = biomass_med, colour = year, 
+bio_cond <- Scatter1(df = d_co, xaxis = cond_tm1, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Cond: ", c3 = "Biomass: ", 
          xlab = "Condition (t-1)", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-bio_mat <- Scatter1(df = d, xaxis = mat2t_1, yaxis = biomass_med, colour = year, 
+bio_mat <- Scatter1(df = d, xaxis = mat2_tm1, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "%Immat_A2: ", c3 = "Biomass: ", xlab = "Age 2 Immature (%: t-3)", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -316,35 +334,84 @@ subplot(sp1, sp2, widths = c(0.4, 0.4), heights = 0.8, titleX = TRUE, titleY = T
 
 # Bmsy proxies Fx%SPR
 
+WE ARE CLOSE HERE BUT NEED TO AGREE ON SOME APPROXIMATION OF M, WHETHER USING THE BS APPROACH ON THE RAW DATA OR ON MODEL OUTPUTS
+
 # X% Rmax
 
+<!-- Column -->
+  <!-- ------------------------------------- -->
+  <!-- BH, Bmsy = -->
+  <!-- ```{r} -->
+  <!-- plot(sr$biomass_tm2, sr$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)") -->
+  <!-- polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA) -->
+  <!-- points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2)) -->
+  <!-- lines(pBH~x, lwd=2) -->
+  <!-- abline(v = BmsyBH)  # from standard for Bmsy = 118 -->
+  
 Column
 -------------------------------------
 Ricker Bmsy = `r BmsyRkr`
 ```{r}
-plot(sr$biomass, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
 polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
-points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2))
+points(R~biomass_tm2, data = sr, pch =19, col=rgb(0,0,0,1/2))
 lines(pR~xr, lwd=2)
 abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
 ```
-
-Column
--------------------------------------
-BH, Bmsy = `r BmsyBH`
-```{r}
-plot(sr$biomass, sr$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
-polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
-points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2))
-lines(pBH~x, lwd=2)
-abline(v = BmsyBH)  # from standard for Bmsy = 118
-```
-
 
 # Brecover from models
 Bloss
 Brecover
 Bmin
+
+# Empirical LRP Bmin
+
+Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
+
+Column {.tabset}
+-------------------------------------
+  
+Vertical and Horizontal lines are 90th percentiles
+
+### All data: anomalies
+
+```{r fig-8}
+Bar1(df = sr, 
+     xaxis = year, yaxis = anomaly, 
+     c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", 
+     xlab = "Year", ylab = "Recruitment anomolies", 
+     hline = h90, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
+```
+
+### All data: stock-recruit
+
+```{r fig-9}
+Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
+         c2 = "Biomass[t-2]: ", c3 = "Recruitment: ", 
+         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
+         vline1 = v90, vline2 = v50, vline3 = v50_alt3, vline4 = v50_alt4, 
+         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
+```
+
+Column {.tabset}
+-------------------------------------
+  
+### Post collapse: anomalies
+
+```{r fig-10}
+Bar1(df = sr_post, xaxis = year, yaxis = anomaly, c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90_post, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
+```
+
+### Post collapse: stock-recruit 
+
+```{r fig-11}
+Scatter2(df = sr_post, 
+         xaxis = biomass_tm2, yaxis = R, 
+         c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
+         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
+         vline1 = v90_post, vline2 = v50_post, vline3 = v50_post_alt,
+         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
+```
 
 
 # Historical
@@ -376,41 +443,5 @@ Brecover is the lowest observed biomass which produced recruitment that lead to 
 
 ```{r}
 
-```
-
-# Empirical LRP Bmin - Haddock approach
-
-Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
-
-Column {.tabset}
--------------------------------------
-  
-Vertical and Horizontal lines are 90th percentiles
-
-### All data: anomalies
-
-```{r fig-8}
-Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Biomass: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
-```
-
-### All data: stock-recruit
-
-```{r fig-9}
-Scatter2(df = cap, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline1 = v90, vline2 = v50, filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
-```
-
-Column {.tabset}
--------------------------------------
-  
-### Post collapse: anomalies
-
-```{r fig-10}
-Bar1(df = cap_postCollapse, xaxis = year, yaxis = anomaly, c2 = "Biomass: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90_post, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
-```
-
-### Post collapse: stock-recruit 
-
-```{r fig-11}
-Scatter2(df = cap_postCollapse, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline1 = v90_post, vline2 = v50_post, filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 

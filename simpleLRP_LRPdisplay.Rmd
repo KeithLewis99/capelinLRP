@@ -1,0 +1,203 @@
+---
+title: "simpleLRP"
+author: "Keith Lewis"
+date: "2/13/2021"
+output:
+  flexdashboard::flex_dashboard:
+    theme: cerulean
+bibliography: refs/simpleLRP.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+library(knitr)
+library(plotly)
+library(ggplot2)
+library(crosstalk)
+library(xtable)
+library(DT)
+#library(tidyverse)
+#library(lubridate)
+#library(kableExtra)
+#library(ezknitr)
+#library(here)
+source("simpleLRP_dat.R")
+source("simpleLRP_calc.R")
+#source("simpleLRP_figs.R")
+shD <- SharedData$new(df_lag)
+```
+
+Background {data-navmenu="Background"}
+=====
+
+This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
+
+SAR {data-navmenu="Background"}
+=====
+
+Perhaps put the table in here?
+
+
+The Roadmap {data-navmenu="Background"}
+====
+PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE
+1.	“Simple” approach
+    i. SR relationship
+        A.	Have completed preliminary work
+        B.	Working on an age disaggregated approach
+    ii.	B-RECOVER 
+        A.	Haddock approach: Done – see dashboard
+        B.	Multivariate – see snow crab
+        C.	Hierarchical - Done preliminary work
+    iii.	BLOSS  Barents Sea/Iceland
+        A.	Iceland at 150,000 t based on a BLOSS approach
+2.	“Complex” approach
+    i.	Single Species
+        a. State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
+        b. Delayed Difference
+        c. Age-structured
+        d. IPM
+    ii.	Ecosystem approach
+        a. Ecopath/MICE (Rajeev, Divya, Matt Robertson)
+    iii.	Others
+        a. MSE approach (Maritimes – Herring)
+        b.	Deep learning – see Krista Baker
+        c.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
+
+References {- data-navmenu="Background"}
+=====
+<div id="refs"></div>
+
+
+# Bmsy proxies Fx%SPR
+Bmsy and B0 may also come from IPM
+WE ARE CLOSE HERE BUT NEED TO AGREE ON SOME APPROXIMATION OF M, WHETHER USING THE BS APPROACH ON THE RAW DATA OR ON MODEL OUTPUTS
+Also, need to agree on selectivity
+
+# X% Rmax
+
+<!-- Column -->
+  <!-- ------------------------------------- -->
+  <!-- BH, Bmsy = -->
+  <!-- ```{r} -->
+  <!-- plot(sr$biomass_tm2, sr$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)") -->
+  <!-- polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA) -->
+  <!-- points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2)) -->
+  <!-- lines(pBH~x, lwd=2) -->
+  <!-- abline(v = BmsyBH)  # from standard for Bmsy = 118 -->
+  
+Column
+-------------------------------------
+Ricker Bmsy = `r BmsyRkr`
+```{r}
+plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
+points(R~biomass_tm2, data = sr, pch =19, col=rgb(0,0,0,1/2))
+lines(pR~xr, lwd=2)
+abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
+```
+
+Column
+-------------------------------------
+
+All
+```{r}
+plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
+plot(segmented.fit, add=T)
+```
+
+Post-collapse
+```{r}
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
+plot(segmented.fit_post, add=T)
+```
+
+
+# Brecover from models
+Bloss
+Brecover
+Bmin
+
+# Empirical LRP Bmin
+Bloss is the lowest observed biomass
+
+Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery - we don't have this for capelin
+
+Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
+
+Column {.tabset}
+-------------------------------------
+  
+Vertical and Horizontal lines are 90th percentiles
+
+### All data: anomalies
+
+```{r fig-8}
+Bar1(df = sr, 
+     xaxis = year, yaxis = anomaly, 
+     c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", 
+     xlab = "Year", ylab = "Recruitment anomolies", 
+     hline = h90, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
+```
+
+### All data: stock-recruit
+black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010, purple = 40th
+```{r fig-9}
+Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
+         c2 = "Biomass[t-2]: ", c3 = "Recruitment: ", 
+         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
+         vline1 = v90, vline2 = v50, vline3 = v50_alt3, vline4 = v40_alt4, 
+         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
+```
+
+Column {.tabset}
+-------------------------------------
+  
+### Post collapse: anomalies
+
+```{r fig-10}
+Bar1(df = sr_post, xaxis = year, yaxis = anomaly, c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90_post, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
+```
+
+### Post collapse: stock-recruit 
+black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010
+```{r fig-11}
+Scatter2(df = sr_post, 
+         xaxis = biomass_tm2, yaxis = R, 
+         c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
+         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
+         vline1 = v90_post, vline2 = v50_post, vline3 = v50_post_alt,
+         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
+```
+
+
+# Historical proxy: Bmsy and B0
+A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
+
+A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. 
+
+This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
+
+The mean and median abundance (units) and biomass(ktonnes) for teh pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
+
+
+```{r tab1, eval=T,prompt=T, comment = F}
+#df_keep_rows <- keep_rows("N2", 25)
+#tab1 <- tabParm(histLRP, df_keep_rows)
+datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+```
+
+
+# Empirical LRP
+
+Column
+-------------------------------------
+
+Bloss is the lowest observed biomass, B0 is multipled by 0.4. 
+
+```{r tab2, eval=T,prompt=T, comment = F}
+#df_keep_rows <- keep_rows("N2", 25)
+#tab1 <- tabParm(histLRP, df_keep_rows)
+datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+```
+

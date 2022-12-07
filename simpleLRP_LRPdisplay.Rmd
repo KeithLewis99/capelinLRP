@@ -4,12 +4,13 @@ author: "Keith Lewis"
 date: "2/13/2021"
 output:
   flexdashboard::flex_dashboard:
-    theme: cerulean
+    theme: simplex
 bibliography: refs/simpleLRP.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+#Available themes include: default, cerulean, journal, flatly, darkly, readable, spacelab, united, cosmo, lumen, , yeti.
 library(knitr)
 library(plotly)
 library(ggplot2)
@@ -31,16 +32,18 @@ Background {data-navmenu="Background"}
 =====
 
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
+Copy/pate relevant sections from Res Doc
 
 SAR {data-navmenu="Background"}
 =====
-
+Copy/pate relevant sections from Res Doc
 Perhaps put the table in here?
 
 
 The Roadmap {data-navmenu="Background"}
 ====
-PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE
+
+PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE or Figure  
 1.	“Simple” approach
     i. SR relationship
         A.	Have completed preliminary work
@@ -59,6 +62,7 @@ PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE
         d. IPM
     ii.	Ecosystem approach
         a. Ecopath/MICE (Rajeev, Divya, Matt Robertson)
+        b. Capcod
     iii.	Others
         a. MSE approach (Maritimes – Herring)
         b.	Deep learning – see Krista Baker
@@ -113,17 +117,37 @@ plot(segmented.fit_post, add=T)
 ```
 
 
-# Brecover from models
+# Historical from models
+Only viable if we get the IPM up and running
 Bloss
 Brecover
 Bmin
 
-# Empirical LRP Bmin
+Historical {data-navmenu="Historical"}
+=====
+
 Bloss is the lowest observed biomass
+
+B0 is multipled by 0.4. BUT PROBABLY SHOULDN'T BE HERE - NOT SURE WHERE
+
+```{r tab2, eval=T,prompt=T, comment = F}
+#df_keep_rows <- keep_rows("N2", 25)
+#tab1 <- tabParm(histLRP, df_keep_rows)
+datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+```
+
+
+Brecover {data-navmenu="Historical"}
+=====
 
 Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery - we don't have this for capelin
 
+
+Bmin {data-navmenu="Historical"}
+=====
+
 Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
+
 
 Column {.tabset}
 -------------------------------------
@@ -190,14 +214,15 @@ datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  opt
 
 # Empirical LRP
 
-Column
--------------------------------------
 
-Bloss is the lowest observed biomass, B0 is multipled by 0.4. 
+# Multivariate
 
-```{r tab2, eval=T,prompt=T, comment = F}
-#df_keep_rows <- keep_rows("N2", 25)
-#tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
-```
+Series of Bloss or hierarchical approach
 
+# Ecosystem
+
+Capcod?
+
+# Summary
+
+Table of approaches (rows), time periods (columns), and LRPs (cells) 

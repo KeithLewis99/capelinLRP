@@ -263,7 +263,7 @@ sr3 <- lm(biomass_tm2/(age2*age2PerMat) ~ biomass_tm2, data = sr)
 summary(sr3)
 
 
- srBH <- sr1[,1:6]
+srBH <- sr1[,1:6]
 srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr3))), by = c("rowname"))
 srBH <- rename(srBH, predict = "predict(sr3)")
 
@@ -294,13 +294,13 @@ lines(Sp, Rp, col = "red")
 # bhr <- srFuns("BevertonHolt" ,1)
 # bhr(S=135, a = svBH$a, svBH$b)
 # srBH1 <- nls(R ~ bhr(biomass_tm2, a, b), data = na.omit(sr), start=svBH)
-# 
-# svBH <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt",2)
+
+# svBH <- srStarts(age2~biomass_tm2,data=na.omit(sr),type="BevertonHolt",2)
 # bhr <- srFuns("BevertonHolt" ,2)
 # srFuns("BevertonHolt",2)
 # bhr(S=135, a = svBH$a, svBH$Rp)
 # srBH1 <- nls(R ~ bhr(biomass_tm2, a, Rp), data = na.omit(sr), start=svBH)
-# 
+
 # cbind(estimates=coef(srBH1), confint(srBH1))
 # coef_srBH <- coef(srBH1)
 # bhr(S=135, a = coef(srBH1))

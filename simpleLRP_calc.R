@@ -25,6 +25,7 @@ source("simpleLRP_dat.R")
 
 
 # Bmsy proxies Fx%SPR ----
+## In spreadsheet C:\Users\lewiske\Documents\Pelagics\training\LRP_Dec2021\Capelin.xlsx and X.R
 
 # X% Rmax ----
 ## Some other common approaches to defining LRPs are based on the biomass at a predefined percentage (X%) of Rmax, the maximum predicted recruitment from a SRR, or other thresholds to impaired recruitment 
@@ -41,12 +42,12 @@ lm.sr <- lm(log(R/biomass_tm2) ~ biomass_tm2, data = sr)
 summary(lm.sr)
 
 # join the dataframe "sr" with the predicted values from the lm "sr1"
-sr1 <- left_join(tibble::rownames_to_column(sr), tibble::rownames_to_column(as.data.frame(predict(sr1))), by = c("rowname"))
-sr1 <- rename(sr1, predict = "predict(sr1)")
+sr1 <- left_join(tibble::rownames_to_column(sr), tibble::rownames_to_column(as.data.frame(predict(lm.sr))), by = c("rowname"))
+sr1 <- rename(sr1, predict = "predict(lm.sr)")
 
 # plot biomass v R/S and overlay predicted values
 plot(sr1$biomass_tm2, log(sr1$R/sr1$biomass_tm2))
-lines(lm.sr$biomass_tm2, lm.sr$predict)
+lines(sr1$biomass_tm2, sr1$predict)
 
 
 # From H&W pg 269, 
@@ -101,7 +102,7 @@ lines(Sp, Rp)
 # from Fish480.pdf
 # Fmed is the fishing mortality which corresponds to the median observed slopes from data in an S-R plot. From file:///C:/Users/lewiske/Downloads/fish5106stockrec-pdf%20(2).pdf
 # I think that this is a bit dangerous.  We have to accept the index as a proxy for SSB. Then, our catch has to be considered a portion of that.  And we need to feel that we can fish to modify the SSB/R ratio??????
-SSB <- sr1$biomass
+SSB <- sr1$biomass_tm2
 R <- sr1$R
 
 Fmed <- median(SSB/R, na.rm = T)
@@ -133,11 +134,11 @@ a_r <- coef_srR[[1]]
 b_r <- coef_srR[[2]]
 # my code
 #plot(sr$biomass, log(sr$R), ylim=c(0,12))
-plot(sr1$biomass, sr1$R)
+plot(sr1$biomass_tm2, sr1$R)
 
 # bootstrap from book
 ## note that this works for the figure!!!
-xr <- seq(0, max(sr1$biomass, na.rm = T), 1)
+xr <- seq(0, max(sr1$biomass_tm2, na.rm = T), 1)
 pR <- rckr(xr, a = coef(srR))
 lines(pR~xr, col="red")
 abline(h=max(pR))
@@ -160,33 +161,36 @@ for(i in 1:length(xr)){
   tmp <- apply(bootR$coefboot, MARGIN = 1, FUN = rckr, S = xr[i])
   LCI_r[i] <- quantile(tmp, 0.025)
   UCI_r[i] <- quantile(tmp, 0.975)
-} 
+}
 
 ylmts_r <- range(c(pR, LCI_r, UCI_r, sr1$R), na.rm=T)
-xlmts_r <- range(c(xr, sr1$biomass), na.rm = T)
-
-plot(sr1$biomass, sr1$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+xlmts_r <- range(c(xr, sr1$biomass_tm2), na.rm = T)
+# 
+plot(sr1$biomass_tm2, sr1$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
 polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
-points(R~biomass, data = sr1, pch =19, col=rgb(0,0,0,1/2))
+points(R~biomass_tm2, data = sr1, pch =19, col=rgb(0,0,0,1/2))
 lines(pR~xr, lwd=2)
 abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
+# 
+# 
+# # resids
+## https://derekogle.com/fishR/2021-06-01-residPlot-replacement
+FSAmisc::residPlot(srR)
 
-
-# resids
 tmp <- na.omit(sr1) %>%
-  dplyr::mutate(fits=fitted(sr1R),
-                (resids=resid$srR),
+  dplyr::mutate(fits=fitted(srR),
+                resids=resid(srR),
                 sresids=nlstools::
                   nlsResiduals(srR)$resi2[,"Standardized residuals"])
 peek(tmp,n=8)
-
+ 
 ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +
   geom_point() +
   geom_hline(yintercept=0,linetype="dashed")
 
 
 ggplot(data=tmp,mapping=aes(x=resids)) +
-  geom_histogram(color="gray30") 
+  geom_histogram(color="gray30")
 
 
 
@@ -195,34 +199,32 @@ ggplot(data=tmp,mapping=aes(x=resids)) +
 ### BH1 ----
 #### This doesn't work
 
-# sr2 <- lm(I(1/(age2*age2PerMat)) ~ I(1/biomass), data = sr)
-# summary(sr2)
-# slope = sr2$coefficients[[1]]
-# intercept = sr2$coefficients[[2]]/sr2$coefficients[[1]]
-# 
-# # make a new data set
-# srBH <- sr[,1:5]
-# 
-# tmp <- nls(age2*age2PerMat ~ biomass*slope/(1 + biomass/intercept), data = srBH, start = list(slope = 5, intercept = 50))
-# 
-# 
-# srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr2))), by = c("rowname"))
-# srBH <- rename(srBH, predict = "predict(sr2)")
-# 
-# # plot biomass v R/S and overlay predicted values
-# plot(srBH$biomass, log(srBH$age2*srBH$age2PerMat/srBH$biomass))
-# lines(srBH$biomass, srBH$predict)
-# 
-# plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
-# Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
-# #a <- 1/sr2$coefficients[1]  # get it off log scale
-# #b <- 1/(sr2$coefficients[1]/sr1$coefficients[2])   # this matches 
-# a <- 1/sr2$coefficients[2]  # get it off log scale
-# b <- sr2$coefficients[1]*a   # this matches 
-# 
-# Rp <- a/b
-# #Rp <- 1/((1/a + Sp/(a*b))*Sp)
-# #lines(Sp, Rp, col = "red")
+lm.sr2 <- lm(I(1/(R*age2PerMat)) ~ I(1/biomass_tm2), data = sr)
+summary(lm.sr2)
+slope = lm.sr2$coefficients[[1]]
+intercept = lm.sr2$coefficients[[2]]/lm.sr2$coefficients[[1]]
+
+sr2 <- left_join(tibble::rownames_to_column(sr), tibble::rownames_to_column(as.data.frame(predict(lm.sr2))), by = c("rowname"))
+sr2 <- rename(sr2, predict = "predict(lm.sr2)")
+
+
+# tmp <- nls(R*age2PerMat ~ biomass_tm2*slope/(1 + biomass_tm2/intercept), data = sr2, start = list(slope = 5, intercept = 50))
+
+
+srBH <- sr2 
+# plot biomass v R/S and overlay predicted values
+plot(srBH$biomass_tm2, log(srBH$age2*srBH$age2PerMat/srBH$biomass_tm2))
+plot(srBH$biomass_tm2, srBH$age2*srBH$age2PerMat/srBH$biomass_tm2)
+lines(srBH$biomass_tm2, srBH$predict)
+
+plot(srBH$biomass_tm2, srBH$age2*srBH$age2PerMat)
+Sp <- seq(0, max(sr$biomass_tm2, na.rm = T), 100)
+a <- 1/lm.sr2$coefficients[1]  # get it off log scale
+b <- 1/(lm.sr2$coefficients[1]/lm.sr2$coefficients[2])   # this matches
+
+Rp <- a/b
+Rp <- 1/((1/a + Sp/(a*b))*Sp)
+lines(Sp, Rp, col = "red")
 # 
 # 
 # lines(srBH$biomass, 1/srBH$predict)
@@ -256,191 +258,232 @@ ggplot(data=tmp,mapping=aes(x=resids)) +
 # sr2 <- lm(I(1/(age2*age2PerMat)) ~ I(1/biomass), data = sr)
 # summary(sr2)                 
 # 
-# # this is as close as I can get to something sensible
-# sr3 <- lm(biomass/(age2*age2PerMat) ~ biomass, data = sr)            
-# summary(sr3)     
-# 
-# 
- srBH <- sr1[,1:5]
-# srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr3))), by = c("rowname"))
-# srBH <- rename(srBH, predict = "predict(sr3)")
-# 
-# # plot biomass v R/S and overlay predicted values
-# plot(srBH$biomass, srBH$age2*srBH$age2PerMat/srBH$biomass)
-# lines(srBH$biomass, 1/srBH$predict)
-# 
-# 
-# plot(srBH$biomass, srBH$age2*srBH$age2PerMat)
-# Sp <- seq(0, max(sr$biomass, na.rm = T), 100)
-# a <- 1/sr3$coefficients[1]  # get it off log scale
-# b <- sr3$coefficients[2]*a   # this matches 
-# 
-# Rp <- a*Sp/(1+b*Sp)
-# #Rp <- 1/((1/a + Sp/(a*b))*Sp)
-# lines(Sp, Rp, col = "red")                 
-# 
-#bh.fit = nls(srBH$age2*srBH$age2PerMat ~ a * srBH$biomass/(1 + (a/b) *srBH$biomass), start = c(a = 0.696, b = 9.79))
-#bh.fit
+# this is as close as I can get to something sensible
+sr3 <- lm(biomass_tm2/(age2*age2PerMat) ~ biomass_tm2, data = sr)
+summary(sr3)
+
+
+ srBH <- sr1[,1:6]
+srBH <- left_join(srBH, tibble::rownames_to_column(as.data.frame(predict(sr3))), by = c("rowname"))
+srBH <- rename(srBH, predict = "predict(sr3)")
+
+# plot biomass v R/S and overlay predicted values
+plot(srBH$biomass_tm2, srBH$age2*srBH$age2PerMat/srBH$biomass_tm2)
+lines(srBH$biomass_tm2, 1/srBH$predict)
+
+
+plot(srBH$biomass_tm2, srBH$age2*srBH$age2PerMat)
+Sp <- seq(0, max(sr$biomass_tm2, na.rm = T), 100)
+a <- 1/sr3$coefficients[1]  # get it off log scale
+b <- sr3$coefficients[2]*a   # this matches
+
+Rp <- a*Sp/(1+b*Sp)
+#Rp <- 1/((1/a + Sp/(a*b))*Sp)
+lines(Sp, Rp, col = "red")
+
+# bh.fit = nls(srBH$age2*srBH$age2PerMat ~ a * srBH$biomass_tm2/(1 + (a/b) *srBH$biomass_tm2), start = c(a = 0.696, b = 9.79))
+# bh.fit
 
 
 ### FSA ----
 #### this seems to wrok
 #### not working anymore
-svBH <- srStarts(R ~ biomass_tm2, data = na.omit(srBH), type = "BevertonHolt")
-
-svBH <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt",2)
-svBH$a <- 1
-srFuns("BevertonHolt",2)
-bhr <- srFuns("BevertonHolt" ,2)
-bhr(S=135, a = svBH$a, svBH$Rp)
-
-srBH1 <- nls(R ~ bhr(biomass_tm2, a, Rp), data = na.omit(sr1), start=svBH)
-
-cbind(estimates=coef(srBH1), confint(srBH1))
-coef_srBH <- coef(srBH1)
-bhr(S=135, a = coef(srBH1))
-a <- coef_srBH[[1]]
-b <- coef_srBH[[2]]
+# svBH <- srStarts(R ~ biomass_tm2, data = na.omit(sr), type = "BevertonHolt")
+# #svBH$a <- 1
+# srFuns("BevertonHolt",1)
+# bhr <- srFuns("BevertonHolt" ,1)
+# bhr(S=135, a = svBH$a, svBH$b)
+# srBH1 <- nls(R ~ bhr(biomass_tm2, a, b), data = na.omit(sr), start=svBH)
+# 
+# svBH <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt",2)
+# bhr <- srFuns("BevertonHolt" ,2)
+# srFuns("BevertonHolt",2)
+# bhr(S=135, a = svBH$a, svBH$Rp)
+# srBH1 <- nls(R ~ bhr(biomass_tm2, a, Rp), data = na.omit(sr), start=svBH)
+# 
+# cbind(estimates=coef(srBH1), confint(srBH1))
+# coef_srBH <- coef(srBH1)
+# bhr(S=135, a = coef(srBH1))
+# a <- coef_srBH[[1]]
+# b <- coef_srBH[[2]]
 
 # my code
 #plot(sr$biomass_tm2, log(sr$R), ylim=c(0,12))
-plot(sr1$biomass_tm2, sr1$R)
+# plot(sr1$biomass_tm2, sr1$R)
+# 
+# # bootstrap from book
+# ## note that this works for the figure!!!
+# x <- seq(0, max(srBH$biomass_tm2, na.rm = T), 1)
+# pBH <- bhr(x, a = coef(srBH1))
+# lines(pBH~x, col="red")
+# abline(h=max(pBH))
+# 
+# # from H&W table 7.2 Smax is infinite
+# abline(v = b*sqrt(1/a)-b/a)  # from H&W table 7.2 Smsy
+# abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy
+# abline(v = max(pBH)/(a*(1-max(pBH)/b))) # I derived this equation myself - see notes but need confirmation that it is correct.
+# 
+# bootR <- nlsBoot(srBH1)
+# cbind(estimates = coef(srBH1), confint(bootR))
+# 
+# LCI <- UCI <- numeric(length(x))
+# for(i in 1:length(x)){
+#   tmp <- apply(bootR$coefboot, MARGIN = 1, FUN = bhr, S = x[i])
+#   LCI[i] <- quantile(tmp, 0.025)
+#   UCI[i] <- quantile(tmp, 0.975)
+# } 
+# 
+# ylmts <- range(c(pBH, LCI, UCI, sr1$R), na.rm=T)
+# xlmts <- range(c(x, sr1$biomass_tm2), na.rm = T)
+# 
+# plot(sr1$biomass_tm2, sr1$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+# polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
+# points(R~biomass_tm2, data = sr1, pch =19, col=rgb(0,0,0,1/2))
+# lines(pBH~x, lwd=2)
+# abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy = 118
+# 
+# BmsyBH <- 0.4*(b*sqrt(1/a)-b/a)
+# 
+# # compare models to an indpendent one, i.e., a regression
+# ind <- srFuns("independence")
+# svI <- srStarts(R~biomass_tm2,data=na.omit(sr1),type="independence")
+# srI <- nls(R ~ ind(biomass_tm2, a), data = na.omit(sr1), start=svI)
+# extraSS(srI, com=srR)
+# extraSS(srI, com=srBH1)
+# 
+# 
+# summary(srR, correlation = T)
+# 
+# 
+# # resids
+# tmp <- na.omit(sr1) %>%
+#   dplyr::mutate(fits=fitted(srBH1),
+#                 resids=resid(srBH1),
+#                 sresids=nlstools::nlsResiduals(srBH1)$resi2[,"Standardized residuals"])
+# 
 
-# bootstrap from book
-## note that this works for the figure!!!
-x <- seq(0, max(srBH$biomass_tm2, na.rm = T), 1)
-pBH <- bhr(x, a = coef(srBH1))
-lines(pBH~x, col="red")
-abline(h=max(pBH))
-
-# from H&W table 7.2 Smax is infinite
-abline(v = b*sqrt(1/a)-b/a)  # from H&W table 7.2 Smsy
-abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy
-abline(v = max(pBH)/(a*(1-max(pBH)/b))) # I derived this equation myself - see notes but need confirmation that it is correct.
-
-bootR <- nlsBoot(srBH1)
-cbind(estimates = coef(srBH1), confint(bootR))
-
-LCI <- UCI <- numeric(length(x))
-for(i in 1:length(x)){
-  tmp <- apply(bootR$coefboot, MARGIN = 1, FUN = bhr, S = x[i])
-  LCI[i] <- quantile(tmp, 0.025)
-  UCI[i] <- quantile(tmp, 0.975)
-} 
-
-ylmts <- range(c(pBH, LCI, UCI, sr1$R), na.rm=T)
-xlmts <- range(c(x, sr1$biomass_tm2), na.rm = T)
-
-plot(sr1$biomass_tm2, sr1$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
-polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
-points(R~biomass_tm2, data = sr1, pch =19, col=rgb(0,0,0,1/2))
-lines(pBH~x, lwd=2)
-abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy = 118
-
-BmsyBH <- 0.4*(b*sqrt(1/a)-b/a)
-
-# compare models to an indpendent one, i.e., a regression
-ind <- srFuns("independence")
-svI <- srStarts(R~biomass_tm2,data=na.omit(sr1),type="independence")
-srI <- nls(R ~ ind(biomass_tm2, a), data = na.omit(sr1), start=svI)
-extraSS(srI, com=srR)
-extraSS(srI, com=srBH1)
-
-
-summary(srR, correlation = T)
-
-
-# resids
-tmp <- na.omit(sr1) %>%
-  dplyr::mutate(fits=fitted(srBH1),
-                resids=resid(srBH1),
-                sresids=nlstools::nlsResiduals(srBH1)$resi2[,"Standardized residuals"])
-
-
-ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +
-  geom_point() +
-  geom_hline(yintercept=0,linetype="dashed")
-
-
-ggplot(data=tmp,mapping=aes(x=resids)) +
-  geom_histogram(color="gray30") 
+# ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +
+#   geom_point() +
+#   geom_hline(yintercept=0,linetype="dashed")
+# 
+# 
+# ggplot(data=tmp,mapping=aes(x=resids)) +
+#   geom_histogram(color="gray30") 
 
 ### FSA 2 ----
 #### This is for calculations in the spreadsheet which use a different formulation of BH
-svBH2 <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt", 1)
-srFuns("BevertonHolt",1)
-bhr2 <- srFuns("BevertonHolt" , 1)
-bhr2(S=135, a = svBH2$a, svBH2$b)
-
-srBH2 <- nls(R ~ bhr2(biomass_tm2, a, b), data = na.omit(srBH), start=svBH2)
-
-cbind(estimates=coef(srBH2), confint(srBH2))
-
-coef_srBH2 <- coef(srBH2)
-a <- coef_srBH2[[1]]
-(a <- coef_srBH2[[1]])
-b <- coef_srBH2[[2]]
-(b <- coef_srBH2[[2]])
-
-# my code
-#plot(sr$biomass_tm2, log(sr$R), ylim=c(0,12))
-plot(srBH$biomass_tm2, srBH$R)
-
-# bootstrap from book
-## note that this works for the figure!!!
-x <- seq(0, max(sr1$biomass_tm2, na.rm = T), 1)
-pBH <- bhr2(x, a = coef(srBH2))
-lines(pBH~x, col="red")
-abline(h=max(pBH))
-
-
-### FSA 2-ln ----
-#### This is for calculations in the spreadsheet which use a different formulation of BH
-srBH$logR <- log(srBH$R)
-svBH2 <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt", 1)
-bhr2 <- srFuns("BevertonHolt" , 1)
-bhr2(S=135, a = svBH2$a, svBH2$b)
-
-# something wrong with this - perhaps because it is with log - not sure why
-#srBH2 <- nls(logR ~ log(bhr2(biomass_tm2, a, b)), data = na.omit(srBH), start=svBH2)
-
-cbind(estimates=coef(srBH2), confint(srBH2))
-
-coef_srBH2 <- coef(srBH2)
-a <- coef_srBH2[[1]]
-(a <- coef_srBH2[[1]])
-b <- coef_srBH2[[2]]
-(b <- coef_srBH2[[2]])
-
-# my code
-#plot(sr$biomass_tm2, log(sr$R), ylim=c(0,12))
-plot(srBH$biomass_tm2, srBH$R)
-
-# bootstrap from book
-## note that this works for the figure!!!
-x <- seq(0, max(sr1$biomass_tm2, na.rm = T), 1)
-pBH <- bhr2(x, a = coef(srBH2))
-lines(pBH~x, col="red")
-abline(h=max(pBH))
+# svBH2 <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt", 1)
+# srFuns("BevertonHolt",1)
+# bhr2 <- srFuns("BevertonHolt" , 1)
+# bhr2(S=135, a = svBH2$a, svBH2$b)
+# 
+#  srBH2 <- nls(R ~ bhr2(biomass_tm2, a, b), data = na.omit(srBH), start=svBH2)
+# 
+# cbind(estimates=coef(srBH2), confint(srBH2))
+# 
+# coef_srBH2 <- coef(srBH2)
+# a <- coef_srBH2[[1]]
+# (a <- coef_srBH2[[1]])
+# b <- coef_srBH2[[2]]
+# (b <- coef_srBH2[[2]])
+# 
+# # my code
+# #plot(sr$biomass_tm2, log(sr$R), ylim=c(0,12))
+# plot(srBH$biomass_tm2, srBH$R)
+# 
+# # bootstrap from book
+# ## note that this works for the figure!!!
+# x <- seq(0, max(sr1$biomass_tm2, na.rm = T), 1)
+# pBH <- bhr2(x, a = coef(srBH2))
+# lines(pBH~x, col="red")
+# abline(h=max(pBH))
+# 
+# 
+# ### FSA 2-ln ----
+# #### This is for calculations in the spreadsheet which use a different formulation of BH
+# srBH$logR <- log(srBH$R)
+# svBH2 <- srStarts(R~biomass_tm2,data=na.omit(srBH),type="BevertonHolt", 1)
+# bhr2 <- srFuns("BevertonHolt" , 1)
+# bhr2(S=135, a = svBH2$a, svBH2$b)
+# 
+# # something wrong with this - perhaps because it is with log - not sure why
+# #srBH2 <- nls(logR ~ log(bhr2(biomass_tm2, a, b)), data = na.omit(srBH), start=svBH2)
+# 
+# cbind(estimates=coef(srBH2), confint(srBH2))
+# 
+# coef_srBH2 <- coef(srBH2)
+# a <- coef_srBH2[[1]]
+# (a <- coef_srBH2[[1]])
+# b <- coef_srBH2[[2]]
+# (b <- coef_srBH2[[2]])
+# 
+# # my code
+# #plot(sr$biomass_tm2, log(sr$R), ylim=c(0,12))
+# plot(srBH$biomass_tm2, srBH$R)
+# 
+# # bootstrap from book
+# ## note that this works for the figure!!!
+# x <- seq(0, max(sr1$biomass_tm2, na.rm = T), 1)
+# pBH <- bhr2(x, a = coef(srBH2))
+# lines(pBH~x, col="red")
+# abline(h=max(pBH))
 
 ## Hockey stick ----
 
+## Iceland approach----
+# https://www.statology.org/piecewise-regression-in-r/
+#  https://www.r-bloggers.com/2012/08/r-for-ecologists-putting-together-a-piecewise-regression/
+# ICES may use FLR but I can't find the segmented regression associated with this; https://flr-project.org/
 
-# Brecover from models ----
+
+library(segmented)
+
+plot(sr$biomass_tm2, sr$R)
+
+#fit simple linear regression model
+fit <- lm(R ~ biomass_tm2, data=sr)
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=1000)
+
+#view summary of segmented model
+summary(segmented.fit)
+
+#plot original data
+plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
+
+#add segmented regression model
+plot(segmented.fit, add=T)
+
+
+# post - collapse
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R)
+fit_post <- lm(R ~ biomass_tm2, data=sr[9:37,])
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fit_post <- segmented(fit_post, seg.Z = ~ biomass_tm2, psi=350)
+
+#view summary of segmented model
+summary(segmented.fit_post)
+
+#plot original data
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
+
+#add segmented regression model
+plot(segmented.fit_post, add=T)
+
+
+
+# Historical LRP ----
+## FROM MODELS: These will only be viable IF we get the IPM up and running
+
 ## Bloss is the lowest observed biomass 
 
 
 ## Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
-# Brecover - is the lowest observed biomass which produced recruitment that lead to stock recover.  1) this is a two step process - needs to produce recruitment that leads to recovery!!!! 2) Could debate if this stock has recovered.
 
-
-
-
-
-
-
-## Bmin ----
+## Bmin
 ### Bmin is the lowest observed biomass from which a recovery to average has been observed
 
 # Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
@@ -448,10 +491,66 @@ abline(h=max(pBH))
 ## Other minimum biomass that produced “good” recruitment 
 
 
+# Historical LRP ----
+
+## Bloss ----
+
+## Bloss is the lowest observed biomass 
+### this is the time period from 1999:2018
+Bloss_abund_all <- min(df_cap$abundance_med, na.rm = T)
+Bloss_abund_post <- min(df_cap$abundance_med[15:34], na.rm = T) # this is the time period from 1999:2018
+Bloss_abund_recent <- min(df_cap$abundance_med[27:34], na.rm = T) # this time period is 2011-2018 meant to exclude 
+
+Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
+Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
+Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
+
+# Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
+# Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
+# Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
+
+# B0
+B0_abund_all <- max(df_cap$abundance_med, na.rm = T)
+B0_abund_post <- max(df_cap$abundance_med[15:34], na.rm = T)
+B0_abund_recent<- max(df_cap$abundance_med[27:34], na.rm = T)
+
+B0_bio_all <- max(df_cap$biomass_med, na.rm = T)
+B0_bio_post <- max(df_cap$biomass_med[15:34], na.rm = T)
+B0_bio_recent<- max(df_cap$biomass_med[27:34], na.rm = T)
+
+# create a dataframe to hold the min and max values
+Bmin <- as.data.frame(matrix(NA, 4, 5))
+Bmin <- rename(Bmin, indicator = V1, "mt" = V2, "all" = V3, "1999-2018" = V4, "2011-2018" = V5)
+Bmin$indicator <- sort(rep(c("abund", "biomass"), 2))
+Bmin$mt <- rep(c("min", "B0"), 2)
+
+# put values from above
+Bmin$all[1] <- Bloss_abund_all
+Bmin$all[2] <- Bloss_bio_all
+
+Bmin$`1999-2018`[1] <- Bloss_abund_post
+Bmin$`1999-2018`[2] <- Bloss_bio_post
+
+Bmin$`2011-2018`[1] <- Bloss_abund_recent
+Bmin$`2011-2018`[2] <- Bloss_bio_recent
+
+
+Bmin$all[3] <- 0.4*B0_abund_all
+Bmin$all[4] <- 0.4*B0_bio_all
+
+Bmin$`1999-2018`[3] <- 0.4*B0_abund_post
+Bmin$`1999-2018`[4] <- 0.4*B0_bio_post
+
+Bmin$`2011-2018`[3] <- 0.4*B0_abund_recent
+Bmin$`2011-2018`[4] <- 0.4*B0_bio_recent
+
+### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 ## ICES Type I ----
+### Bmin is the lowest observed biomass from which a recovery to average has been observed
+# Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
+## Other minimum biomass that produced “good” recruitment 
 ### Haddock type approach - all data
-### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 # calculate anomalies - get mean and SD
 str(sr, give.attr = FALSE)
@@ -486,24 +585,16 @@ v90 <- min(y1$biomass_tm2, na.rm = T)
 
 y2 <- subset(sr, R >= R_quant_all[2], na.rm = T)
 v50 <- min(y2$biomass_tm2, na.rm = T)
-# The problem is that this is the biomass for 2014 so next most is 2013 which is 206
-v50_alt <- 206 # note that if we extend the quantile to 0.4 as below, then biomass = 98
-
-y2[,c(1:2, 5, 11:13)]
+v50_alt3 <- 206 # The problem is that v50 is the biomass for 2010 which is the lowest on record and the most doubtful ito the other data,  so next most is 2013 which is 206
+v40_alt4 <- 98 # note that if we extend the quantile to 0.4 as below, then biomass = 98 which is year 2007 (biomass from 2005)
 
 # simple test plot
 plot(sr$biomass_tm2, sr$R)
 abline(v = v90)
 abline(v = v50, lty=2)
-abline(v = v50_alt, lty=2, col = 'red')
+abline(v = v50_alt3, lty=2, col = 'red')
+source("simpleLRP_FUN.R")
 
-
-Scatter2(df = sr, 
-         xaxis = biomass_tm2, yaxis = R, 
-         c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
-         xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", 
-         vline1 = v90, vline2 = v50_alt, 
-         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 
 
 ## ICES Type I - post collapse----
@@ -550,50 +641,9 @@ Scatter2(df = sr_post,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 
 
-# Iceland approach----
-# https://www.statology.org/piecewise-regression-in-r/
-#  https://www.r-bloggers.com/2012/08/r-for-ecologists-putting-together-a-piecewise-regression/
-# ICES may use FLR but I can't find the segmented regression associated with this; https://flr-project.org/
 
 
-library(segmented)
-
-plot(sr$biomass_tm2, sr$R)
-
-#fit simple linear regression model
-fit <- lm(R ~ biomass_tm2, data=sr)
-
-#fit piecewise regression model to original model, estimating a breakpoint at x=9
-segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=1000)
-
-#view summary of segmented model
-summary(segmented.fit)
-
-#plot original data
-plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
-
-#add segmented regression model
-plot(segmented.fit, add=T)
-
-
-# post - collapse
-plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R)
-fit <- lm(R ~ biomass_tm2, data=sr[9:37,])
-
-#fit piecewise regression model to original model, estimating a breakpoint at x=9
-segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=350)
-
-#view summary of segmented model
-summary(segmented.fit)
-
-#plot original data
-plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
-
-#add segmented regression model
-plot(segmented.fit, add=T)
-
-
-# Bmsy – historical proxies----
+# Historical proxies----
 ##A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 
 ##A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. 
@@ -663,52 +713,6 @@ histLRP <- histLRP %>% mutate_if(is.numeric, round)
 ## Thresholds set from empirical indicators such as catch, catch per unit effort (CPUE), survey indices, etc.
 ## Often employed as proxies for other reference points such as BMSY, B0, or Brecover, although other thresholds to serious harm may be considered (e.g., agreed-upon undesirable states to avoid).
 
-
-## Bloss is the lowest observed biomass 
-Bloss_abund_all <- min(df_cap$abundance_med, na.rm = T)
-Bloss_abund_post <- min(df_cap$abundance_med[15:34], na.rm = T)
-Bloss_abund_recent <- min(df_cap$abundance_med[27:34], na.rm = T)
-
-Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
-Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
-Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
-
-Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
-Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
-Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
-
-B0_abund_all <- max(df_cap$abundance_med, na.rm = T)
-B0_abund_post <- max(df_cap$abundance_med[15:34], na.rm = T)
-B0_abund_recent<- max(df_cap$abundance_med[27:34], na.rm = T)
-
-B0_bio_all <- max(df_cap$biomass_med, na.rm = T)
-B0_bio_post <- max(df_cap$biomass_med[15:34], na.rm = T)
-B0_bio_recent<- max(df_cap$biomass_med[27:34], na.rm = T)
-
-Bmin <- as.data.frame(matrix(NA, 4, 5))
-Bmin <- rename(Bmin, indicator = V1, "mt" = V2, "all" = V3, "1999-2018" = V4, "2011-2018" = V5)
-Bmin$indicator <- sort(rep(c("abund", "biomass"), 2))
-Bmin$mt <- rep(c("min", "B0"), 2)
-
-
-Bmin$all[1] <- Bloss_abund_all
-Bmin$all[2] <- Bloss_bio_all
-
-Bmin$`1999-2018`[1] <- Bloss_abund_post
-Bmin$`1999-2018`[2] <- Bloss_bio_post
-
-Bmin$`2011-2018`[1] <- Bloss_abund_recent
-Bmin$`2011-2018`[2] <- Bloss_bio_recent
-
-
-Bmin$all[3] <- 0.4*B0_abund_all
-Bmin$all[4] <- 0.4*B0_bio_all
-
-Bmin$`1999-2018`[3] <- 0.4*B0_abund_post
-Bmin$`1999-2018`[4] <- 0.4*B0_bio_post
-
-Bmin$`2011-2018`[3] <- 0.4*B0_abund_recent
-Bmin$`2011-2018`[4] <- 0.4*B0_bio_recent
 
 
 

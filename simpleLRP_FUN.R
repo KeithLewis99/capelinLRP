@@ -68,7 +68,7 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = 
 #' Anomaly_year_all <- Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = hline, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "yes")
 
 Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, hline = hline, filename = filename, save = save){
-  browser()
+  #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     "Year: ", year, "\n",
     c2, biomass_tm2, "\n",

@@ -184,7 +184,7 @@ df_cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
 str(df_cond)
 
 df_cond$rank <- rank(df_cond$meanCond)
-df_cond$cond_tp1 <- lag(df_cond$meanCond)
+df_cond$cond_tm1 <- lag(df_cond$meanCond)
 
 
 
@@ -200,7 +200,7 @@ df_mat <- df_mat %>%
 
 #make variables
 df_mat$rank <- rank(df_mat$mat2)
-df_mat$mat2_tp1 <- lag(df_mat$mat2, 1)
+df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
 
 
@@ -282,7 +282,13 @@ str(df_dis)
 
 ls <- list(df_cap, df_ld, df_ice, df_cond, df_mat)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
-  select(year, abundance_med, abundance_med_tm2, biomass_med, rankB, avg_density_tm2, tice, cond_tp1, mat2, mat2_tp1)
+  select(year, 
+         abundance_med, abundance_med_tm2, 
+         biomass_med, rankB, 
+         avg_density_tm2, 
+         tice, 
+         cond_tm1, 
+         mat2, mat2_tm1)
 str(df_lag)
 
 # derived variables ----
@@ -290,11 +296,11 @@ str(df_lag)
 ##### Note in Aug 2022  - the below was fine for when I first made this in early 2021.  But not needed given the age disaggregated data.
 # df_lag$abundAge3_t <- "NA"
 # 
-# df_lag$abundAge3_t <- ((1-(df_lag$mat2_tp1*0.01))*lag(df_lag$abundance_med, 1))
-# plot(df_lag$mat2_tp1, df_lag$abundance_med)
-#m1 <- lm(df_lag$abundance_med ~ df_lag$mat2_tp1)
+# df_lag$abundAge3_t <- ((1-(df_lag$mat2_tm1*0.01))*lag(df_lag$abundance_med, 1))
+# plot(df_lag$mat2_tm1, df_lag$abundance_med)
+#m1 <- lm(df_lag$abundance_med ~ df_lag$mat2_tm1)
 #left_join(tibble::rownames_to_column(df_lag), as.data.frame(m1$fitted.values), by = c("rowname" = "Symbol"))
-#lines(df_lag$mat2_tp1, m1$fitted.values, col = 'red', na.rm = T)
+#lines(df_lag$mat2_tm1, m1$fitted.values, col = 'red', na.rm = T)
 # plot(df_lag$abundAge3_t, df_lag$abundance_med)
 # 
 # abund_age3_YEAR <- Scatter1(df = df_lag, xaxis = year, yaxis = abundAge3_t, colour = NULL, 
@@ -307,25 +313,25 @@ plot(df_lag$abundance_med, df_lag$abundance_med_tm2)
 
 # this is the strength of the AGe 3 cohort; lagged three years so that it can be compared to the index for a S-R relationship
 ## I think the idea here is that abundance_med is dominated by age-2 fish and that the immature age2[t] fish will be mature at t+1 and their offspring will recruit at t+3
-df_lag$SR_age3_tp3 <- lag(df_lag$abundance_med*(1-(df_lag$mat2*0.01)), 3)
+df_lag$SR_age3_tm3 <- lag(df_lag$abundance_med*(1-(df_lag$mat2*0.01)), 3)
 
 # relationship between immature at age 2 that will influence recruits in 3 years and mature at age 2 that will influence recruits in 2 years
 ## Not sure what this is giving us its percent age2 v abundance
-df_lag$immat_tp3 <- "NA"
-df_lag$immat_tp3 <- lag((100-df_lag$mat2), 3)
-plot(df_lag$immat_tp3[c(7:34)], df_lag$abundance_med[c(7:34)])
-summary(lm(df_lag$abundance_med ~ df_lag$immat_tp3 + df_lag$mat2_tp1))
+df_lag$immat_tm3 <- "NA"
+df_lag$immat_tm3 <- lag((100-df_lag$mat2), 3)
+plot(df_lag$immat_tm3[c(7:34)], df_lag$abundance_med[c(7:34)])
+summary(lm(df_lag$abundance_med ~ df_lag$immat_tm3 + df_lag$mat2_tm1))
 
 #this is the strength of the Age 2 cohort, lagged one year - fish that will be Age 3 the next year
 ## Not sure what this is giving us - its mature age -2
-df_lag$SRage3_tp1 <- lag(df_lag$abundance_med*(df_lag$mat2*0.01), 1)
+df_lag$SRage3_tm1 <- lag(df_lag$abundance_med*(df_lag$mat2*0.01), 1)
 
 
 # explore lagged relationships between %Mat@AG2 and abundance----
 # Influence of abundance (t) on Abundance of age 3 (t3) 
 temp1a <- df_lag %>%
   filter(year > 1992) %>%
-  ggplot(aes(abundance_med, SR_age3_tp3, text = paste("Year", year))) +            geom_point()
+  ggplot(aes(abundance_med, SR_age3_tm3, text = paste("Year", year))) +            geom_point()
   
 ggplotly(temp1a)
 
@@ -339,14 +345,14 @@ ggplotly(temp1a)
 # Influence of the larvae (t-2) on Age3 (t3): this is a bit of a stretch.  Good correlation between ld and abundance_med but this is taking it three years beyond that  
 temp1c <- df_lag %>%
     filter(year > 1992) %>%
-    ggplot(aes(SR_age3_tp3, avg_density_tm2,  text = paste("Year", year))) +          geom_point()
+    ggplot(aes(SR_age3_tm3, avg_density_tm2,  text = paste("Year", year))) +          geom_point()
 ggplotly(temp1c)
 
   
 # no idea why this is here  
 temp1d <- df_lag %>%
     filter(year > 1992) %>%
-    ggplot(aes(SR_age3_tp3, lag(avg_density_tm2, 1),  text = paste("Year", year))) + geom_point()
+    ggplot(aes(SR_age3_tm3, lag(avg_density_tm2, 1),  text = paste("Year", year))) + geom_point()
   ggplotly(temp1d)
   
 # note on the dashboard the strong decline in larval density from 2005 onwards - this is to try to relate it to maturity at age 2 and tehre seems to be some relation
@@ -358,62 +364,31 @@ summary(lm(df_lag$avg_density_tm2[23:34] ~ df_lag$year[23:34]))
 
 
 
-# multivariate approach----  
-# start with the relationship between LD (t-2) and capelin abundance
-
-temp3 <- df_lag %>%
-  filter(year > 1990) %>%
-  ggplot(aes(avg_density_tm2, biomass_med, text = paste("Year", year))) + geom_point()
-
-ggplotly(temp3)
-
-
-# Then, based on the idea that only LD values > 2000 have led to good recruitment, lets see if any thresholds in tice: filter the data accordingly
-temp4 <- df_lag %>%
-  filter(year > 1990 & avg_density_tm2 > 2000) %>%
-  ggplot(aes(tice, abundance_med, text = paste(
-    "Year", year, "\n", "Density", avg_density_tm2, "\n",  
-                                               sep = ""))) + geom_point()
-
-ggplotly(temp4)
-
-# BAsed on the logic that late tice > 80 days, and only <80 days has produced the "large" numbers
-temp5 <- df_lag %>%
-  filter(year > 1990 & avg_density_tm2 > 2000 & tice <85) %>%
-  ggplot(aes(cond_tp1, abundance_med, text = paste(
-    "Year", year, "\n", "Cond", cond_tp1, "\n",  
-    sep = ""))) + geom_point()
-
-ggplotly(temp5)
-
-#Suggests that condition > 0.99 might lead to large abundance.
-
-# the problem with this approach is the small sample size and uncertainty, i.e., driven by 2013-2015 and that some low abundance year had good condition and "good" tice.
-
 
 
 # Brecover ---- 
-## the plots in this section are just exploratory as this is age disaggregated but the filtered data sets are used in simpleLRP_calc
-#all data
-df_cap$biomass_med_tm2 <- lag(df_cap$biomass_med, 2) # tm2 = t+2
-plot(df_cap$biomass_med_tm2, df_cap$biomass_med)
-
-#Based on the above, it seems to make sense to divide this across the regmime change
-#pre collapse
-cap_preCollapse <- filter(df_cap, year < 1991)
-plot(cap_preCollapse$biomass_med_tm2, cap_preCollapse$biomass_med)
-
-#post collapse with correlation between abundance and biomasss
-cap_postCollapse <- filter(df_cap, year >= 1991)
-plot(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med)
-cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, use = "complete.obs", method = c("pearson"))
-
-
-# S-R relationship post collapse - biomasss
-plot(cap_postCollapse$biomass_med_tm2, cap_postCollapse$biomass_med)
-quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T)
-quantile(cap_postCollapse$biomass_med_tm2, c(0.1, 0.9), na.rm = T)
-#assuiming that i've done this right, not much here - 
+## NOTE THAT THE COMMENTED OUT CODE IS DEPRECATED.  THE dp_cap and cap_postCollapse have been replaced by sr and sr_post
+# ## the plots in this section are just exploratory as this is age disaggregated but the filtered data sets are used in simpleLRP_calc
+# #all data
+# df_cap$biomass_med_tm2 <- lag(df_cap$biomass_med, 2) # tm2 = t+2
+# plot(df_cap$biomass_med_tm2, df_cap$biomass_med)
+# 
+# #Based on the above, it seems to make sense to divide this across the regmime change
+# #pre collapse
+# cap_preCollapse <- filter(df_cap, year < 1991)
+# plot(cap_preCollapse$biomass_med_tm2, cap_preCollapse$biomass_med)
+# 
+# #post collapse with correlation between abundance and biomasss
+# cap_postCollapse <- filter(df_cap, year >= 1991)
+# plot(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med)
+# cor(cap_postCollapse$biomass_med, cap_postCollapse$abundance_med, use = "complete.obs", method = c("pearson"))
+# 
+# 
+# # S-R relationship post collapse - biomasss
+# plot(cap_postCollapse$biomass_med_tm2, cap_postCollapse$biomass_med)
+# quantile(cap_postCollapse$biomass_med, c(0.1, 0.9), na.rm = T)
+# quantile(cap_postCollapse$biomass_med_tm2, c(0.1, 0.9), na.rm = T)
+# #assuiming that i've done this right, not much here - 
 
 # NOTE THAT THE S-R RELATIONSHIPS ARE IN THE BELOW AND IN THE DASHBOARD
 
@@ -452,7 +427,7 @@ plot(sr$biomass_tm2, sr$age2)
 # from 269 - biomass v logaritm of S/R - spawners v recruits
 plot(sr$biomass_tm2, log(sr$R))
 # log biomass v log S/R (this may not be right)
-plot(log(sr$biomass), log(sr$R))
+plot(log(sr$biomass_tm2), log(sr$R))
 
 # trying for Barents Sea plot
 
@@ -496,4 +471,37 @@ p
 # abline(a=0, b=1)
 # 
 
-                                     
+# multivariate approach----  
+# start with the relationship between LD (t-2) and capelin abundance
+
+temp3 <- df_lag %>%
+  filter(year > 1990) %>%
+  ggplot(aes(avg_density_tm2, biomass_med, text = paste("Year", year))) + geom_point()
+
+ggplotly(temp3)
+
+
+# Then, based on the idea that only LD values > 2000 have led to good recruitment, lets see if any thresholds in tice: filter the data accordingly
+temp4 <- df_lag %>%
+  filter(year > 1990 & avg_density_tm2 > 2000) %>%
+  ggplot(aes(tice, abundance_med, text = paste(
+    "Year", year, "\n", "Density", avg_density_tm2, "\n",  
+    sep = ""))) + geom_point()
+
+ggplotly(temp4)
+
+# BAsed on the logic that late tice > 80 days, and only <80 days has produced the "large" numbers
+temp5 <- df_lag %>%
+  filter(year > 1990 & avg_density_tm2 > 2000 & tice <85) %>%
+  ggplot(aes(cond_tm1, abundance_med, text = paste(
+    "Year", year, "\n", "Cond", cond_tm1, "\n",  
+    sep = ""))) + geom_point()
+
+ggplotly(temp5)
+
+#Suggests that condition > 0.99 might lead to large abundance.
+
+# the problem with this approach is the small sample size and uncertainty, i.e., driven by 2013-2015 and that some low abundance year had good condition and "good" tice.
+
+# Z & M Barents Sea (BS) style----
+## See IPM project

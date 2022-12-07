@@ -1,0 +1,47 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# SimpleLRP_dat
+## data
+
+
+a = age (2:4; not age 0 or 1)
+t = time (year from start of spring acoustic survey)
+s = survey (not currently used as only spring acoustic survey is part of the model)
+
+
+
+
+# Z & M Barents Sea (BS) style----
+
+Barents Sea
+BS8 Revision of the basis for capelin Blim.pdf; Table 1, pg 5.
+
+"Capelin survey mortality from age 2 (immatures) to age 3 by cohort. Z is calculated as -log(N age 3 in year y+1/N imm age 2 in year y). M is calculated as -log((N age 3 in year y+1) + (catch immatures age 3 in year y+1 and age 2 in year y)/(N imm age 2 in year y))."
+
+$$
+Z = -ln(N_{3,t+1}/Ni_{2,t}) \\
+M = -ln((N_{3,t+1})+ (CAA_{i3,t+1} + CAA_{i2,t})/(Ni_{2,t}))
+$$
+
+Note that I already have N is natural log so i'd need to take the e^N and then take the log again
+
+$$
+Z = -ln(exp(N_{3,t+1})/exp(Ni_{2,t})) \\
+M = -ln((exp(N_{3,t+1})) + (CAA_{i3,t+1} + CAA_{i2,t})/exp(Ni_{2,t}))
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -333,7 +333,7 @@ subplot(sp1, sp2, widths = c(0.4, 0.4), heights = 0.8, titleX = TRUE, titleY = T
 ```
 
 # Bmsy proxies Fx%SPR
-
+Bmsy and B0 may also come from IPM
 WE ARE CLOSE HERE BUT NEED TO AGREE ON SOME APPROXIMATION OF M, WHETHER USING THE BS APPROACH ON THE RAW DATA OR ON MODEL OUTPUTS
 
 # X% Rmax
@@ -359,12 +359,31 @@ lines(pR~xr, lwd=2)
 abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
 ```
 
+Column
+-------------------------------------
+
+All
+```{r}
+plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
+plot(segmented.fit, add=T)
+```
+
+Post-collapse
+```{r}
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
+plot(segmented.fit_post, add=T)
+```
+
+
 # Brecover from models
 Bloss
 Brecover
 Bmin
 
 # Empirical LRP Bmin
+Bloss is the lowest observed biomass
+
+Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery - we don't have this for capelin
 
 Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
 
@@ -384,12 +403,12 @@ Bar1(df = sr,
 ```
 
 ### All data: stock-recruit
-
+black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010, purple = 40th
 ```{r fig-9}
 Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment: ", 
          xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
-         vline1 = v90, vline2 = v50, vline3 = v50_alt3, vline4 = v50_alt4, 
+         vline1 = v90, vline2 = v50, vline3 = v50_alt3, vline4 = v40_alt4, 
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 
@@ -403,7 +422,7 @@ Bar1(df = sr_post, xaxis = year, yaxis = anomaly, c2 = "Biomass[t-2]: ", c3 = "A
 ```
 
 ### Post collapse: stock-recruit 
-
+black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010
 ```{r fig-11}
 Scatter2(df = sr_post, 
          xaxis = biomass_tm2, yaxis = R, 
@@ -414,7 +433,15 @@ Scatter2(df = sr_post,
 ```
 
 
-# Historical
+# Historical proxy: Bmsy and B0
+A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
+
+A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. 
+
+This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
+
+The mean and median abundance (units) and biomass(ktonnes) for teh pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
+
 
 ```{r tab1, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
@@ -428,20 +455,11 @@ datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  opt
 Column
 -------------------------------------
 
-Bloss is the lowest observed biomass 
+Bloss is the lowest observed biomass, B0 is multipled by 0.4. 
 
 ```{r tab2, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
 datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
-```
-
-Column
--------------------------------------
-
-Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
-
-```{r}
-
 ```
 

@@ -1,0 +1,334 @@
+---
+title: "simpleLRP"
+author: "Keith Lewis"
+date: "2/13/2021"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+bibliography: refs/simpleLRP.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+library(knitr)
+library(plotly)
+library(ggplot2)
+library(crosstalk)
+library(xtable)
+library(DT)
+#library(tidyverse)
+#library(lubridate)
+#library(kableExtra)
+#library(ezknitr)
+#library(here)
+source("simpleLRP_dat.R")
+source("simpleLRP_calc.R")
+#source("simpleLRP_figs.R")
+shD <- SharedData$new(df_lag)
+```
+
+Background {data-navmenu="Background"}
+=====
+
+This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
+
+Capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition. 
+
+The capelin spring survey was originally a survey of immature capelin (age 1 & 2) but, with the increased maturity at Age 2, the survey has become a partial index of the stock.
+
+This tab contains References, tables/metadata, as well as figures of teh study area and the above references studies.  Then, there are pages with the capelin data in chronological years, a page where all the data are lagged to the year of the survey, and a simple look at 
+
+
+The Roadmap {data-navmenu="Background"}
+====
+PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE
+1.	“Simple” approach
+    i. SR relationship
+        A.	Have completed preliminary work
+        B.	Working on an age disaggregated approach
+    ii.	B-RECOVER 
+        A.	Haddock approach: Done – see dashboard
+        B.	Multivariate – see snow crab
+        C.	Hierarchical - Done preliminary work
+    iii.	BLOSS  Barents Sea/Iceland
+        A.	Iceland at 150,000 t based on a BLOSS approach
+2.	“Complex” approach
+    i.	Single Species
+        a. State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
+        b. Delayed Difference
+        c. Age-structured
+        d. IPM
+    ii.	Ecosystem approach
+        a. Ecopath/MICE (Rajeev, Divya, Matt Robertson)
+    iii.	Others
+        a. MSE approach (Maritimes – Herring)
+        b.	Deep learning – see Krista Baker
+        c.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
+
+
+Study area and Data {data-navmenu="Background"}
+=====
+
+Column
+-------------------------------------
+
+### Study Area
+
+```{r}
+
+knitr::include_graphics("images/map_inset.png")
+
+```
+
+Column {.tabset}
+-------------------------------------
+
+### Time Series
+
+```{r}
+
+knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/lifeCycle_dataTimeSeries.png")
+
+```
+
+
+### The data: temporal relationships
+
+```{r}
+
+knitr::include_graphics("images/variables_plus_fish.png")
+
+```
+
+Supporting Research {data-navmenu="Background"}
+====
+
+
+Column
+-------------------------------------
+
+```{r}
+
+knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/lifeCycle_plus_Data.png")
+
+```
+  
+Column {.tabset}
+-------------------------------------
+
+### Dome model
+
+```{r}
+
+knitr::include_graphics("images/Buren2015fig5_dome.png")
+
+```
+
+
+### Larval density and recruitment
+
+```{r}
+
+knitr::include_graphics("images/Murphy2018FishRes_fig2.png")
+
+```
+
+
+### Condition
+
+```{r}
+
+knitr::include_graphics("images/Buren_fig6-cond.png")
+
+```
+
+### The forecast model
+
+```{r}
+
+knitr::include_graphics("images/credInt.png")
+
+```
+
+References {- data-navmenu="Background"}
+=====
+<div id="refs"></div>
+
+Tables {data-navmenu="Background"}
+====
+Do we need a metadata page??
+
+
+# Larval Density-Capelin Index
+
+Column
+-------------------------------------
+
+### Larval Index
+
+```{r fig-1}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
+                    filename = "figs/1-larvae-density-rank.pdf", save = "no")
+```
+
+Column
+-------------------------------------
+  
+### Capelin Index
+
+```{r fig-2}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
+         c1 = "Year: ", c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin biomass (ktonnes)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
+```
+
+
+# Indices by year
+
+Column {data-width=600 data-height=400}
+-------------------------------------
+  
+### Capelin Index (t)
+  
+```{r fig-3}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+```
+
+Column
+-------------------------------------
+
+### Larval Index (t-2)
+
+```{r fig-4}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_ld, xaxis = year, yaxis = avg_density, colour = rank, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", xlab = "Year", 
+         ylab = "Larval Density (#/m^-3)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+```
+
+### ice Index (t)
+  
+```{r fig-5}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_ice, xaxis = year, yaxis = tice, colour = rank, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
+         xlab = "Year", ylab = "Ice retreat (tice - DOY)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+```
+
+Column
+-------------------------------------
+
+### condition Index (t-1)
+
+```{r fig-6}
+par(mar= c(5, 4, 4, 2) + 0.1)
+Scatter1(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+```
+
+### % Mature @ Age 2 (t-3)
+
+```{r}
+par(mar= c(5, 4, 4, 2) + 0.1)
+Scatter1(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "%Mmat_A2: ", xlab = "Year", ylab = "Age 2 Mature (%: t-3)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+```
+
+
+# Indices Lagged
+
+```{r}
+d <- highlight_key(df_lag)
+
+cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+         xlab = "Year", ylab = "Capelin abundance (billions)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_density_tm2, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
+         ylab = "Larval Density (#/m^-3: t-2)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+
+ice_fig <- Scatter1(df = d, xaxis = year, yaxis = tice, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
+         xlab = "Year", ylab = "Ice retreat (tice - DOY: t)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+sp1 <- subplot(ld_fig, ice_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
+
+cond_fig <- Scatter1(df = d, xaxis = year, yaxis = cond_tm1, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_tm3, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+sp2 <- subplot(cond_fig, immat_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
+
+subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), heights = 0.8, titleX = TRUE, titleY = TRUE) %>%
+#  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
+#  subplot(cond_fig, immat_fig,  nrows=1, titleX = TRUE, titleY = TRUE) %>%
+  highlight("plotly_selected", selectize = TRUE, colour = "yellow")
+# 
+#
+```
+
+
+# Biomass v. vars
+
+```{r}
+d_ld <- df_lag %>% filter(year > 2000)
+d_co <- df_lag %>% filter(year > 1993)
+d <- highlight_key(df_lag)
+
+bio_ld <- Scatter1(df = d_ld, xaxis = avg_density_tm2, yaxis = biomass_med, colour = year, 
+         c1 = "Year: ", c2 = "Density: ", c3 = "Biomass: ", 
+         xlab = "Larval Density (#/m^-3: t-2)", ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+bio_tice <- Scatter1(df = d, xaxis = tice, yaxis = biomass_med, colour = year, 
+         c1 = "Year: ", c2 = "tice: ", c3 = "Biomass: ", xlab = "Ice retreat (tice - DOY: t)", 
+         ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+
+bio_cond <- Scatter1(df = d_co, xaxis = cond_tm1, yaxis = biomass_med, colour = year, 
+         c1 = "Year: ", c2 = "Cond: ", c3 = "Biomass: ", 
+         xlab = "Condition (t-1)", ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+bio_mat <- Scatter1(df = d, xaxis = mat2_tm1, yaxis = biomass_med, colour = year, 
+         c1 = "Year: ", c2 = "%Immat_A2: ", c3 = "Biomass: ", xlab = "Age 2 Immature (%: t-3)", ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-year-rank.pdf", save = "no")
+
+sp1 <- subplot(bio_ld, bio_tice, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
+sp2 <- subplot(bio_cond, bio_mat, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
+
+subplot(sp1, sp2, widths = c(0.4, 0.4), heights = 0.8, titleX = TRUE, titleY = TRUE) %>%
+#  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
+#  subplot(cond_fig, immat_fig,  nrows=1, titleX = TRUE, titleY = TRUE) %>%
+  highlight("plotly_selected", selectize = TRUE, colour = "yellow")
+# 
+```
+

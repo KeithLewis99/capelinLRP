@@ -30,40 +30,12 @@ shD <- SharedData$new(df_lag)
 Background {data-navmenu="Background"}
 =====
 
-This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
 
 Capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition. 
 
 The capelin spring survey was originally a survey of immature capelin (age 1 & 2) but, with the increased maturity at Age 2, the survey has become a partial index of the stock.
 
 This tab contains References, tables/metadata, as well as figures of teh study area and the above references studies.  Then, there are pages with the capelin data in chronological years, a page where all the data are lagged to the year of the survey, and a simple look at 
-
-
-The Roadmap {data-navmenu="Background"}
-====
-PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE
-1.	“Simple” approach
-    i. SR relationship
-        A.	Have completed preliminary work
-        B.	Working on an age disaggregated approach
-    ii.	B-RECOVER 
-        A.	Haddock approach: Done – see dashboard
-        B.	Multivariate – see snow crab
-        C.	Hierarchical - Done preliminary work
-    iii.	BLOSS  Barents Sea/Iceland
-        A.	Iceland at 150,000 t based on a BLOSS approach
-2.	“Complex” approach
-    i.	Single Species
-        a. State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
-        b. Delayed Difference
-        c. Age-structured
-        d. IPM
-    ii.	Ecosystem approach
-        a. Ecopath/MICE (Rajeev, Divya, Matt Robertson)
-    iii.	Others
-        a. MSE approach (Maritimes – Herring)
-        b.	Deep learning – see Krista Baker
-        c.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
 
 
 Study area and Data {data-navmenu="Background"}

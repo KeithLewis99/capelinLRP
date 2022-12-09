@@ -4,13 +4,13 @@ author: "Keith Lewis"
 date: "2/13/2021"
 output:
   flexdashboard::flex_dashboard:
-    theme: simplex
+    theme: lumen
 bibliography: refs/simpleLRP.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
-#Available themes include: default, cerulean, journal, flatly, darkly, readable, spacelab, united, cosmo, lumen, , yeti.
+#Available themes include: default, cerulean, journal, flatly, darkly, readable, spacelab, united, cosmo, , simplex.
 library(knitr)
 library(plotly)
 library(ggplot2)
@@ -77,6 +77,7 @@ References {- data-navmenu="Background"}
 Bmsy and B0 may also come from IPM
 WE ARE CLOSE HERE BUT NEED TO AGREE ON SOME APPROXIMATION OF M, WHETHER USING THE BS APPROACH ON THE RAW DATA OR ON MODEL OUTPUTS
 Also, need to agree on selectivity
+BUT THE PROBLEM IS TEH SRR (SEE NEXT PAGE). WE CAN GET Fx%SPR but we can't get the SRR so we can't do LRPs.
 
 # X% Rmax
 
@@ -116,12 +117,6 @@ plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
 plot(segmented.fit_post, add=T)
 ```
 
-
-# Historical from models
-Only viable if we get the IPM up and running
-Bloss
-Brecover
-Bmin
 
 Historical {data-navmenu="Historical"}
 =====
@@ -194,6 +189,12 @@ Scatter2(df = sr_post,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 
+# Historical from models
+Only viable if we get the IPM up and running
+Bloss
+Brecover
+Bmin
+
 
 # Historical proxy: Bmsy and B0
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
@@ -210,9 +211,6 @@ The mean and median abundance (units) and biomass(ktonnes) for teh pre-collapse(
 #tab1 <- tabParm(histLRP, df_keep_rows)
 datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
 ```
-
-
-# Empirical LRP
 
 
 # Multivariate

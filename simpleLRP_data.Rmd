@@ -1,10 +1,10 @@
 ---
 title: "simpleLRP"
 author: "Keith Lewis"
-date: "2/13/2021"
+date: "`r Sys.Date()`"
 output:
   flexdashboard::flex_dashboard:
-    theme: yeti
+    theme: readable
 bibliography: refs/simpleLRP.bib
 ---
 
@@ -154,7 +154,7 @@ Column
 par(mar= c(5, 4, 4, 2) + 0.1)
 
 Scatter1(df = df_cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
-         c1 = "Year: ", c2 = "Rank: ", c3 = "Abundance: ", xlab = "Rank", ylab = "Capelin biomass (ktonnes)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
+         c1 = "Year: ", c2 = "Rank: ", c3 = "Biomass: ", xlab = "Rank", ylab = "Capelin biomass (ktonnes)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
 ```
 
 
@@ -178,19 +178,19 @@ Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB,
 Column
 -------------------------------------
 
-### Larval Index (t-2)
+### Larval Index
 
 ```{r fig-4}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
 Scatter1(df = df_ld, xaxis = year, yaxis = avg_density, colour = rank, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", xlab = "Year", 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Larvae: ", xlab = "Year", 
          ylab = "Larval Density (#/m^-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```
 
-### ice Index (t)
+### ice Index
   
 ```{r fig-5}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -204,7 +204,7 @@ Scatter1(df = df_ice, xaxis = year, yaxis = tice, colour = rank,
 Column
 -------------------------------------
 
-### condition Index (t-1)
+### condition Index
 
 ```{r fig-6}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -214,12 +214,13 @@ Scatter1(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank,
 
 ```
 
-### % Mature @ Age 2 (t-3)
+### % Mature @ Age 2
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 Scatter1(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "%Mmat_A2: ", xlab = "Year", ylab = "Age 2 Mature (%: t-3)",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "%Mmat_A2: ", 
+         xlab = "Year", ylab = "Age 2 Mature (%)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 ```
@@ -236,24 +237,26 @@ cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL,
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
 ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_density_tm2, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", xlab = "Year", 
-         ylab = "Larval Density (#/m^-3: t-2)",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", 
+         xlab = "Year[t-2]", ylab = "Larval Density (#/m^-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 
 ice_fig <- Scatter1(df = d, xaxis = year, yaxis = tice, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
-         xlab = "Year", ylab = "Ice retreat (tice - DOY: t)",
+         xlab = "Year[t]", ylab = "Ice retreat (tice - DOY)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 sp1 <- subplot(ld_fig, ice_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
 
 cond_fig <- Scatter1(df = d, xaxis = year, yaxis = cond_tm1, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition (t-1)",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", 
+         xlab = "Year[t-1]", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_tm3, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "%Immat_A2: ", xlab = "Year", ylab = "Age 2 Immature (%: t-3)",
+immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_tm3 , colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "%immat_A2: ", 
+         xlab = "Year[t-3]", ylab = "Age 2 Immature (%)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 sp2 <- subplot(cond_fig, immat_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
@@ -287,7 +290,7 @@ bio_tice <- Scatter1(df = d, xaxis = tice, yaxis = biomass_med, colour = year,
 
 bio_cond <- Scatter1(df = d_co, xaxis = cond_tm1, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Cond: ", c3 = "Biomass: ", 
-         xlab = "Condition (t-1)", ylab = "Capelin biomass (ktonnes)",
+         xlab = "Condition [t-1]", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 bio_mat <- Scatter1(df = d, xaxis = mat2_tm1, yaxis = biomass_med, colour = year, 

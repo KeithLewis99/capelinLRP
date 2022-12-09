@@ -23,7 +23,8 @@ BS8 Revision of the basis for capelin Blim.pdf; Table 1, pg 5.
 
 $$
 Z = -ln(N_{3,t+1}/Ni_{2,t}) \\
-M = -ln((N_{3,t+1})+ (CAA_{i3,t+1} + CAA_{i2,t})/(Ni_{2,t}))
+M = -ln((N_{3,t+1})+ (CAA_{i3,t+1} + CAA_{i2,t})/(Ni_{2,t})) What's in the BS document \\ 
+M = -ln((N_{3,t+1}+ CAA_{3,t+1} + CAA_{2,t})/Ni_{2,t}) What I did
 $$
 
 Note that I already have N is natural log so i'd need to take the e^N and then take the log again

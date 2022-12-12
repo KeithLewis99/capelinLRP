@@ -471,6 +471,34 @@ p
 # abline(a=0, b=1)
 # 
 
+## "SSB" ----
+### biomass with just the mature
+
+
+
+## SRR without collapse years ----
+sr_noCollapse <- sr[c(1:6, 9:35),]
+plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R)
+
+
+## SRR with lead v lag ----
+# this produces exactly the same plot as with lag because the NAs move too.  
+tmp <- lag(df_lag$biomass_med, 2)
+R_tp2 <- lead(sr$R[1:35] , 2) # my reasoning in lagging this is that leading throws away two values
+
+# make a smaller dataframe of the relevant variables
+sr_lead <- as.data.frame(cbind(year = df_dis$year[1:35], 
+                          age2 = df_dis$I2[1:35], 
+                          age2PerMat = df_dis$mat2[1:35], 
+                          biomass_tm2 = tmp,
+                          biomass_t = df_lag$biomass_med,
+                          R_tp2 = R_tp2))
+str(sr_lead)
+
+plot(sr_lead$biomass_t, sr_lead$R_tp2) # this produces exactly the same plot as with lag because the NAs move too.  
+
+
+
 # multivariate approach----  
 # start with the relationship between LD (t-2) and capelin abundance
 

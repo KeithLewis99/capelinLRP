@@ -428,6 +428,86 @@ lines(Sp, Rp, col = "red")
 # lines(pBH~x, col="red")
 # abline(h=max(pBH))
 
+
+
+### FSA with no collapse----
+svBH <- srStarts(R ~ biomass_tm2, data = na.omit(sr_noCollapse), type = "BevertonHolt")
+#svBH$a <- 1
+srFuns("BevertonHolt",1)
+bhr <- srFuns("BevertonHolt" ,1)
+bhr(S=135, a = svBH$a, svBH$b)
+srBH1 <- nls(R ~ bhr(biomass_tm2, a, b), data = na.omit(sr_noCollapse), start=svBH)
+
+cbind(estimates=coef(srBH1), confint(srBH1))
+coef_srBH <- coef(srBH1)
+bhr(S=135, a = coef(srBH1))
+a <- coef_srBH[[1]]
+b <- coef_srBH[[2]]
+
+# my code
+plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R)
+
+# # bootstrap from book
+# ## note that this works for the figure!!!
+x <- seq(0, max(sr_noCollapse$biomass_tm2, na.rm = T), 1)
+pBH <- bhr(x, a = coef(srBH1))
+lines(pBH~x, col="red")
+abline(h=max(pBH))
+
+# # from H&W table 7.2 Smax is infinite
+abline(v = b*sqrt(1/a)-b/a)  # from H&W table 7.2 Smsy
+abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy
+abline(v = max(pBH)/(a*(1-max(pBH)/b))) # I derived this equation myself - see notes but need confirmation that it is correct.
+
+bootR <- nlsBoot(srBH1)
+cbind(estimates = coef(srBH1), confint(bootR))
+
+LCI <- UCI <- numeric(length(x))
+for(i in 1:length(x)){
+  tmp <- apply(bootR$coefboot, MARGIN = 1, FUN = bhr, S = x[i])
+  LCI[i] <- quantile(tmp, 0.025)
+  UCI[i] <- quantile(tmp, 0.975)
+}
+
+ylmts <- range(c(pBH, LCI, UCI, sr_noCollapse$R), na.rm=T)
+xlmts <- range(c(x, sr_noCollapse$biomass_tm2), na.rm = T)
+
+plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
+points(R~biomass_tm2, data = sr_noCollapse, pch =19, col=rgb(0,0,0,1/2))
+lines(pBH~x, lwd=2)
+abline(v = 0.4*(b*sqrt(1/a)-b/a))  # from standard for Bmsy = 118
+
+BmsyBH <- 0.4*(b*sqrt(1/a)-b/a)
+
+# # compare models to an indpendent one, i.e., a regression
+ind <- srFuns("independence")
+svI <- srStarts(R~biomass_tm2,data=na.omit(sr_noCollapse),type="independence")
+srI <- nls(R ~ ind(biomass_tm2, a), data = na.omit(sr_noCollapse), start=svI)
+extraSS(srI, com=srBH1)
+
+
+
+summary(srBH1, correlation = T)
+
+
+# resids
+tmp <- na.omit(sr_noCollapse) %>%
+  dplyr::mutate(fits=fitted(srBH1),
+                resids=resid(srBH1),
+                sresids=nlstools::nlsResiduals(srBH1)$resi2[,"Standardized residuals"])
+
+
+ggplot(data=tmp,mapping=aes(x=fits,y=resids)) +
+  geom_point() +
+  geom_hline(yintercept=0,linetype="dashed")
+
+
+ggplot(data=tmp,mapping=aes(x=resids)) +
+  geom_histogram(color="gray30")
+
+
+
 ## Hockey stick ----
 
 ## Iceland approach----

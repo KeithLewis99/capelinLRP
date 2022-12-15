@@ -609,28 +609,28 @@ B0_bio_recent<- max(df_cap$biomass_med[27:34], na.rm = T)
 
 # create a dataframe to hold the min and max values
 Bmin <- as.data.frame(matrix(NA, 4, 5))
-Bmin <- rename(Bmin, indicator = V1, "mt" = V2, "all" = V3, "1999-2018" = V4, "2011-2018" = V5)
+Bmin <- rename(Bmin, indicator = V1, "mt" = V2, "1985-2019" = V3, "1999-2018" = V4, "2011-2018" = V5)
 Bmin$indicator <- sort(rep(c("abund", "biomass"), 2))
-Bmin$mt <- rep(c("min", "B0"), 2)
+Bmin$mt <- rep(c("Bloss", "B0"), 2)
 
 # put values from above
-Bmin$all[1] <- Bloss_abund_all
-Bmin$all[2] <- Bloss_bio_all
+Bmin$`1985-2019`[1] <- Bloss_abund_all
+Bmin$`1985-2019`[2] <- 0.4*B0_abund_all
 
 Bmin$`1999-2018`[1] <- Bloss_abund_post
-Bmin$`1999-2018`[2] <- Bloss_bio_post
+Bmin$`1999-2018`[2] <- 0.4*B0_abund_post
 
 Bmin$`2011-2018`[1] <- Bloss_abund_recent
-Bmin$`2011-2018`[2] <- Bloss_bio_recent
+Bmin$`2011-2018`[2] <- 0.4*B0_abund_recent
 
 
-Bmin$all[3] <- 0.4*B0_abund_all
-Bmin$all[4] <- 0.4*B0_bio_all
+Bmin$`1985-2019`[3] <- Bloss_bio_all
+Bmin$`1985-2019`[4] <- 0.4*B0_bio_all
 
-Bmin$`1999-2018`[3] <- 0.4*B0_abund_post
+Bmin$`1999-2018`[3] <- Bloss_bio_post
 Bmin$`1999-2018`[4] <- 0.4*B0_bio_post
 
-Bmin$`2011-2018`[3] <- 0.4*B0_abund_recent
+Bmin$`2011-2018`[3] <- Bloss_bio_recent
 Bmin$`2011-2018`[4] <- 0.4*B0_bio_recent
 
 ### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 

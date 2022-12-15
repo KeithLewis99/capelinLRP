@@ -553,6 +553,15 @@ plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
 plot(segmented.fit_post, add=T)
 
 
+## "SSB" ----
+SSB <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/SSB.csv")
+str(SSB)
+
+SSB$ssb_tm2 <- lag(SSB$I2mat + SSB$I3mat + SSB$I4mat, 2)
+
+SSB <- left_join(SSB, sr[1:35, c(1, 5)], by = "year")
+
+plot(SSB$ssb_tm2, SSB$R)
 
 # Historical LRP ----
 ## FROM MODELS: These will only be viable IF we get the IPM up and running

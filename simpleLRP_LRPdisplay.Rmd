@@ -1,16 +1,16 @@
 ---
-title: "simpleLRP"
+title: "simpleLRP_display"
 author: "Keith Lewis"
-date: "2/13/2021"
+date: "`r Sys.Date()`"
 output:
   flexdashboard::flex_dashboard:
-    theme: lumen
+    theme: simplex
 bibliography: refs/simpleLRP.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
-#Available themes include: default, cerulean, journal, flatly, darkly, readable, spacelab, united, cosmo, , simplex.
+#Available themes include: default blue, cerulean blue, flatly green, readable white, spacelab blue, united purple, simplex bright red, yeti blue.
 library(knitr)
 library(plotly)
 library(ggplot2)
@@ -32,52 +32,74 @@ Background {data-navmenu="Background"}
 =====
 
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
-Copy/pate relevant sections from Res Doc
+Copy/paste relevant sections from Res Doc
 
 SAR {data-navmenu="Background"}
 =====
-Copy/pate relevant sections from Res Doc
-Perhaps put the table in here?
+```{r}
 
+knitr::include_graphics("images/Presentation1/SAR_table.PNG")
+
+```
+
+
+Criteria {data-navmenu="Background"}
+=====
+1. Feasible -can be operationalized by science advice and appropriate management measures (but in SAR: it should be feasible to monitor indicators and estimate stock status relative to the LRP on time scales and frequencies relevant to its role as the trigger for a rebuilding plan) capable of being done or carried out.  
+2. Plausible - refers to whether estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. (does the threshold make sense – clearly 0 or Bo would be both be implausible values.)  
+3. Reliable - can be interpreted as acceptable consistency, accuracy or precision of estimates (i.e., acceptably low variance or low bias), and robustness to a range of possible uncertainties (assumptions, stock scale, data points, etc). As the “true” values of reference points are unknown, evaluations of the accuracy and precision (or robustness) of estimates can be conducted in simulation tests of systems with known values. Sensitivity analyses can also be conducted to evaluate the influence of model parameters on reference point estimates.  
+4. Uncertainties  
+  - data  
+  - parameters  
+  - structure (assumptions)  
+5, Defensible - consistent with best practices.  
+6. Relevant - trigger rebuilding plan, are indicators relevant to management.  
 
 The Roadmap {data-navmenu="Background"}
 ====
 
 PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE or Figure  
-1.	“Simple” approach
-    i. SR relationship
-        A.	Have completed preliminary work
-        B.	Working on an age disaggregated approach
-    ii.	B-RECOVER 
-        A.	Haddock approach: Done – see dashboard
-        B.	Multivariate – see snow crab
-        C.	Hierarchical - Done preliminary work
-    iii.	BLOSS  Barents Sea/Iceland
-        A.	Iceland at 150,000 t based on a BLOSS approach
-2.	“Complex” approach
-    i.	Single Species
-        a. State space (Paul) – not sure where this stands ito ecosystem but it is complex analytically
-        b. Delayed Difference
-        c. Age-structured
-        d. IPM
-    ii.	Ecosystem approach
-        a. Ecopath/MICE (Rajeev, Divya, Matt Robertson)
-        b. Capcod
-    iii.	Others
-        a. MSE approach (Maritimes – Herring)
-        b.	Deep learning – see Krista Baker
-        c.	Ogmap – probabilities of S-R relationship producing a given outcome (Geoff)
+
+1.	“Simple” approach  
+    + SR relationship  (e.g. Iceland)
+        -	Have completed preliminary work  
+        -	Working on an age disaggregated approach  
+    +	B-RECOVER   
+        -	Haddock approach: Done – see dashboard  
+        - Barents Sea
+    + B-min
+        -	Multivariate – see snow crab  
+        -	Hierarchical - Done preliminary work  
+2.	“Complex” approach  
+    i.	Single Species  
+        a. State space/IPM
+        b. Age-structured 
+        c. Delayed Difference  
+        d. VPA/SCA  
+        e. Surplus Production  
+    ii.	Ecosystem 
+        a. Ecopath/MICE  
+        b. Capcod  
+    iii.	Others  
+        a. MSE approach (Maritimes – Herring)  
+        b.	Deep learning – see Krista Baker  
+        c.	Ogmap – probabilities of S-R relationship producing a given outcome   (Geoff)
 
 References {- data-navmenu="Background"}
 =====
 <div id="refs"></div>
 
+# Propotion Bmsy and Bo
+
+<p style="font-size: 20pt">
+Done lots of work here on IPM and SPM approaches
+Plus Oceana
+</p>
 
 # Bmsy proxies Fx%SPR
-Bmsy and B0 may also come from IPM
-WE ARE CLOSE HERE BUT NEED TO AGREE ON SOME APPROXIMATION OF M, WHETHER USING THE BS APPROACH ON THE RAW DATA OR ON MODEL OUTPUTS
-Also, need to agree on selectivity
-BUT THE PROBLEM IS TEH SRR (SEE NEXT PAGE). WE CAN GET Fx%SPR but we can't get the SRR so we can't do LRPs.
+<p style="font-size: 20pt">
+THE PROBLEM IS THE SRR (SEE NEXT PAGE). WE CAN GET Fx%SPR but we can't get the SRR so we can't do LRPs.  See next page!
+</p>
 
 # X% Rmax
 
@@ -135,7 +157,9 @@ datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  option
 Brecover {data-navmenu="Historical"}
 =====
 
+<p style="font-size: 20pt">
 Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery - we don't have this for capelin
+</p>
 
 
 Bmin {data-navmenu="Historical"}
@@ -190,10 +214,13 @@ Scatter2(df = sr_post,
 ```
 
 # Historical from models
-Only viable if we get the IPM up and running
-Bloss
-Brecover
-Bmin
+<p style="font-size: 20pt">
+Only viable if we get the IPM up and running  
+Bloss  
+Brecover  
+Bmin  
+</p>
+
 
 
 # Historical proxy: Bmsy and B0
@@ -215,11 +242,19 @@ datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  opt
 
 # Multivariate
 
-Series of Bloss or hierarchical approach
+<p style="font-size: 20pt">
+Series of Bloss or hierarchical approach - see other dashboard
+</p>
+
 
 # Ecosystem
 
-Capcod?
+=====
+```{r}
+
+knitr::include_graphics("images/Presentation1/capcod.png")
+
+```
 
 # Summary
 

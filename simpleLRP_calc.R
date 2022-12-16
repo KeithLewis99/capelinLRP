@@ -23,6 +23,36 @@ rm(list=ls())
 source("simpleLRP_FUN.R")
 source("simpleLRP_dat.R")
 
+# Bmsy: proportion-----
+
+
+# B0: proportion-----
+
+# B0
+B0_abund_all <- max(df_cap$abundance_med, na.rm = T) # all
+B0_abund_post <- max(df_cap$abundance_med[7:35], na.rm = T) # post collapse
+B0_abund_recent<- max(df_cap$abundance_med[27:34], na.rm = T) # a productive period post collapse
+
+B0_bio_all <- max(df_cap$biomass_med, na.rm = T)
+B0_bio_post <- max(df_cap$biomass_med[7:35], na.rm = T)
+B0_bio_recent<- max(df_cap$biomass_med[27:35], na.rm = T)
+
+# create a dataframe to hold the min and max values
+B0 <- as.data.frame(matrix(NA, 2, 5))
+B0 <- rename(B0, indicator = V1, "LRP" = V2, "1985-2019" = V3, "1991-2019" = V4, "2011-2019" = V5)
+B0$indicator <- c("abund", "biomass")
+B0$LRP <- rep(c("B0"), 2)
+
+# put values from above
+B0$`1985-2019`[1] <- 0.4*B0_abund_all
+B0$`1991-2019`[1] <- 0.4*B0_abund_post
+B0$`2011-2019`[1] <- 0.4*B0_abund_recent
+
+
+B0$`1985-2019`[2] <- 0.4*B0_bio_all
+B0$`1991-2019`[2] <- 0.4*B0_bio_post
+B0$`2011-2019`[2] <- 0.4*B0_bio_recent
+
 
 # Bmsy proxies Fx%SPR ----
 ## In spreadsheet C:\Users\lewiske\Documents\Pelagics\training\LRP_Dec2021\Capelin.xlsx and X.R
@@ -564,6 +594,49 @@ SSB <- left_join(SSB, sr[1:35, c(1, 5)], by = "year")
 plot(SSB$ssb_tm2, SSB$R)
 
 # Historical LRP ----
+
+## Bloss ----
+
+## Bloss is the lowest observed biomass 
+### this is the time period from 1999:2018
+Bloss_abund_all <- min(df_cap$abundance_med, na.rm = T)
+Bloss_abund_post <- min(df_cap$abundance_med[7:35], na.rm = T) # this is the time period from 1999:2018
+Bloss_abund_recent <- min(df_cap$abundance_med[27:35], na.rm = T) # this time period is 2011-2018 meant to exclude 
+
+Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
+Bloss_bio_post <- min(df_cap$biomass_med[7:35], na.rm = T)
+Bloss_bio_recent<- min(df_cap$biomass_med[27:35], na.rm = T)
+
+Bloss_bio_all_n2010 <- min(df_cap$biomass_med[c(1:25, 27:35)], na.rm = T)
+Bloss_bio_post_n2010 <- min(df_cap$biomass_med[c(7:25, 2735)], na.rm = T)
+
+
+# Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
+# Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
+# Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
+
+# create a dataframe to hold the min and max values
+Bmin <- as.data.frame(matrix(NA, 3, 5))
+Bmin <- rename(Bmin, indicator = V1, "LRP" = V2, "1985-2019" = V3, "1991-2019" = V4, "2011-2019" = V5)
+Bmin$indicator <- c("abund", "biomass", "biomass_no2010")
+Bmin$LRP <- rep(c("Bloss"), 3)
+
+# put values from above
+Bmin$`1985-2019`[1] <- Bloss_abund_all
+Bmin$`1991-2019`[1] <- Bloss_abund_post
+Bmin$`2011-2019`[1] <- Bloss_abund_recent
+
+Bmin$`1985-2019`[2] <- Bloss_bio_all
+Bmin$`1991-2019`[2] <- Bloss_bio_post
+Bmin$`2011-2019`[2] <- Bloss_bio_recent
+
+Bmin$`1985-2019`[3] <- Bloss_bio_all_n2010
+Bmin$`1991-2019`[3] <- Bloss_bio_post_n2010
+Bmin$`2011-2019`[3] <- Bloss_bio_recent
+
+### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
+
+# Historical LRP ----
 ## FROM MODELS: These will only be viable IF we get the IPM up and running
 
 ## Bloss is the lowest observed biomass 
@@ -579,61 +652,6 @@ plot(SSB$ssb_tm2, SSB$R)
 
 ## Other minimum biomass that produced “good” recruitment 
 
-
-# Historical LRP ----
-
-## Bloss ----
-
-## Bloss is the lowest observed biomass 
-### this is the time period from 1999:2018
-Bloss_abund_all <- min(df_cap$abundance_med, na.rm = T)
-Bloss_abund_post <- min(df_cap$abundance_med[15:34], na.rm = T) # this is the time period from 1999:2018
-Bloss_abund_recent <- min(df_cap$abundance_med[27:34], na.rm = T) # this time period is 2011-2018 meant to exclude 
-
-Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
-Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
-Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
-
-# Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
-# Bloss_bio_post <- min(df_cap$biomass_med[15:34], na.rm = T)
-# Bloss_bio_recent<- min(df_cap$biomass_med[27:34], na.rm = T)
-
-# B0
-B0_abund_all <- max(df_cap$abundance_med, na.rm = T)
-B0_abund_post <- max(df_cap$abundance_med[15:34], na.rm = T)
-B0_abund_recent<- max(df_cap$abundance_med[27:34], na.rm = T)
-
-B0_bio_all <- max(df_cap$biomass_med, na.rm = T)
-B0_bio_post <- max(df_cap$biomass_med[15:34], na.rm = T)
-B0_bio_recent<- max(df_cap$biomass_med[27:34], na.rm = T)
-
-# create a dataframe to hold the min and max values
-Bmin <- as.data.frame(matrix(NA, 4, 5))
-Bmin <- rename(Bmin, indicator = V1, "mt" = V2, "1985-2019" = V3, "1999-2018" = V4, "2011-2018" = V5)
-Bmin$indicator <- sort(rep(c("abund", "biomass"), 2))
-Bmin$mt <- rep(c("Bloss", "B0"), 2)
-
-# put values from above
-Bmin$`1985-2019`[1] <- Bloss_abund_all
-Bmin$`1985-2019`[2] <- 0.4*B0_abund_all
-
-Bmin$`1999-2018`[1] <- Bloss_abund_post
-Bmin$`1999-2018`[2] <- 0.4*B0_abund_post
-
-Bmin$`2011-2018`[1] <- Bloss_abund_recent
-Bmin$`2011-2018`[2] <- 0.4*B0_abund_recent
-
-
-Bmin$`1985-2019`[3] <- Bloss_bio_all
-Bmin$`1985-2019`[4] <- 0.4*B0_bio_all
-
-Bmin$`1999-2018`[3] <- Bloss_bio_post
-Bmin$`1999-2018`[4] <- 0.4*B0_bio_post
-
-Bmin$`2011-2018`[3] <- Bloss_bio_recent
-Bmin$`2011-2018`[4] <- 0.4*B0_bio_recent
-
-### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 ## ICES Type I ----
 ### Bmin is the lowest observed biomass from which a recovery to average has been observed

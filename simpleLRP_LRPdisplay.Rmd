@@ -28,8 +28,9 @@ source("simpleLRP_calc.R")
 shD <- SharedData$new(df_lag)
 ```
 
-Background {data-navmenu="Background"}
+C-68 {data-navmenu="Background"}
 =====
+
 <p style="font-size: 20pt">
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
 Copy/paste relevant sections from Res Doc
@@ -49,14 +50,9 @@ knitr::include_graphics("images/Presentation1/SAR_table.PNG")
 Criteria {data-navmenu="Background"}
 =====
 1. Feasible -can be operationalized by science advice and appropriate management measures (but in SAR: it should be feasible to monitor indicators and estimate stock status relative to the LRP on time scales and frequencies relevant to its role as the trigger for a rebuilding plan) capable of being done or carried out.  
-2. Plausible - refers to whether estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. (does the threshold make sense – clearly 0 or Bo would be both be implausible values.)  
-3. Reliable - can be interpreted as acceptable consistency, accuracy or precision of estimates (i.e., acceptably low variance or low bias), and robustness to a range of possible uncertainties (assumptions, stock scale, data points, etc). As the “true” values of reference points are unknown, evaluations of the accuracy and precision (or robustness) of estimates can be conducted in simulation tests of systems with known values. Sensitivity analyses can also be conducted to evaluate the influence of model parameters on reference point estimates.  
-4. Uncertainties  
-  - data  
-  - parameters  
-  - structure (assumptions)  
-5, Defensible - consistent with best practices.  
-6. Relevant - trigger rebuilding plan, are indicators relevant to management.  
+2. Reliable - can be interpreted as acceptable consistency, accuracy or precision of estimates (i.e., acceptably low variance or low bias), and robustness to a range of possible uncertainties (assumptions, stock scale, data points, etc). As the “true” values of reference points are unknown, evaluations of the accuracy and precision (or robustness) of estimates can be conducted in simulation tests of systems with known values. Sensitivity analyses can also be conducted to evaluate the influence of model parameters on reference point estimates.   
+3. Plausible - refers to whether estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. (does the threshold make sense – clearly 0 or Bo would be both be implausible values.)  
+
 
 The Roadmap {data-navmenu="Background"}
 ====
@@ -92,19 +88,64 @@ References {- data-navmenu="Background"}
 =====
 <div id="refs"></div>
 
-# Propotion Bmsy and Bo
+
+Bmsy {- data-navmenu="Proportions"}
+=====
 
 <p style="font-size: 20pt">
 Done lots of work here on IPM and SPM approaches
-Plus Oceana
+Perhaps present two JABBA graphs showing very low and very high Bmsy
+Plus Oceana - need rationale why this is not a good approach - extract summary from  Res Doc
 </p>
+
+B0 {- data-navmenu="Proportions"}
+=====
+
+Column
+-------------------------------------
+
+B0 is multipled by 0.4. This is the standard in the Canadian PA but probably not appropriate here.  
+
+```{r eval=T,prompt=T, comment = F}
+#df_keep_rows <- keep_rows("N2", 25)
+#tab1 <- tabParm(histLRP, df_keep_rows)
+datatable(B0, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS("
+                        function(settings, json) {
+                          $(this.api().table().header()).css({
+                          'font-size': '20px',
+                          });
+                        }
+                    "))) %>%
+  formatStyle(columns = colnames(.$x$data), `font-size` = "20px")
+```
+
+Column
+-------------------------------------
+
+```{r}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+Scatter1(df = df_cap, xaxis = year, yaxis = abundance_med, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+         xlab = "Year", ylab = "Capelin abundance (billions)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
 
 # Bmsy proxies Fx%SPR
 <p style="font-size: 20pt">
 THE PROBLEM IS THE SRR (SEE NEXT PAGE). WE CAN GET Fx%SPR but we can't get the SRR so we can't do LRPs.  See next page!
 </p>
 
-# X% Rmax
+
+SRR {data-navmenu="X Rmax"}
+=====
+
 
 <!-- Column -->
   <!-- ------------------------------------- -->
@@ -127,6 +168,10 @@ lines(pR~xr, lwd=2)
 abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
 ```
 
+
+Iceland {data-navmenu="X Rmax"}
+=====
+
 Column
 -------------------------------------
 
@@ -146,10 +191,12 @@ plot(segmented.fit_post, add=T)
 Bloss {data-navmenu="Historical"}
 =====
 
+Column
+-------------------------------------
+
 <p style="font-size: 20pt">
 Bloss is the lowest observed biomass
 
-B0 is multipled by 0.4. This is the standard in the Canadian PA but probably not appropriate here.  But these should also be under Historical proxies for consistency?????
 </p>
 
 ```{r tab2, eval=T,prompt=T, comment = F}
@@ -163,6 +210,23 @@ datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  option
                         }
                     "))) %>%
   formatStyle(columns = colnames(.$x$data), `font-size` = "20px")
+```
+
+Column
+-------------------------------------
+
+```{r fig-3}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+Scatter1(df = df_cap, xaxis = year, yaxis = abundance_med, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+         xlab = "Year", ylab = "Capelin abundance (billions)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
 
@@ -183,9 +247,9 @@ Bmin is the lowest observed biomass from which a recovery to average has been ob
 Column {.tabset}
 -------------------------------------
   
-Vertical and Horizontal lines are 90th percentiles
-
 ### All data: anomalies
+
+Horizontal line is 90th percentile (add others)
 
 ```{r fig-8}
 Bar1(df = sr, 
@@ -196,7 +260,9 @@ Bar1(df = sr,
 ```
 
 ### All data: stock-recruit
+
 black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010, purple = 40th
+
 ```{r fig-9}
 Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment: ", 
@@ -210,12 +276,16 @@ Column {.tabset}
   
 ### Post collapse: anomalies
 
+Horizontal line is 90th percentile
+
 ```{r fig-10}
 Bar1(df = sr_post, xaxis = year, yaxis = anomaly, c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90_post, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
 ```
 
 ### Post collapse: stock-recruit 
+
 black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010
+
 ```{r fig-11}
 Scatter2(df = sr_post, 
          xaxis = biomass_tm2, yaxis = R, 
@@ -244,6 +314,7 @@ This reflects the highest time period on record and could be a historical Bo alt
 
 The mean and median abundance (units) and biomass(ktonnes) for teh pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
 
+Arithmetic v geometric means????????
 
 ```{r tab1, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
@@ -268,6 +339,13 @@ knitr::include_graphics("images/Presentation1/capcod.png")
 
 ```
 
+
+# Length based
+
 # Summary
 
 Table of approaches (rows), time periods (columns), and LRPs (cells) 
+
+or 
+
+Graph of approaches v biomass

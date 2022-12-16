@@ -206,6 +206,7 @@ df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
 ## #read in age disaggregated data----
 # deleted the "Unknown" from row 105, col "age"
+### This is only 2014-2019
 # ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
 #   year = col_integer(),
 #   age = col_integer()
@@ -231,7 +232,7 @@ df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 #   group_by(year, age) %>%
 #   #select(n, weight, proportion) %>%
 #   mutate(abun=sum(n), biomass=sum(weight*0.000001))
-# 
+
 # # exploratory plot to look at prop mature at age by stratum and year
 # p <- ggplot(ageD, aes(x = factor(year), y = prop_mat, colour = factor(age), text = paste(year, "Year")))
 # p <- p + geom_point(position = "jitter")
@@ -472,8 +473,7 @@ p
 # 
 
 ## "SSB" ----
-### biomass with just the mature
-
+### biomass with just the mature: calculated in IPM_dat.R, write to csv, and then plots in simpleLRP_calc
 
 
 ## SRR without collapse years ----

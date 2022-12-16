@@ -1,5 +1,5 @@
 ---
-title: "simpleLRP"
+title: "simpleLRP_data"
 author: "Keith Lewis"
 date: "`r Sys.Date()`"
 output:
@@ -30,12 +30,18 @@ shD <- SharedData$new(df_lag)
 Background {data-navmenu="Background"}
 =====
 
+<p style="font-size: 20pt">
+Overview of Dashboard
 
+This tab contains References, tables/metadata, as well as figures of teh study area and the above references studies.  Then, there are pages with the capelin data in chronological years, a page where all the data are lagged to the year of the survey, and a simple look at 
+
+Overveiw of relevant capelin biology  
 Capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition. 
 
 The capelin spring survey was originally a survey of immature capelin (age 1 & 2) but, with the increased maturity at Age 2, the survey has become a partial index of the stock.
 
-This tab contains References, tables/metadata, as well as figures of teh study area and the above references studies.  Then, there are pages with the capelin data in chronological years, a page where all the data are lagged to the year of the survey, and a simple look at 
+</p>
+
 
 
 Study area and Data {data-navmenu="Background"}
@@ -75,10 +81,10 @@ knitr::include_graphics("images/variables_plus_fish.png")
 Supporting Research {data-navmenu="Background"}
 ====
 
-
 Column
 -------------------------------------
 
+### Capelin life cycle
 ```{r}
 
 knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/lifeCycle_plus_Data.png")

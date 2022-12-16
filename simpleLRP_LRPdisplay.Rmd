@@ -4,7 +4,7 @@ author: "Keith Lewis"
 date: "`r Sys.Date()`"
 output:
   flexdashboard::flex_dashboard:
-    theme: simplex
+    theme: flatly
 bibliography: refs/simpleLRP.bib
 ---
 
@@ -30,9 +30,12 @@ shD <- SharedData$new(df_lag)
 
 Background {data-navmenu="Background"}
 =====
-
+<p style="font-size: 20pt">
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
 Copy/paste relevant sections from Res Doc
+
+Make sure to have Sections on environmental covariates (Section 6.) and regime shifts.  Long term environmental conditions and time period of LRP - set the stage here (and talk to Fran)
+</p>
 
 SAR {data-navmenu="Background"}
 =====
@@ -140,17 +143,26 @@ plot(segmented.fit_post, add=T)
 ```
 
 
-Historical {data-navmenu="Historical"}
+Bloss {data-navmenu="Historical"}
 =====
 
+<p style="font-size: 20pt">
 Bloss is the lowest observed biomass
 
-B0 is multipled by 0.4. BUT PROBABLY SHOULDN'T BE HERE - NOT SURE WHERE
+B0 is multipled by 0.4. This is the standard in the Canadian PA but probably not appropriate here.  But these should also be under Historical proxies for consistency?????
+</p>
 
 ```{r tab2, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS("
+                        function(settings, json) {
+                          $(this.api().table().header()).css({
+                          'font-size': '20px',
+                          });
+                        }
+                    "))) %>%
+  formatStyle(columns = colnames(.$x$data), `font-size` = "20px")
 ```
 
 
@@ -164,9 +176,9 @@ Brecover is the lowest observed biomass which produced recruitment that lead to 
 
 Bmin {data-navmenu="Historical"}
 =====
-
+<p style="font-size: 20pt">
 Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
-
+</p>
 
 Column {.tabset}
 -------------------------------------

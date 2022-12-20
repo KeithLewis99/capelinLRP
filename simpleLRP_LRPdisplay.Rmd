@@ -33,7 +33,7 @@ C-68 {data-navmenu="Background"}
 
 <p style="font-size: 20pt">
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
-Copy/paste relevant sections from Res Doc
+Copy/paste relevant sections from Res Doc.....
 
 Make sure to have Sections on environmental covariates (Section 6.) and regime shifts.  Long term environmental conditions and time period of LRP - set the stage here (and talk to Fran)
 </p>
@@ -146,20 +146,22 @@ THE PROBLEM IS THE SRR (SEE NEXT PAGE). WE CAN GET Fx%SPR but we can't get the S
 SRR {data-navmenu="X Rmax"}
 =====
 
-
-<!-- Column -->
-  <!-- ------------------------------------- -->
-  <!-- BH, Bmsy = -->
-  <!-- ```{r} -->
-  <!-- plot(sr$biomass_tm2, sr$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)") -->
-  <!-- polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA) -->
-  <!-- points(R~biomass, data = sr, pch =19, col=rgb(0,0,0,1/2)) -->
-  <!-- lines(pBH~x, lwd=2) -->
-  <!-- abline(v = BmsyBH)  # from standard for Bmsy = 118 -->
-  
 Column
 -------------------------------------
-Ricker Bmsy = `r BmsyRkr`
+
+Beaverton-Holt (w/o collapse years) Bmsy = `r BmsyBH`
+```{r}
+plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
+points(R~biomass_tm2, data = sr_noCollapse, pch =19, col=rgb(0,0,0,1/2))
+lines(pBH~x, lwd=2)
+abline(v = 0.4*(b*sqrt(1/a)-b/a))
+```
+
+Column
+-------------------------------------
+
+Ricker (all years) Bmsy = `r BmsyRkr`
 ```{r}
 plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
 polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
@@ -181,11 +183,18 @@ plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
 plot(segmented.fit, add=T)
 ```
 
+Column
+-------------------------------------
+
 Post-collapse
 ```{r}
 plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
 plot(segmented.fit_post, add=T)
 ```
+
+"SSB" {data-navmenu="X Rmax"}
+=====
+This is ricker and BH curves with the spawning biomass only - waiting for Adamack
 
 
 Bloss {data-navmenu="Historical"}
@@ -240,8 +249,8 @@ Brecover is the lowest observed biomass which produced recruitment that lead to 
 
 Bmin {data-navmenu="Historical"}
 =====
-<p style="font-size: 20pt">
-Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
+<p style="font-size: 15pt">
+Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment.  Close to Barents Sea approach.
 </p>
 
 Column {.tabset}
@@ -251,7 +260,7 @@ Column {.tabset}
 
 Horizontal line is 90th percentile (add others)
 
-```{r fig-8}
+```{r fig-8, fig.width=2, fig.height=2}
 Bar1(df = sr, 
      xaxis = year, yaxis = anomaly, 
      c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", 
@@ -263,7 +272,7 @@ Bar1(df = sr,
 
 black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010, purple = 40th
 
-```{r fig-9}
+```{r fig-9, fig.width=2, fig.height=2}
 Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment: ", 
          xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
@@ -278,7 +287,7 @@ Column {.tabset}
 
 Horizontal line is 90th percentile
 
-```{r fig-10}
+```{r fig-10, fig.width=2, fig.height=2}
 Bar1(df = sr_post, xaxis = year, yaxis = anomaly, c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = h90_post, filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
 ```
 
@@ -286,7 +295,7 @@ Bar1(df = sr_post, xaxis = year, yaxis = anomaly, c2 = "Biomass[t-2]: ", c3 = "A
 
 black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010
 
-```{r fig-11}
+```{r fig-11, fig.width=2, fig.height=2}
 Scatter2(df = sr_post, 
          xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
@@ -308,11 +317,9 @@ Bmin
 # Historical proxy: Bmsy and B0
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 
-A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. 
+A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
 
-This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
-
-The mean and median abundance (units) and biomass(ktonnes) for teh pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
+The mean and median abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
 
 Arithmetic v geometric means????????
 
@@ -326,18 +333,21 @@ datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  opt
 # Multivariate
 
 <p style="font-size: 20pt">
-Series of Bloss or hierarchical approach - see other dashboard
+Series of Bloss or hierarchical approach - see other dashboard (simpleLRP_data.Rmd/html)
 </p>
 
 
-# Ecosystem
+# Capcod {data-navmenu="Ecosystem"}
+===== 
 
-=====
 ```{r}
 
 knitr::include_graphics("images/Presentation1/capcod.png")
 
 ```
+
+# Condition-based M {data-navmenu="Ecosystem"}
+===== 
 
 
 # Length based

@@ -31,11 +31,11 @@ source("simpleLRP_dat.R")
 # B0
 B0_abund_all <- max(df_cap$abundance_med, na.rm = T) # all
 B0_abund_post <- max(df_cap$abundance_med[7:35], na.rm = T) # post collapse
-B0_abund_recent<- max(df_cap$abundance_med[27:34], na.rm = T) # a productive period post collapse
+B0_abund_recent <- max(df_cap$abundance_med[27:34], na.rm = T) # a productive period post collapse
 
 B0_bio_all <- max(df_cap$biomass_med, na.rm = T)
 B0_bio_post <- max(df_cap$biomass_med[7:35], na.rm = T)
-B0_bio_recent<- max(df_cap$biomass_med[27:35], na.rm = T)
+B0_bio_recent <- max(df_cap$biomass_med[27:35], na.rm = T)
 
 # create a dataframe to hold the min and max values
 B0 <- as.data.frame(matrix(NA, 2, 5))
@@ -605,7 +605,7 @@ Bloss_abund_recent <- min(df_cap$abundance_med[27:35], na.rm = T) # this time pe
 
 Bloss_bio_all <- min(df_cap$biomass_med, na.rm = T)
 Bloss_bio_post <- min(df_cap$biomass_med[7:35], na.rm = T)
-Bloss_bio_recent<- min(df_cap$biomass_med[27:35], na.rm = T)
+Bloss_bio_recent <- min(df_cap$biomass_med[27:35], na.rm = T)
 
 Bloss_bio_all_n2010 <- min(df_cap$biomass_med[c(1:25, 27:35)], na.rm = T)
 Bloss_bio_post_n2010 <- min(df_cap$biomass_med[c(7:25, 2735)], na.rm = T)

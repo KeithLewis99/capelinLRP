@@ -21,7 +21,11 @@
 #' @examples 
 #' Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", filename = "figs/1-larvae-density-rank.pdf", save = "no")
 
-Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, c1 = c1, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, filename = filename, save = save, errorbar = "no", ymin = NULL, ymax = NULL){
+Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, 
+                     c1 = c1, c2 = c2, c3 = c3, 
+                     xlab = xlab, ylab = ylab, 
+                     filename = filename, save = save, 
+                     errorbar = "no", ymin = NULL, ymax = NULL){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, colour = {{colour}}, text = paste(
     c1, {{colour}}, "\n",
@@ -150,6 +154,44 @@ Scatter2 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
   }
 }
 
+# as above but with hlines
+Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis, 
+                     c2 = c2, c3 = c3, 
+                     xlab = xlab, ylab = ylab, 
+                     hline1 = hline1, hline2 = NULL, hline3 = NULL, hline4 = NULL, 
+                     filename = filename, save = save){
+  #browser()
+  p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
+    "Year: ", year, "\n",
+    c2, {{xaxis}}, "\n",
+    c3, {{yaxis}}, "\n",  
+    sep = ""
+  )))
+  p <- p + geom_point()
+  #p <- p + scale_colour_continuous(type = "viridis")
+  p <- p + xlab(xlab)
+  p <- p + ylab(ylab)
+  p <- p + geom_hline(yintercept = hline1)
+  if(is.numeric(hline2)){
+    p <- p + geom_hline(yintercept = hline2, colour = 'red', linetype = "dashed")   
+  }
+  if(is.numeric(hline3)){
+    p <- p + geom_hline(yintercept = hline3, linetype = "dashed")    
+  }
+  if(is.numeric(hline4)){
+    p <- p + geom_hline(yintercept = hline4, colour = 'purple', linetype = "dashed")
+  }
+  
+  p <- p + theme_bw()
+  
+  
+  if(save == "yes"){
+    ggsave(paste(filename))
+    return(ggplotly(p, tooltip = "text"))  
+  } else {
+    return(ggplotly(p, tooltip = "text")) 
+  }
+}
 
 #' Anomaly - meant to calculate anomalies for different variables
 #'

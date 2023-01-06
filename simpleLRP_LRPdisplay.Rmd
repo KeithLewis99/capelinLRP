@@ -28,15 +28,16 @@ source("simpleLRP_calc.R")
 shD <- SharedData$new(df_lag)
 ```
 
-C-68 {data-navmenu="Background"}
+Fisheries Act (revisions) {data-navmenu="Background"}
 =====
 
-<p style="font-size: 20pt">
-This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under Bill C-68 and is due in 2023.  
+<p style="font-size: 30pt">
+This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under the revised Fisheries Act (FA) for 2023.  
 Copy/paste relevant sections from Res Doc.....
 
 Make sure to have Sections on environmental covariates (Section 6.) and regime shifts.  Long term environmental conditions and time period of LRP - set the stage here (and talk to Fran)
 </p>
+
 
 SAR {data-navmenu="Background"}
 =====
@@ -49,40 +50,11 @@ knitr::include_graphics("images/Presentation1/SAR_table.PNG")
 
 Criteria {data-navmenu="Background"}
 =====
-1. Feasible -can be operationalized by science advice and appropriate management measures (but in SAR: it should be feasible to monitor indicators and estimate stock status relative to the LRP on time scales and frequencies relevant to its role as the trigger for a rebuilding plan) capable of being done or carried out.  
+
+<p style="font-size: 20pt"> 1. Feasible -can be operationalized by science advice and appropriate management measures (but in SAR: it should be feasible to monitor indicators and estimate stock status relative to the LRP on time scales and frequencies relevant to its role as the trigger for a rebuilding plan) capable of being done or carried out.</p>   
 2. Reliable - can be interpreted as acceptable consistency, accuracy or precision of estimates (i.e., acceptably low variance or low bias), and robustness to a range of possible uncertainties (assumptions, stock scale, data points, etc). As the “true” values of reference points are unknown, evaluations of the accuracy and precision (or robustness) of estimates can be conducted in simulation tests of systems with known values. Sensitivity analyses can also be conducted to evaluate the influence of model parameters on reference point estimates.   
 3. Plausible - refers to whether estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. (does the threshold make sense – clearly 0 or Bo would be both be implausible values.)  
 
-
-The Roadmap {data-navmenu="Background"}
-====
-
-PROBABLY REPLACE THIS WITH THE LRP-SAR APPROACH OR EVEN THE TABLE or Figure  
-
-1.	“Simple” approach  
-    + SR relationship  (e.g. Iceland)
-        -	Have completed preliminary work  
-        -	Working on an age disaggregated approach  
-    +	B-RECOVER   
-        -	Haddock approach: Done – see dashboard  
-        - Barents Sea
-    + B-min
-        -	Multivariate – see snow crab  
-        -	Hierarchical - Done preliminary work  
-2.	“Complex” approach  
-    i.	Single Species  
-        a. State space/IPM
-        b. Age-structured 
-        c. Delayed Difference  
-        d. VPA/SCA  
-        e. Surplus Production  
-    ii.	Ecosystem 
-        a. Ecopath/MICE  
-        b. Capcod  
-    iii.	Others  
-        a. MSE approach (Maritimes – Herring)  
-        b.	Deep learning – see Krista Baker  
-        c.	Ogmap – probabilities of S-R relationship producing a given outcome   (Geoff)
 
 References {- data-navmenu="Background"}
 =====
@@ -93,18 +65,20 @@ Bmsy {- data-navmenu="Proportions"}
 =====
 
 <p style="font-size: 20pt">
-Done lots of work here on IPM and SPM approaches
-Perhaps present two JABBA graphs showing very low and very high Bmsy
+Done lots of work here on IPM and SPM approaches  
+Perhaps present two JABBA graphs showing very low and very high Bmsy  
 Plus Oceana - need rationale why this is not a good approach - extract summary from  Res Doc
 </p>
 
 B0 {- data-navmenu="Proportions"}
 =====
 
-Column
+Column 
 -------------------------------------
 
+<p style="font-size: 20pt">
 B0 is multipled by 0.4. This is the standard in the Canadian PA but probably not appropriate here.  
+</p>
 
 ```{r eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
@@ -119,28 +93,35 @@ datatable(B0, rownames = F, class = 'cell-border stripe', height = 50,  options 
   formatStyle(columns = colnames(.$x$data), `font-size` = "20px")
 ```
 
-Column
+Column {.tabset}
 -------------------------------------
 
+### Abundance
+
+black = 1985-2019, black-dashed = 1991-2019
+
 ```{r}
-par(mar= c(5, 4, 4, 2) + 0.1)
-
-Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
-         filename = "figs/2-cond-rank-year.pdf", save = "no")
-
-Scatter1(df = df_cap, xaxis = year, yaxis = abundance_med, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
+         c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Capelin abundance (billions)",
+        hline1 = 0.4*B0_abund_all, hline2 = 0.4*B0_abund_post, 
+          hline3 = 0.4*B0_abund_recent, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
 
-# Bmsy proxies Fx%SPR
-<p style="font-size: 20pt">
-THE PROBLEM IS THE SRR (SEE NEXT PAGE). WE CAN GET Fx%SPR but we can't get the SRR so we can't do LRPs.  See next page!
-</p>
+### Biomass
+
+black = 1985-2019, black-dashed = 1991-2019
+
+```{r}
+Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         hline1 = 0.4*B0_bio_all, hline2 = 0.4*B0_bio_post, 
+          hline3 = 0.4*B0_bio_recent, hline4 = NULL, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
 
 
 SRR {data-navmenu="X Rmax"}
@@ -149,7 +130,8 @@ SRR {data-navmenu="X Rmax"}
 Column
 -------------------------------------
 
-Beaverton-Holt (w/o collapse years) Bmsy = `r BmsyBH`
+### <b><font face="Georgia" size="3em" color="#000000">Beaverton-Holt  </font></b> (w/o collapse years 1991-1992)
+<p style="font-size: 10pt"> Bmsy = `r BmsyBH` </p>
 ```{r}
 plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
 polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
@@ -161,7 +143,9 @@ abline(v = 0.4*(b*sqrt(1/a)-b/a))
 Column
 -------------------------------------
 
-Ricker (all years) Bmsy = `r BmsyRkr`
+### <b><font face="Georgia" size="3em" color="#000000">Ricker </font></b> (all years)
+<p style="font-size: 10pt">Bmsy = `r BmsyRkr` </p>
+
 ```{r}
 plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
 polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
@@ -177,7 +161,7 @@ Iceland {data-navmenu="X Rmax"}
 Column
 -------------------------------------
 
-All
+### All
 ```{r}
 plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
 plot(segmented.fit, add=T)
@@ -186,7 +170,7 @@ plot(segmented.fit, add=T)
 Column
 -------------------------------------
 
-Post-collapse
+### Post-collapse
 ```{r}
 plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
 plot(segmented.fit_post, add=T)
@@ -205,7 +189,6 @@ Column
 
 <p style="font-size: 20pt">
 Bloss is the lowest observed biomass
-
 </p>
 
 ```{r tab2, eval=T,prompt=T, comment = F}
@@ -221,20 +204,31 @@ datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  option
   formatStyle(columns = colnames(.$x$data), `font-size` = "20px")
 ```
 
-Column
+Column {.tabset}
 -------------------------------------
 
+### Abundance
+
+red-dashed = 1985-2019/1991-2019, black-dashed = 2011-2019
+
 ```{r fig-3}
-par(mar= c(5, 4, 4, 2) + 0.1)
-
-Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
-         filename = "figs/2-cond-rank-year.pdf", save = "no")
-
-Scatter1(df = df_cap, xaxis = year, yaxis = abundance_med, colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
+Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
+         c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Capelin abundance (billions)",
+        hline1 = Bloss_abund_all, hline2 = Bloss_abund_post, 
+          hline3 = Bloss_abund_recent, hline4 = NULL, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+### Biomass
+
+black = 1985-2019/1991-2019, red-dashed = 2011-2019, black-dashed = 1985-2019/1991-2019 w/o 2010
+```{r}
+Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         hline1 = Bloss_bio_all, hline2 = Bloss_bio_recent, 
+          hline3 = Bloss_bio_post_n2010, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -243,7 +237,8 @@ Brecover {data-navmenu="Historical"}
 =====
 
 <p style="font-size: 20pt">
-Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery - we don't have this for capelin
+Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery.  
+It is a matter of some debate whether this has occurred for capelin.  If yes, we would use the 2012we don't have this for capelin
 </p>
 
 
@@ -304,24 +299,27 @@ Scatter2(df = sr_post,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 
-# Historical from models
+
+
+Values from Models {data-navmenu="Historical"}
+=====
+
 <p style="font-size: 20pt">
-Only viable if we get the IPM up and running  
-Bloss  
-Brecover  
-Bmin  
+Only viable if we get the IPM up and running.  
 </p>
 
 
-
 # Historical proxy: Bmsy and B0
+<p style="font-size: 20pt">
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
+</p>
 
 A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
 
 The mean and median abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
 
 Arithmetic v geometric means????????
+
 
 ```{r tab1, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
@@ -330,24 +328,22 @@ datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  opt
 ```
 
 
-# Multivariate
+# Multi-indicator
 
 <p style="font-size: 20pt">
 Series of Bloss or hierarchical approach - see other dashboard (simpleLRP_data.Rmd/html)
 </p>
 
 
-# Capcod {data-navmenu="Ecosystem"}
-===== 
+# Ecosystem
+
+### Capcod 
 
 ```{r}
 
 knitr::include_graphics("images/Presentation1/capcod.png")
 
 ```
-
-# Condition-based M {data-navmenu="Ecosystem"}
-===== 
 
 
 # Length based

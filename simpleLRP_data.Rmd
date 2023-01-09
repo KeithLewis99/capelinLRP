@@ -32,11 +32,19 @@ Background {data-navmenu="Background"}
 
 <p style="font-size: 20pt">
 Overview of Dashboard  
+</p>
 
-This dashboard includes interactive figures for all data relevant to the capelin forecast model and the proposed LRPs in the dashboard (simpleLRP_display).  The tabs on this dashboard include:  
-* Overview  
+<p style="font-size: 15pt">
+This dashboard includes interactive figures for all data relevant to the capelin forecast model and the proposed LRPs in the dashboard (simpleLRP_display).  The tabs on this dashboard include: 
+</p>
+
+<style type="text/css">
+  li {font-size: 20px;}
+</style>
+
+* Background  
     - the study area and data (time series) and temporal relationships among indices used in the capelin forecast model (spring acoustic survey, larval density, timing of ice retreat, fall condition, and maturity)  
-    - capelin life cycle and supporting studies surrounding the capelin forecast model (Lewis 2019) including figures showing that capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition.  
+    - Overveiw of relevant capelin biology: capelin life cycle and supporting studies surrounding the capelin forecast model (Lewis 2019) including figures showing that capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition.  
     - references   
 * ranks of the capelin larval and spring acoustic index (biomass)  
 * indices by year  
@@ -45,11 +53,9 @@ This dashboard includes interactive figures for all data relevant to the capelin
 * abundance- and biomass-at-age  
 * catch-at-age
 
-Overveiw of relevant capelin biology  
-
 Note: The capelin spring survey was originally a survey of immature capelin (age 1 & 2) but, with the increased maturity at Age 2, the survey has become a partial index of the stock.
 
-</p>
+
 
 
 
@@ -70,7 +76,7 @@ knitr::include_graphics("images/map_inset.png")
 Column {.tabset}
 -------------------------------------
 
-### Time Series
+### <b><font face="Georgia" size="4em" color="#000000">Time Series </font></b> 
 
 ```{r}
 
@@ -78,8 +84,7 @@ knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/li
 
 ```
 
-
-### The data: temporal relationships
+### <font size="4em"> The data: temporal relationships </font>
 
 ```{r}
 

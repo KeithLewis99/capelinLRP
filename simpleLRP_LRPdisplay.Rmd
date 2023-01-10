@@ -238,7 +238,7 @@ Brecover {data-navmenu="Historical"}
 
 <p style="font-size: 20pt">
 Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery.  
-It is a matter of some debate whether this has occurred for capelin.  If yes, we would use the 2012we don't have this for capelin
+It is a matter of some debate whether this has occurred for capelin.  If yes, we would use the 2012 which would be analagos to one of the Bmin values.
 </p>
 
 

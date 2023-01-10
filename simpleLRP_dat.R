@@ -171,7 +171,7 @@ df_ice$rank <- rank(df_ice$tice)
 
 ## read in condition data----
 #read and check data
-df_cond <- read_csv("data/condition_ag1_2_MF_out.csv", col_types = cols(
+df_cond <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/fromAaron/condition_2JK_ag1_2_MF_2022.csv", col_types = cols(
   year = col_integer()
 ))
 str(df_cond)
@@ -284,6 +284,7 @@ df_lag <- ls %>% reduce(left_join, by ="year") %>%
          cond_tm1, 
          mat2, mat2_tm1)
 str(df_lag)
+write.csv(df_lag, "data/lag.csv")
 
 # derived variables ----
 # Create indicator (index) of abundance next year based on % of immature Age 2 (1-age 2) that are will mature the next year. This is probably not quite right as the AGe 1's are still in but it assumes that the Age 3+ add very little.

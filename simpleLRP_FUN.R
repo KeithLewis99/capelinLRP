@@ -22,7 +22,7 @@
 #' Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", filename = "figs/1-larvae-density-rank.pdf", save = "no")
 
 Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, 
-                     c1 = c1, c2 = c2, c3 = c3, 
+                     c1 = NULL, c2 = c2, c3 = c3, 
                      xlab = xlab, ylab = ylab, 
                      filename = filename, save = save, 
                      errorbar = "no", ymin = NULL, ymax = NULL){
@@ -35,8 +35,10 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
   )))
   p <- p + geom_point()
   p <- p + scale_colour_continuous(type = "viridis")
-  if(!! errorbar == "yes"){
+  if(!! errorbar == "se"){
     p <- p + geom_errorbar(aes(ymin = {{yaxis}}-{{ymin}}*1.96, ymax = {{yaxis}}+{{ymin}}*1.96))
+  } else if(!! errorbar == "limit"){
+    p <- p + geom_errorbar(aes(ymin = ymin, ymax = ymax))
   }
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)

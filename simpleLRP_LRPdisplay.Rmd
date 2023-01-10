@@ -34,7 +34,9 @@ Fisheries Act (revisions) {data-navmenu="Background"}
 <p style="font-size: 30pt">
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under the revised Fisheries Act (FA) for 2023.  
 Copy/paste relevant sections from Res Doc.....
+</p>
 
+<p style="font-size: 30pt">
 Make sure to have Sections on environmental covariates (Section 6.) and regime shifts.  Long term environmental conditions and time period of LRP - set the stage here (and talk to Fran)
 </p>
 
@@ -137,7 +139,7 @@ plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="wh
 polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
 points(R~biomass_tm2, data = sr_noCollapse, pch =19, col=rgb(0,0,0,1/2))
 lines(pBH~x, lwd=2)
-abline(v = 0.4*(b*sqrt(1/a)-b/a))
+#abline(v = 0.4*(b*sqrt(1/a)-b/a))
 ```
 
 Column
@@ -309,7 +311,7 @@ Only viable if we get the IPM up and running.
 </p>
 
 
-# Historical proxy: Bmsy and B0
+# Historical proxy
 <p style="font-size: 20pt">
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 </p>
@@ -320,11 +322,38 @@ The mean and median abundance (units) and biomass(ktonnes) for the pre-collapse(
 
 Arithmetic v geometric means????????
 
+Column
+-------------------------------------
 
 ```{r tab1, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
 datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+```
+
+Column {.tabset}
+-------------------------------------
+
+### Abundance
+
+```{r}
+Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
+         c2 = "Year: ", c3 = "Abundance: ", 
+         xlab = "Year", ylab = "Capelin abundance (billions)",
+        hline1 = 0.4*mda1, hline2 = 0.4*mda2, 
+          hline3 = 0.4*mda3, hline4 = 0.4*mda4, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+### Biomass
+
+```{r}
+Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+         hline1 = 0.4*mdb1, hline2 = 0.4*mdb2, 
+          hline3 = 0.4*mdb3, hline4 = 0.4*mdb4, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
 

@@ -117,20 +117,13 @@ abline(v = quantile(df_ld$rank, c(0.9), na.rm = TRUE))
 
 ## plot year v density couloured by rank
 Scatter1(df = df_ld, 
-         xaxis = year, 
-         yaxis = avg_density, 
+         xaxis = year, yaxis = avg_density, 
          colour = rank,
-         c1 = "Rank: ",
-         c2 = "Year: ", 
-         c3 = "Density: ", 
-         xlab = "Year", 
-         ylab = "Larval Density (#/m^3)", 
-         filename = "figs/2-Abundance-rank-year.pdf", 
-         save = "no", 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", 
+         xlab = "Year", ylab = "Larval Density (#/m^3)", 
+         filename = "figs/2-Abundance-rank-year.pdf", save = "no", 
          errorbar = "yes", 
-         ymin= se_auc, 
-         ymax = se_auc)
-
+         ymin= se_auc, ymax = se_auc)
 
 
 ## read in capelin data----

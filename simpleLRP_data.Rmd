@@ -362,7 +362,6 @@ subplot(sp1, sp2, widths = c(0.4, 0.4), heights = 0.8, titleX = TRUE, titleY = T
 # 
 ```
 
-# Abundance at age v vars
 
 # Catch-at-age (log(kt))
 

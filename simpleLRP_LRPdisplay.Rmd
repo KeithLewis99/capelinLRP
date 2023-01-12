@@ -180,8 +180,31 @@ plot(segmented.fit_post, add=T)
 
 "SSB" {data-navmenu="X Rmax"}
 =====
-This is ricker and BH curves with the spawning biomass only - waiting for Adamack
+ 
+Column
+-------------------------------------
 
+### All
+
+Plots of the mature biomass from the spring survey at time t and age-2 at t+2
+
+```{r}
+Scatter1(df = df_ssb, xaxis = ssb, yaxis = abundance_tp2, colour = year,
+         c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
+         xlab = "Capelin spawning biomass (ktonnes)", ylab = "Recruitment (billions)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+Column
+-------------------------------------
+
+### Post-collapse
+```{r}
+Scatter1(df = df_ssb[6:37, ], xaxis = ssb, yaxis = abundance_tp2, colour = year,
+         c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
+         xlab = "Capelin spawning biomass (ktonnes)", ylab = "Recruitment (billions)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
 
 Bloss {data-navmenu="Historical"}
 =====

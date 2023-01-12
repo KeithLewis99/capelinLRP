@@ -197,7 +197,7 @@ df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
 
 
-## #read in age disaggregated data----
+## #read in disaggregated data----
 # deleted the "Unknown" from row 105, col "age"
 ### This is only 2014-2019
 # ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
@@ -468,7 +468,10 @@ p
 
 ## "SSB" ----
 ### biomass with just the mature: calculated in IPM_dat.R, write to csv, and then plots in simpleLRP_calc
-
+df_ssb <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/ssb_all.csv")
+str(df_ssb)
+plot(df_ssb$ssb, lead(df_ssb$abundance, 2))
+plot(df_ssb$ssb[6:37], lead(df_ssb$abundance[6:37], 2))
 
 ## SRR without collapse years ----
 sr_noCollapse <- sr[c(1:6, 9:35),]
@@ -492,6 +495,7 @@ str(sr_lead)
 plot(sr_lead$biomass_t, sr_lead$R_tp2) # this produces exactly the same plot as with lag because the NAs move too.  
 
 
+#  Aaron's file
 
 # multivariate approach----  
 # start with the relationship between LD (t-2) and capelin abundance

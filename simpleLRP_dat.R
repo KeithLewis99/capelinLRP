@@ -80,6 +80,7 @@ df_ld <- df_ld %>% rename(year = `Year`,
 
 df_ld$lnlarvae <- log(df_ld$avg_density)
 
+
 ## summary stats and figures
 summary(df_ld)
 quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
@@ -103,6 +104,9 @@ df_ld$rank <- rank(df_ld$avg_density, na.last = "keep")
 arrange(df_ld, rank)
 ## create a lag column so that avg_density[t-2] corresponds to year[t]
 df_ld$avg_density_tm2 <- lag(df_ld$avg_density, 2)
+
+df_ld <- df_ld %>%
+ mutate(across(avg_density:avg_density_tm2, round, 0))
 
 ## basic plot of year v density
 plot(df_ld$year, df_ld$avg_density)
@@ -128,10 +132,20 @@ Scatter1(df = df_ld,
 
 ## read in capelin data----
 #read and check data
-df_cap <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin-2021.csv", col_types = cols(
-  year = col_integer()
-))
+#### replacing this with summations from the age-disaggregated data
+#  df_cap <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin-2021.csv", col_types = cols(
+#   year = col_integer()
+# ))
+df_agg_abun <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_abundance_1985-2022.csv")
+str(df_agg_abun)
+df_agg_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_biomass_1985-2022.csv")
+str(df_agg_bio)
+
+df_cap <- merge(df_agg_abun, df_agg_bio, by = "year")
 str(df_cap)
+
+df_cap$abundance_med <- round(df_cap$abundance_med, 0)
+df_cap$biomass_med <- round(df_cap$biomass_med, 0)
 
 # summary stats
 summary(df_cap)
@@ -140,7 +154,7 @@ quantile(df_cap$abundance_med, na.rm = T)
 # create a rank column
 df_cap$rankA <- rank(df_cap$abundance_med)
 df_cap$rankB <- rank(df_cap$biomass_med)
-arrange(df_cap, rankB)
+#arrange(df_cap, rankB)
 df_cap$abundance_med_tm2 <- lag(df_cap$abundance_med, 2)
 
 #View(df_cap)
@@ -176,6 +190,7 @@ df_cond <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/fromAaron/condi
 ))
 str(df_cond)
 
+df_cond$meanCond <- round(df_cond$meanCond, 2)
 df_cond$rank <- rank(df_cond$meanCond)
 df_cond$cond_tm1 <- lag(df_cond$meanCond)
 
@@ -192,6 +207,7 @@ df_mat <- df_mat %>%
 
 
 #make variables
+df_mat$mat2 <- round(df_mat$mat2, 1)
 df_mat$rank <- rank(df_mat$mat2)
 df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
@@ -417,7 +433,8 @@ str(sr)
 
 # sr <- as.data.frame(cbind(year = df_dis$year, age2 = df_dis$age2, age2PerMat = df_dis$age2PerMat, biomass = df_lag$biomass_med[1:33]))
 
-sr$R <- sr$age2*1000 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
+sr$R <- sr$age2 # this creates redundant columns but solves a short term problem
+#sr$R <- sr$age2*1000 # the 1000 is to get this to billions so that resulting units are kt, the 0.01 is to get PerMat to a percentage
 # sr$R <- sr$age2*1000*sr$age2PerMat*0.01
 str(sr)
 
@@ -426,11 +443,12 @@ str(sr)
 ##### Not lagging biomass bc its already lagged (or lead)
 # exploratory - as per Hilborn and Walters on pg ~ 269, plot biomass v R
 plot(sr$biomass_tm2, sr$R)
-plot(sr$biomass_tm2, sr$age2)
+
 
 
 # from 269 - biomass v logaritm of S/R - spawners v recruits
 plot(sr$biomass_tm2, log(sr$R))
+
 # log biomass v log S/R (this may not be right)
 plot(log(sr$biomass_tm2), log(sr$R))
 
@@ -544,3 +562,4 @@ ggplotly(temp5)
 
 # Z & M Barents Sea (BS) style----
 ## See IPM project
+

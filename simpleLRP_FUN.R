@@ -42,6 +42,7 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
   }
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)
+  p <- p + theme(axis.title = element_text(size = 10))
   p <- p + theme_bw()
   
   if(!! save == "yes"){  # the !! just unquotes the arguement
@@ -161,7 +162,8 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
                      c2 = c2, c3 = c3, 
                      xlab = xlab, ylab = ylab, 
                      hline1 = hline1, hline2 = NULL, hline3 = NULL, hline4 = NULL, 
-                     filename = filename, save = save){
+                     filename = filename, save = save, 
+                     text = NULL, xlabel = NULL, ylabel = NULL){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     "Year: ", year, "\n",
@@ -183,7 +185,8 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
   if(is.numeric(hline4)){
     p <- p + geom_hline(yintercept = hline4, colour = 'purple', linetype = "dashed")
   }
-  
+  #p + geom_text(aes(x = xlabel, y = ylabel), label = text)
+  p <- p + annotate("text", x = xlabel, y = ylabel, label = text, size = 4)
   p <- p + theme_bw()
   
   

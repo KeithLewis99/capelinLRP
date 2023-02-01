@@ -262,13 +262,23 @@ df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 # df_dis_all <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin_age_disaggregate_abundance.csv")
 # str(df_dis_all)
 
-df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/capelin_abundance_1985-2021.csv")
+#df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/capelin_abundance_1985-2021.csv")
+df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_abundance_1985-2022.csv")
 str(df_dis) 
 
 # join age disaggregated data with larval density
 df_dis <- left_join(df_dis, df_ld, by = 'year')
 df_dis <- left_join(df_dis, df_mat, by = 'year')
 str(df_dis)
+
+Scatter1(df = df_dis, xaxis = year, yaxis = I5, colour = NULL, 
+         c2 = "Year: ", c3 = "Abundance: ", 
+         xlab = "Year", ylab = "Capelin abundance (millions) - age-5",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+## read in biomass- age disaggregated
+df_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_biomass_1985-2022.csv")
+str(df_bio) 
 
 
 # join all dataframes with lags----
@@ -471,7 +481,10 @@ p
 df_ssb <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/ssb_all.csv")
 str(df_ssb)
 plot(df_ssb$ssb, lead(df_ssb$abundance, 2))
+plot(df_ssb$ssb, df_ssb$abundance_tp2)
 plot(df_ssb$ssb[6:37], lead(df_ssb$abundance[6:37], 2))
+plot(df_ssb$ssb[6:37], df_ssb$abundance_tp2[6:37])
+
 
 ## SRR without collapse years ----
 sr_noCollapse <- sr[c(1:6, 9:35),]

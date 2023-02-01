@@ -79,7 +79,7 @@ Column
 -------------------------------------
 
 <p style="font-size: 20pt">
-B0 is multipled by 0.4. This is the standard in the Canadian PA but probably not appropriate here.  
+B0 is multipled by 0.2. This is the standard in the Canadian PA but probably not appropriate here.  
 </p>
 
 ```{r eval=T,prompt=T, comment = F}
@@ -100,15 +100,17 @@ Column {.tabset}
 
 ### Abundance
 
-black = 1985-2019, black-dashed = 1991-2019
 
 ```{r}
 Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
-         c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions)",
-        hline1 = 0.4*B0_abund_all, hline2 = 0.4*B0_abund_post, 
-          hline3 = 0.4*B0_abund_recent, hline4 = NULL, 
-         filename = "figs/2-cond-rank-year.pdf", save = "no")
+              c2 = "Year: ", c3 = "Abundance: ", 
+              xlab = "Year", ylab = "Index of capelin abundance (billions)",
+              hline1 = 0.2*B0_abund_all, hline2 = 0.2*B0_abund_post, 
+              hline3 = 0.2*B0_abund_recent, hline4 = NULL, 
+              filename = "figs/2-cond-rank-year.pdf", save = "no",
+              text = "black = 1985-2019, \n black-dashed = 1991-2019",
+              xlabel = 2013, ylabel = 600
+              )
 ```
 
 
@@ -119,9 +121,9 @@ black = 1985-2019, black-dashed = 1991-2019
 ```{r}
 Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
-         hline1 = 0.4*B0_bio_all, hline2 = 0.4*B0_bio_post, 
-          hline3 = 0.4*B0_bio_recent, hline4 = NULL, 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
+         hline1 = 0.2*B0_bio_all, hline2 = 0.2*B0_bio_post, 
+          hline3 = 0.2*B0_bio_recent, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -180,18 +182,18 @@ plot(segmented.fit_post, add=T)
 
 "SSB" {data-navmenu="X Rmax"}
 =====
- 
+
+Plots of the mature biomass from teh spring survey at time t and age-2 at t+2
+
 Column
 -------------------------------------
 
 ### All
 
-Plots of the mature biomass from the spring survey at time t and age-2 at t+2
-
-```{r}
-Scatter1(df = df_ssb, xaxis = ssb, yaxis = abundance_tp2, colour = year,
+```{r, fig.width=2, fig.height=2}
+Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
-         xlab = "Capelin spawning biomass (ktonnes)", ylab = "Recruitment (billions)",
+         xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -199,10 +201,10 @@ Column
 -------------------------------------
 
 ### Post-collapse
-```{r}
-Scatter1(df = df_ssb[6:37, ], xaxis = ssb, yaxis = abundance_tp2, colour = year,
-         c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
-         xlab = "Capelin spawning biomass (ktonnes)", ylab = "Recruitment (billions)",
+```{r, fig.width=5, fig.height=5}
+Scatter1(df = df_ssb[6:37, ], xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
+         c1 = "Year: ", c2 = "SSB: ", c3 = "Recruitment: ", 
+         xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -295,7 +297,7 @@ black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010, purple
 ```{r fig-9, fig.width=2, fig.height=2}
 Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment: ", 
-         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
+         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
          vline1 = v90, vline2 = v50, vline3 = v50_alt3, vline4 = v40_alt4, 
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
@@ -319,7 +321,7 @@ black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010
 Scatter2(df = sr_post, 
          xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
-         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t] (ktonnes)", 
+         xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
          vline1 = v90_post, vline2 = v50_post, vline3 = v50_post_alt,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
@@ -341,9 +343,8 @@ A historical proxy for BMSY can be estimated as the mean or median value of an i
 
 A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
 
-The mean and median abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
+The mean, median, and geometric abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
 
-Arithmetic v geometric means????????
 
 Column
 -------------------------------------

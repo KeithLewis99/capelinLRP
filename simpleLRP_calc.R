@@ -24,10 +24,10 @@ source("simpleLRP_FUN.R")
 source("simpleLRP_dat.R")
 
 # Bmsy: proportion-----
-
+## At this point, I have no viable approach for calculating Bmsy.
 
 # B0: proportion-----
-
+## Need to check with Tim if this approach is a) appropriate and b) belongs in this section.
 # B0
 B0_abund_all <- max(df_cap$abundance_med, na.rm = T) # all
 B0_abund_post <- max(df_cap$abundance_med[7:35], na.rm = T) # post collapse
@@ -43,15 +43,16 @@ B0 <- rename(B0, indicator = V1, "LRP" = V2, "1985-2019" = V3, "1991-2019" = V4,
 B0$indicator <- c("abund", "biomass")
 B0$LRP <- rep(c("B0"), 2)
 
+multB0 <- 0.2
 # put values from above
-B0$`1985-2019`[1] <- 0.4*B0_abund_all
-B0$`1991-2019`[1] <- 0.4*B0_abund_post
-B0$`2011-2019`[1] <- 0.4*B0_abund_recent
+B0$`1985-2019`[1] <- multB0*B0_abund_all
+B0$`1991-2019`[1] <- multB0*B0_abund_post
+B0$`2011-2019`[1] <- multB0*B0_abund_recent
 
 
-B0$`1985-2019`[2] <- 0.4*B0_bio_all
-B0$`1991-2019`[2] <- 0.4*B0_bio_post
-B0$`2011-2019`[2] <- 0.4*B0_bio_recent
+B0$`1985-2019`[2] <- multB0*B0_bio_all
+B0$`1991-2019`[2] <- multB0*B0_bio_post
+B0$`2011-2019`[2] <- multB0*B0_bio_recent
 
 
 # Bmsy proxies Fx%SPR ----
@@ -145,7 +146,6 @@ abline(0,1/quantile(SSB/R, probs=0.9, na.rm = T), col=4) #Flow
 
 ### FSA----
 # trying to replicate the above but with FSA from Ogle book
-library(FSA)
 svR <- srStarts(R~biomass_tm2,data=na.omit(sr1),type="Ricker", na.rm=T)
 srFuns("Ricker")
 rckr <- srFuns("Ricker")
@@ -205,7 +205,8 @@ abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 2
 # 
 # # resids
 ## https://derekogle.com/fishR/2021-06-01-residPlot-replacement
-FSAmisc::residPlot(srR)
+### the below has been deprecated - the above link has explanation - skip fixing this for now
+#FSAmisc::residPlot(srR)
 
 tmp <- na.omit(sr1) %>%
   dplyr::mutate(fits=fitted(srR),
@@ -634,6 +635,7 @@ Bmin$`1985-2019`[3] <- Bloss_bio_all_n2010
 Bmin$`1991-2019`[3] <- Bloss_bio_post_n2010
 Bmin$`2011-2019`[3] <- Bloss_bio_recent
 
+
 ### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 # Historical LRP ----
@@ -762,6 +764,7 @@ ma1 <- mean(df_cap$abundance_med[1:7])
 mb1 <- mean(df_cap$biomass_med[1:7])
 mda1 <- median(df_cap$abundance_med[1:7])
 mdb1 <- median(df_cap$biomass_med[1:7])
+gmb1 <- exp(mean(log(df_cap$biomass_med[1:7])))
 
 # Bmsy: this is the time period from 1999:2018.  It "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015
 # probelm that there is no productive period since 1991 except for 2013-2015
@@ -770,6 +773,7 @@ ma2 <- mean(df_cap$abundance_med[15:34], na.rm = T)
 mb2 <- mean(df_cap$biomass_med[15:34], na.rm = T)
 mda2 <- median(df_cap$abundance_med[15:34], na.rm = T)
 mdb2 <- median(df_cap$biomass_med[15:34], na.rm = T)
+gmb2 <- exp(mean(log(df_cap$biomass_med[15:34]), na.rm = T))
 
 # Bmsy: this time period is 2011-2018.  It captures the high period of 2013-2015 without the low of 2010.
 df_cap$year[27:34] 
@@ -777,6 +781,7 @@ ma3 <- mean(df_cap$abundance_med[27:34], na.rm = T)
 mb3 <- mean(df_cap$biomass_med[27:34], na.rm = T)
 mda3 <- median(df_cap$abundance_med[27:34], na.rm = T)
 mdb3 <- median(df_cap$biomass_med[27:34], na.rm = T)
+gmb3 <- exp(mean(log(df_cap$biomass_med[27:34]), na.rm = T))
 
 # Bmsy: this time period is 2013-2015.  It captures the high period of 2013-2015, i.e., the indicator is high.
 df_cap$year[29:31] 
@@ -784,33 +789,38 @@ ma4 <- mean(df_cap$abundance_med[29:31], na.rm = T)
 mb4 <- mean(df_cap$biomass_med[29:31], na.rm = T)
 mda4 <- median(df_cap$abundance_med[29:31], na.rm = T)
 mdb4 <- median(df_cap$biomass_med[29:31], na.rm = T)
+gmb4 <- exp(mean(log(df_cap$biomass_med[29:31])))
 
+histLRP <- as.data.frame(matrix(NA, 5, 6))
+histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1999-2018" = V4, "2011-2018" = V5, "2013-2015" = V6)
+histLRP$indicator <- c(sort(rep(c("abund", "biomass"), 2)), "biomass")
+histLRP$mct <- c(rep(c("mean", "median"), 2), "geometric mean")
 
-histLRP <- as.data.frame(matrix(NA, 4, 6))
-histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1999-2018" = V4, "2011-2018" = V5, "2012-2015" = V6)
-histLRP$indicator <- sort(rep(c("abund", "biomass"), 2))
-histLRP$mct <- rep(c("mean", "median"), 2)
-
+multBmsy <- 0.4
 # put all values in the table and multiple by 0.4
-histLRP$`<=1991`[1] <- 0.4*ma1
-histLRP$`<=1991`[2] <- 0.4*mda1
-histLRP$`<=1991`[3] <- 0.4*mb1
-histLRP$`<=1991`[4] <- 0.4*mdb1
+histLRP$`<=1991`[1] <- multBmsy*ma1
+histLRP$`<=1991`[2] <- multBmsy*mda1
+histLRP$`<=1991`[3] <- multBmsy*mb1
+histLRP$`<=1991`[4] <- multBmsy*mdb1
+histLRP$`<=1991`[5] <- multBmsy*gmb1
 
-histLRP$`1999-2018`[1] <- 0.4*ma2
-histLRP$`1999-2018`[2] <- 0.4*mda2
-histLRP$`1999-2018`[3] <- 0.4*mb2
-histLRP$`1999-2018`[4] <- 0.4*mdb2
+histLRP$`1999-2018`[1] <- multBmsy*ma2
+histLRP$`1999-2018`[2] <- multBmsy*mda2
+histLRP$`1999-2018`[3] <- multBmsy*mb2
+histLRP$`1999-2018`[4] <- multBmsy*mdb2
+histLRP$`1999-2018`[5] <- multBmsy*gmb2
 
-histLRP$`2011-2018`[1] <- 0.4*ma3
-histLRP$`2011-2018`[2] <- 0.4*mda3
-histLRP$`2011-2018`[3] <- 0.4*mb3
-histLRP$`2011-2018`[4] <- 0.4*mdb3
+histLRP$`2011-2018`[1] <- multBmsy*ma3
+histLRP$`2011-2018`[2] <- multBmsy*mda3
+histLRP$`2011-2018`[3] <- multBmsy*mb3
+histLRP$`2011-2018`[4] <- multBmsy*mdb3
+histLRP$`2011-2018`[5] <- multBmsy*gmb3
 
-histLRP$`2012-2015`[1] <- 0.4*ma4
-histLRP$`2012-2015`[2] <- 0.4*mda4
-histLRP$`2012-2015`[3] <- 0.4*mb4
-histLRP$`2012-2015`[4] <- 0.4*mdb4
+histLRP$`2013-2015`[1] <- multBmsy*ma4
+histLRP$`2013-2015`[2] <- multBmsy*mda4
+histLRP$`2013-2015`[3] <- multBmsy*mb4
+histLRP$`2013-2015`[4] <- multBmsy*mdb4
+histLRP$`2013-2015`[5] <- multBmsy*gmb4
 
 histLRP <- histLRP %>% mutate_if(is.numeric, round) 
 

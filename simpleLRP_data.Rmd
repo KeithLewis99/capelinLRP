@@ -152,7 +152,7 @@ Tables {data-navmenu="Background"}
 Do we need a metadata page??
 
 
-# Spring acoustic-at-age
+# Abundance-at-age
 
 Column
 -------------------------------------
@@ -164,7 +164,7 @@ par(mar= c(5, 4, 4, 2) + 0.1)
 
 Scatter1(df = df_dis, xaxis = year, yaxis = I, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions)",
+         xlab = "Year", ylab = "Index of capelin abundance (billions)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -176,7 +176,7 @@ Column {.tabset}
 ```{r}
 Scatter1(df = df_dis, xaxis = year, yaxis = I2, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions) - age-2",
+         xlab = "Year", ylab = "Index of capelin abundance (billions) - age-2",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -185,7 +185,7 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I2, colour = NULL,
 ```{r}
 Scatter1(df = df_dis, xaxis = year, yaxis = I3, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions) - age-3",
+         xlab = "Year", ylab = "Index of capelin abundance (billions) - age-3",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -194,7 +194,7 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I3, colour = NULL,
 ```{r}
 Scatter1(df = df_dis, xaxis = year, yaxis = I4, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions) - age-4",
+         xlab = "Year", ylab = "Index of capelin abundance (billions) - age-4",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -203,9 +203,12 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I4, colour = NULL,
 ```{r}
 Scatter1(df = df_dis, xaxis = year, yaxis = I5, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions) - age-5",
+         xlab = "Year", ylab = "Index of capelin abundance (billions) - age-5",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
+
+# Biomass-at-age
+Confirm that values are OK
 
 # Indices by year
 
@@ -217,13 +220,17 @@ Column {data-width=600 data-height=400}
 ```{r fig-3}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Capelin biomass (ktonnes)",
-         filename = "figs/2-cond-rank-year.pdf", save = "no",
-         errorbar = "limit", 
-         ymin= df_cap$bm_lci, ymax = df_cap$bm_uci)
+# Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB,
+#          c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ",
+#          xlab = "Year", ylab = "Capelin biomass (ktonnes)",
+#          filename = "figs/2-cond-rank-year.pdf", save = "no",
+#          errorbar = "limit",
+#          ymin= df_cap$bm_lci, ymax = df_cap$bm_uci)
 
+ Scatter1(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
+           c2 = "Year: ", c3 = "Biomass: ", 
+          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
+          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
 Column
@@ -288,7 +295,7 @@ d <- highlight_key(df_lag)
 
 cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (billions)",
+         xlab = "Year", ylab = "Index of capelin abundance (billions)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
 ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_density_tm2, colour = NULL, 

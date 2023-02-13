@@ -198,16 +198,26 @@ df_cond$cond_tm1 <- lag(df_cond$meanCond)
 
 ## read in maturity data----
 #read and check data - note that these are percentages
-df_mat <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
+## However, there are some errors/discrepancies between this and the biochar file (BIOCHAR FROM ACOUSTICS_revised to use Monte Carlo abundnace for 1988-1996 in annual page (003).xls; C:\Users\lewiske\Documents\capelin_LRP\IPM\data)  
+### Therefore, bring in values from IPM - deprecated the area that has been commented out but keep derived variables
+
+# df_mat <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
+#   year = col_integer()
+# ))
+# str(df_mat)
+# df_mat <- df_mat %>%
+#             rename(mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5, mat6=age6)
+# 
+# str(df_mat)
+
+
+df_mat <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_perMat_1985-2022.csv", col_types = cols(
   year = col_integer()
 ))
-str(df_mat)
-df_mat <- df_mat %>%
-            rename(mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5, mat6=age6)
+str(df_mat, give.attr = F)
 
 
 #make variables
-df_mat$mat2 <- round(df_mat$mat2, 1)
 df_mat$rank <- rank(df_mat$mat2)
 df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
@@ -303,8 +313,7 @@ str(df_bio)
 ls <- list(df_cap, df_ld, df_ice, df_cond, df_mat)
 df_lag <- ls %>% reduce(left_join, by ="year") %>%
   select(year, 
-         abundance_med, abundance_med_tm2, 
-         biomass_med, rankB, 
+         abundance_med, abundance_med_tm2, biomass_med, rankB, 
          avg_density_tm2, 
          tice, 
          cond_tm1, 
@@ -422,7 +431,7 @@ plot(lag(df_dis$I2, 2)*lag(df_dis$mat2*0.01, 2), # mature age-2 two years in the
   df_dis$I2*(1-df_dis$mat2*0.01)+df_dis$I3+df_dis$I4) # immature age-2 + age3+4
 
 
-tmp <- c(lag(df_lag$biomass_med, 2), NA, NA) # my reasoning in lagging this is that leading throws away two values
+tmp <- lag(df_lag$biomass_med, 2) # my reasoning in lagging this is that leading throws away two values
 
 # make a smaller dataframe of the relevant variables
 sr <- as.data.frame(cbind(year = df_dis$year, 
@@ -518,8 +527,8 @@ R_tp2 <- lead(sr$R[1:35] , 2) # my reasoning in lagging this is that leading thr
 sr_lead <- as.data.frame(cbind(year = df_dis$year[1:35], 
                           age2 = df_dis$I2[1:35], 
                           age2PerMat = df_dis$mat2[1:35], 
-                          biomass_tm2 = tmp,
-                          biomass_t = df_lag$biomass_med,
+                          biomass_tm2 = tmp[1:35],
+                          biomass_t = df_lag$biomass_med[1:35],
                           R_tp2 = R_tp2))
 str(sr_lead)
 

@@ -34,9 +34,8 @@ body {
   font-size: 20px;
 }
 }
-
-
 </style>
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 #Available themes include: default blue, cerulean blue, flatly green, readable white, spacelab blue, united purple, simplex bright red, yeti blue.
@@ -306,7 +305,7 @@ Bmin {data-navmenu="Historical"}
 =====
 <p style="font-size: 15pt">
 Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment.  Close to Barents Sea approach.
-black = 90th percentile, red-dashed = 50th, black-dashed = 50th w/o 2010, purple = 40th
+black = 90th percentile, red = 80th, black-dashed = 50th w/o 2010, red-dashed = 40th
 </p>
 
 Column {.tabset}
@@ -319,7 +318,7 @@ Bar1(df = sr,
      xaxis = year, yaxis = anomaly, width = 300, height = 200,
      c2 = "Biomass[t-2]: ", c3 = "Anomaly[t]: ", 
      xlab = "Year", ylab = "Recruitment anomolies", 
-     hline = h90, hline2 = h50, 
+     hline = h90, hline2 = h80, hline3 = h50, 
      filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "no")
 ```
 
@@ -329,7 +328,7 @@ Bar1(df = sr,
 Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, width = 300, height = 200,
          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
          xlab = "Biomass Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
-         vline1 = v90, vline2 = v50,  
+         vline1 = v90, vline2 = v80, vline3 = v50,  
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 
@@ -342,7 +341,7 @@ Column {.tabset}
 Bar1(df = sr_post, xaxis = year, yaxis = anomaly, 
      c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", 
      xlab = "Year[t]", ylab = "Recruitment anomolies[t]", 
-     hline = h90_post, hline2 = h50_post, hline3 = h50_post_alt,
+     hline = h90_post, hline3 = h50_post, hline4 = h50_post_alt,
      filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
 ```
 
@@ -353,7 +352,7 @@ Scatter2(df = sr_post,
          xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
          xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
-         vline1 = v90_post, vline2 = v50_post, vline3 = v50_post_alt,
+         vline1 = v90_post, vline3 = v50_post, vline4 = v50_post_alt,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 
@@ -366,7 +365,9 @@ Only viable if we get the IPM up and running.
 </p>
 
 
-# Historical proxy
+Background {data-navmenu="Historical proxy"}
+=====
+
 <p style="font-size: 20pt">
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 </p>
@@ -375,6 +376,8 @@ A historical proxy for B0 can be estimated as the mean/median indicator over a h
 
 The mean, median, and geometric abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
 
+Output {data-navmenu="Historical proxy"}
+=====
 
 Column
 -------------------------------------
@@ -413,13 +416,6 @@ Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med,
               text = "CHECK black = 1985-2022/1991-2022, \n red-dashed = 2011-2022, \n black-dashed = 1985-2022/1991-2022 w/o 2010",
               xlabel = 2013, ylabel = 5000)
 ```
-
-
-# Multi-indicator
-
-<p style="font-size: 20pt">
-Series of Bloss or hierarchical approach - see other dashboard (simpleLRP_data.Rmd/html)
-</p>
 
 
 # Ecosystem

@@ -190,13 +190,13 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
   p <- p + ylab(ylab)
   p <- p + geom_hline(yintercept = hline1)
   if(is.numeric(hline2)){
-    p <- p + geom_hline(yintercept = hline2, colour = 'red', linetype = "dashed")   
+    p <- p + geom_hline(yintercept = hline2, colour = 'red')   
   }
   if(is.numeric(hline3)){
     p <- p + geom_hline(yintercept = hline3, linetype = "dashed")    
   }
   if(is.numeric(hline4)){
-    p <- p + geom_hline(yintercept = hline4, colour = 'purple', linetype = "dashed")
+    p <- p + geom_hline(yintercept = hline4, colour = 'red', linetype = "dashed")
   }
   #p + geom_text(aes(x = xlabel, y = ylabel), label = text)
   p <- p + annotate("text", x = xlabel, y = ylabel, label = text, size = 4)

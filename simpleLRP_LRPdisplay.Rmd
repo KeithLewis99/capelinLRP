@@ -133,10 +133,10 @@ Column {.tabset}
 Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
               c2 = "Year: ", c3 = "Abundance: ", 
               xlab = "Year", ylab = "Index of capelin abundance (billions)",
-              hline1 = 0.2*B0_abund_all, hline2 = 0.2*B0_abund_post, 
-              hline3 = 0.2*B0_abund_recent, hline4 = NULL, 
+              hline1 = 0.2*B0_abund_all, hline2 = 0.2*B0_abund_recent, 
+              hline3 = NULL, hline4 = NULL, 
               filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-2022, \n black-dashed = 1991-2022",
+              text = "black = 1985-2022, \n red = 1991-2022",
               xlabel = 2013, ylabel = 600
               )
 ```
@@ -148,10 +148,10 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
 Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-         hline1 = 0.2*B0_bio_all, hline2 = 0.2*B0_bio_post, 
-          hline3 = 0.2*B0_bio_recent, hline4 = NULL, 
+         hline1 = 0.2*B0_bio_all, hline2 = B0_bio_recent, 
+          hline3 = NULL, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-2022, \n black-dashed = 1991-2022",
+              text = "black = 1985-2022, \n red = 1991-2022",
               xlabel = 2013, ylabel = 5000)
 ```
 
@@ -263,8 +263,6 @@ Column {.tabset}
 -------------------------------------
 
 ### Abundance
-
-
 
 ```{r fig-3}
 Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
@@ -400,7 +398,7 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
         hline1 = multBmsy*mda1, hline2 = multBmsy*mda2, 
           hline3 = multBmsy*mda3, hline4 = multBmsy*mda4, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "CHECK red-dashed = 1985-2022/1991-2022, \n black-dashed = 2011-2022",
+              text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
               xlabel = 2013, ylabel = 600)
 ```
 
@@ -413,7 +411,7 @@ Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med,
          hline1 = multBmsy*mdb1, hline2 = multBmsy*mdb2, 
           hline3 = multBmsy*mdb3, hline4 = multBmsy*mdb4, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "CHECK black = 1985-2022/1991-2022, \n red-dashed = 2011-2022, \n black-dashed = 1985-2022/1991-2022 w/o 2010",
+              text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
               xlabel = 2013, ylabel = 5000)
 ```
 

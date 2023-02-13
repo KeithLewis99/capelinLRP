@@ -655,7 +655,8 @@ Bmin$`2011-2019`[3] <- Bloss_bio_recent
 ## Other minimum biomass that produced “good” recruitment 
 
 
-## ICES Type I ----
+## Bmin ----
+###ICES Type I
 ### Bmin is the lowest observed biomass from which a recovery to average has been observed
 # Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment
 ## Other minimum biomass that produced “good” recruitment 
@@ -669,6 +670,7 @@ sr <- anomaly(sr, "R")
 
 # get the quantile and extract the 90th for the hline
 h90 <- quantile(sr$anomaly, c(0.9), na.rm = T)
+h80 <- quantile(sr$anomaly, c(0.8), na.rm = T)
 h50 <- quantile(sr$anomaly, c(0.5), na.rm = T)
 # confirm above value and check on plot
 quantile(sr$anomaly, c(0.1, 0.5, 0.9), na.rm = T)
@@ -677,6 +679,7 @@ quantile(sr$anomaly, c(0.1, 0.5, 0.9), na.rm = T)
 # simple test plot
 plot(sr$year, sr$anomaly)
 abline(h = h90)
+abline(h = h80)
 abline(h = h50)
 
 

@@ -8,9 +8,35 @@ output:
 bibliography: refs/simpleLRP.bib
 ---
 
-<style type="text/css">
-  li {font-size: 30px;}
+<style>
+.navbar-brand {
+  color:white;
+  font-size: 25px;
+}
+
+body {
+    font-family: "Times New Roman", serif;
+    font-size: 18px;
+    color:black;
+}
+.chart-title {
+    font-family: "Times New Roman", serif;
+    font-size: 22px;
+    color:black;
+}
+.nav-tabs-custom .nav-tabs li.active a {
+  color: blue;
+  font-size: 20px;
+}
+
+.nav-tabs-custom .nav-tabs li:not(.active) a {
+  color: red;
+  font-size: 20px;
+}
+}
+
 </style>
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
@@ -31,20 +57,14 @@ source("simpleLRP_calc.R")
 shD <- SharedData$new(df_lag)
 ```
 
-Background {data-navmenu="Background"}
+Overview {data-navmenu="Background"}
 =====
 
-<p style="font-size: 20pt">
-Overview of Dashboard  
-</p>
-
-<p style="font-size: 15pt">
+<p style="font-size: 30pt">
 This dashboard includes interactive figures for all data relevant to the capelin forecast model and the proposed LRPs in the dashboard (simpleLRP_display).  The tabs on this dashboard include: 
 </p>
 
-<style type="text/css">
-  li {font-size: 20px;}
-</style>
+
 
 * Background  
     - The study area and data (time series) and temporal relationships among indices used in the capelin forecast model (spring acoustic survey, larval density, timing of ice retreat, fall condition, and maturity)  
@@ -69,7 +89,8 @@ Study area and Data {data-navmenu="Background"}
 Column
 -------------------------------------
 
-### <font face="Georgia" size="4em" color="#000000"> Study Area </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000"> Study Area </font> -->
+### Study Area
 
 ```{r}
 
@@ -80,7 +101,9 @@ knitr::include_graphics("images/map_inset.png")
 Column {.tabset}
 -------------------------------------
 
-### <font face="Georgia" size="4em" color="#000000">Time Series </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000">Time Series </font> -->
+
+### Time Series
 
 ```{r}
 
@@ -88,7 +111,9 @@ knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/presentations/li
 
 ```
 
-### <font size="4em"> The data: temporal relationships </font>
+
+<!-- ### <font size="4em"> The data: temporal relationships </font> -->
+### The data: temporal relationships
 
 ```{r}
 
@@ -99,7 +124,8 @@ knitr::include_graphics("images/variables_plus_fish.png")
 Capelin Life Cycle {data-navmenu="Background"}
 ====
 
-### <font face="Georgia" size="4em" color="#000000"> Capelin life cycle </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000"> Capelin life cycle </font> -->
+### Capelin life cycle
 
 ```{r}
 
@@ -113,7 +139,8 @@ Supporting Research {data-navmenu="Background"}
 Column {.tabset}
 -------------------------------------
 
-### <font face="Georgia" size="4em" color="#000000"> Dome model </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000"> Dome model </font> -->
+### Dome model
 
 ```{r}
 
@@ -121,8 +148,8 @@ knitr::include_graphics("images/Buren2015fig5_dome.png")
 
 ```
 
-
-### <font face="Georgia" size="4em" color="#000000"> Larval density and recruitment </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000"> Larval density and recruitment </font> -->
+### Larval density and recruitment
 
 ```{r}
 
@@ -130,8 +157,8 @@ knitr::include_graphics("images/Murphy2018FishRes_fig2.png")
 
 ```
 
-
-### <font face="Georgia" size="4em" color="#000000"> Condition </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000"> Condition </font> -->
+### Condition
 
 ```{r}
 
@@ -139,7 +166,8 @@ knitr::include_graphics("images/Buren_fig6-cond.png")
 
 ```
 
-### <font face="Georgia" size="4em" color="#000000"> The forecast model </font>
+<!-- ### <font face="Georgia" size="4em" color="#000000"> The forecast model </font> -->
+### The forecast model
 
 ```{r}
 
@@ -212,7 +240,60 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I5, colour = NULL,
 ```
 
 # Biomass-at-age
-Confirm that values are OK
+
+Column
+-------------------------------------
+  
+### Capelin Index (t)
+  
+```{r}
+par(mar= c(5, 4, 4, 2) + 0.1)
+
+Scatter1(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+Column {.tabset}
+-------------------------------------
+
+### Age-2
+
+```{r}
+Scatter1(df = df_bio, xaxis = year, yaxis = bio2, colour = NULL, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-2",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+### Age-3
+
+```{r}
+Scatter1(df = df_bio, xaxis = year, yaxis = bio3, colour = NULL, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-3",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+### Age-4
+
+```{r}
+Scatter1(df = df_bio, xaxis = year, yaxis = bio4, colour = NULL, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-4",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+### Age-5
+
+```{r}
+Scatter1(df = df_bio, xaxis = year, yaxis = bio5, colour = NULL, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-5",
+         filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
 
 # Indices by year
 
@@ -256,7 +337,7 @@ Scatter1(df = df_ld,
 
 ```
 
-### ice Index
+### Ice Index
   
 ```{r fig-5}
 par(mar= c(5, 4, 4, 2) + 0.1)
@@ -270,7 +351,7 @@ Scatter1(df = df_ice, xaxis = year, yaxis = tice, colour = rank,
 Column
 -------------------------------------
 
-### condition Index
+### Condition Index
 
 ```{r fig-6}
 par(mar= c(5, 4, 4, 2) + 0.1)

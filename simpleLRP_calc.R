@@ -35,7 +35,7 @@ B0_abund_recent <- max(df_cap$abundance_med[27:34], na.rm = T) # a productive pe
 
 B0_bio_all <- max(df_cap$biomass_med, na.rm = T)
 B0_bio_post <- max(df_cap$biomass_med[7:35], na.rm = T)
-B0_bio_recent <- max(df_cap$biomass_med[27:35], na.rm = T)
+B0_bio_recent <- max(df_cap$biomass_med[27:34], na.rm = T)
 
 # create a dataframe to hold the min and max values
 B0 <- as.data.frame(matrix(NA, 2, 5))
@@ -794,12 +794,12 @@ gmb1 <- exp(mean(log(df_cap$biomass_med[1:6])))
 
 # Bmsy: this is the time period from 1999:2018.  It "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015
 # probelm that there is no productive period since 1991 except for 2013-2015
-df_cap$year[15:34] 
-ma2 <- mean(df_cap$abundance_med[15:34], na.rm = T)
-mb2 <- mean(df_cap$biomass_med[15:34], na.rm = T)
-mda2 <- median(df_cap$abundance_med[15:34], na.rm = T)
-mdb2 <- median(df_cap$biomass_med[15:34], na.rm = T)
-gmb2 <- exp(mean(log(df_cap$biomass_med[15:34]), na.rm = T))
+df_cap$year[7:37] 
+ma2 <- mean(df_cap$abundance_med[7:37], na.rm = T)
+mb2 <- mean(df_cap$biomass_med[7:37], na.rm = T)
+mda2 <- median(df_cap$abundance_med[7:37], na.rm = T)
+mdb2 <- median(df_cap$biomass_med[7:37], na.rm = T)
+gmb2 <- exp(mean(log(df_cap$biomass_med[7:37]), na.rm = T))
 
 # Bmsy: this time period is 2011-2018.  It captures the high period of 2013-2015 without the low of 2010.
 df_cap$year[27:34] 
@@ -818,7 +818,7 @@ mdb4 <- median(df_cap$biomass_med[29:31], na.rm = T)
 gmb4 <- exp(mean(log(df_cap$biomass_med[29:31])))
 
 histLRP <- as.data.frame(matrix(NA, 5, 6))
-histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1999-2018" = V4, "2011-2018" = V5, "2013-2015" = V6)
+histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1991-2022" = V4, "2011-2018" = V5, "2013-2015" = V6)
 histLRP$indicator <- c(sort(rep(c("abund", "biomass"), 2)), "biomass")
 histLRP$mct <- c(rep(c("mean", "median"), 2), "geometric mean")
 

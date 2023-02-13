@@ -74,17 +74,30 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
 #' @examples 
 #' Anomaly_year_all <- Bar1(df = cap, xaxis = year, yaxis = anomaly, c2 = "Abundance: ", c3 = "Anomaly: ", xlab = "Year", ylab = "Recruitment anomolies", hline = hline, filename = "figs/3-Biomass_all-year-anomaly.pdf", save = "yes")
 
-Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab = xlab, ylab = ylab, hline = hline, filename = filename, save = save){
+Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, width = NULL, height = NULL,
+                 c2 = c2, c3 = c3, 
+                 xlab = xlab, ylab = ylab, 
+                 hline = hline, hline2 = NULL, hline3 = NULL, hline4 = NULL,
+                 filename = filename, save = save){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
-    "Year: ", year, "\n",
+    "Year[t]: ", year, "\n",
     c2, biomass_tm2, "\n",
     c3, {{yaxis}}, "\n",  
-    "R: ", R,
+    "R[t]: ", R,
     sep = ""
   )))
   p <- p + geom_bar(stat = "identity")
   p <- p + geom_hline(yintercept = hline)
+  if(is.numeric(hline2)){
+    p <- p + geom_hline(yintercept = hline2, colour = 'red', linetype = "dashed")   
+  }
+  if(is.numeric(hline3)){
+    p <- p + geom_hline(yintercept = hline3, linetype = "dashed")    
+  }
+  if(is.numeric(hline4)){
+    p <- p + geom_hline(yintercept = hline4, colour = 'purple', linetype = "dashed")
+  }
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)
   p <- p + theme_bw()
@@ -119,14 +132,14 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, c2 = c2, c3 = c3, xlab =
 #' @examples 
 #' SR_all <- Scatter2(df = cap, xaxis = biomass_med, yaxis = biomass_med_lead, c2 = "Biomass: ", c3 = "Recruitment: ", xlab = "Index (ktonnes)", ylab = "Recruitment (ktonnes)", vline = v90, filename = "figs/4-Biomass_all-index-recruit.pdf", save = "yes")
 
-Scatter2 <- function(df = df, xaxis = xaxis, yaxis = yaxis, 
+Scatter2 <- function(df = df, width = NULL, height = NULL, xaxis = xaxis, yaxis = yaxis, 
                      c2 = c2, c3 = c3, 
                      xlab = xlab, ylab = ylab, 
                      vline1 = vline1, vline2 = NULL, vline3 = NULL, vline4 = NULL, 
                      filename = filename, save = save){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
-    "Year: ", year, "\n",
+    "Year[t]: ", year, "\n",
     c2, {{xaxis}}, "\n",
     c3, {{yaxis}}, "\n",  
     sep = ""
@@ -166,7 +179,7 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
                      text = NULL, xlabel = NULL, ylabel = NULL){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
-    "Year: ", year, "\n",
+    #"Year: ", year, "\n",
     c2, {{xaxis}}, "\n",
     c3, {{yaxis}}, "\n",  
     sep = ""

@@ -90,13 +90,13 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, width = NULL, height = N
   p <- p + geom_bar(stat = "identity")
   p <- p + geom_hline(yintercept = hline)
   if(is.numeric(hline2)){
-    p <- p + geom_hline(yintercept = hline2, colour = 'red', linetype = "dashed")   
+    p <- p + geom_hline(yintercept = hline2, colour = 'red')   
   }
   if(is.numeric(hline3)){
     p <- p + geom_hline(yintercept = hline3, linetype = "dashed")    
   }
   if(is.numeric(hline4)){
-    p <- p + geom_hline(yintercept = hline4, colour = 'purple', linetype = "dashed")
+    p <- p + geom_hline(yintercept = hline4, colour = 'red', linetype = "dashed")
   }
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)
@@ -150,13 +150,13 @@ Scatter2 <- function(df = df, width = NULL, height = NULL, xaxis = xaxis, yaxis 
   p <- p + ylab(ylab)
   p <- p + geom_vline(xintercept = vline1)
   if(is.numeric(vline2)){
-    p <- p + geom_vline(xintercept = vline2, colour = 'red', linetype = "dashed")   
+    p <- p + geom_vline(xintercept = vline2, colour = 'red')   
   }
   if(is.numeric(vline3)){
     p <- p + geom_vline(xintercept = vline3, linetype = "dashed")    
   }
   if(is.numeric(vline4)){
-    p <- p + geom_vline(xintercept = vline4, colour = 'purple', linetype = "dashed")
+    p <- p + geom_vline(xintercept = vline4, colour = 'red', linetype = "dashed")
   }
 
     p <- p + theme_bw()

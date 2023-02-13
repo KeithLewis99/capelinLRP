@@ -8,6 +8,10 @@ output:
 bibliography: refs/simpleLRP.bib
 ---
 
+<style type="text/css">
+  li {font-size: 30px;}
+</style>
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 library(knitr)
@@ -316,12 +320,12 @@ cond_fig <- Scatter1(df = d, xaxis = year, yaxis = cond_tm1, colour = NULL,
          xlab = "Year[t-1]", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-immat_fig <- Scatter1(df = d, xaxis = year, yaxis = immat_tm3 , colour = NULL, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "%immat_A2: ", 
-         xlab = "Year[t-3]", ylab = "Age 2 Immature (%)",
+mat_fig <- Scatter1(df = d, xaxis = year, yaxis = mat2_tm1, colour = NULL, 
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Age 2 Mature (%): ", 
+         xlab = "Year[t-1]", ylab = "Age 2 Mature (%)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-sp2 <- subplot(cond_fig, immat_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
+sp2 <- subplot(cond_fig, mat_fig, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)
 
 subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), heights = 0.8, titleX = TRUE, titleY = TRUE) %>%
 #  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
@@ -356,7 +360,7 @@ bio_cond <- Scatter1(df = d_co, xaxis = cond_tm1, yaxis = biomass_med, colour = 
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 bio_mat <- Scatter1(df = d, xaxis = mat2_tm1, yaxis = biomass_med, colour = year, 
-         c1 = "Year: ", c2 = "%Immat_A2: ", c3 = "Biomass: ", xlab = "Age 2 Immature (%: t-3)", ylab = "Capelin biomass (ktonnes)",
+         c1 = "Year: ", c2 = "Age 2 Mature (%): ", c3 = "Biomass: ", xlab = "Age 2 Mature (%) [t-1]", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 sp1 <- subplot(bio_ld, bio_tice, nrows=2, margin = c(0.05), titleX = TRUE, titleY = TRUE)

@@ -666,6 +666,7 @@ str(sr, give.attr = FALSE)
 #source("simpleLRP_FUN.R")
 sr <- anomaly(sr, "R")
 
+
 # get the quantile and extract the 90th for the hline
 h90 <- quantile(sr$anomaly, c(0.9), na.rm = T)
 h50 <- quantile(sr$anomaly, c(0.5), na.rm = T)
@@ -685,24 +686,41 @@ abline(h = h50)
 # v90 <- min(y1$biomass_med)
 
 
-R_quant_all <- quantile(sr$R, c(0.1, 0.5, 0.9), na.rm = T)
-y1 <- subset(sr, R >= R_quant_all[3], na.rm = T)
+#R_quant_all <- quantile(sr$R, c(0.1, 0.5, 0.9), na.rm = T)
+R_quant_all <- quantile(sr$R, c(0.1, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = T)
+y1 <- subset(sr[3:38, ], R >= R_quant_all[3], na.rm = T)
+y1 <- subset(sr[3:38, ], R >= R_quant_all[6], na.rm = T)
 v90 <- min(y1$biomass_tm2, na.rm = T)
+#h90 <- y1[which.min(y1[,4]), 6]
+
+y80 <- subset(sr[3:38, ], R >= R_quant_all[5], na.rm = T)
+v80 <- min(y80$biomass_tm2, na.rm = T)
+
+
+y70 <- subset(sr[3:38, ], R >= R_quant_all[4], na.rm = T)
+v70 <- min(y70$biomass_tm2, na.rm = T)
 
 # y2 <- subset(df_cap, biomass_med_lead >= biomass90_1[2], na.rm = T)
 # v50 <- min(y2$biomass_med, na.rm = T)
 
 y2 <- subset(sr, R >= R_quant_all[2], na.rm = T)
 v50 <- min(y2$biomass_tm2, na.rm = T)
-v50_alt3 <- 206 # The problem is that v50 is the biomass for 2010 which is the lowest on record and the most doubtful ito the other data,  so next most is 2013 which is 206
-v40_alt4 <- 98 # note that if we extend the quantile to 0.4 as below, then biomass = 98 which is year 2007 (biomass from 2005)
+#h50 <- y2[which.min(y2[,4]), 6]
+
+
+source("simpleLRP_FUN.R")
+Scatter2(df = sr, width = 400, height = 300, xaxis = biomass_tm2, yaxis = R, 
+         c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
+         xlab = "Biomass Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
+         vline1 = v90, vline2 = v50,  
+         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 
 # simple test plot
 plot(sr$biomass_tm2, sr$R)
 abline(v = v90)
 abline(v = v50, lty=2)
-abline(v = v50_alt3, lty=2, col = 'red')
-source("simpleLRP_FUN.R")
+#abline(v = v50_alt3, lty=2, col = 'red')
+#source("simpleLRP_FUN.R")
 
 
 
@@ -716,21 +734,26 @@ sr_post <- anomaly(sr[9:37,], "R")
 
 # get the quantile and extract the 90th for the hline
 h90_post <- quantile(sr_post$anomaly, c(0.1, 0.9), na.rm = T)[2]
+h50_post <- quantile(sr_post$anomaly, c(0.1, 0.5, 0.9), na.rm = T)[2]
 # confirm above value and check on plot
-quantile(sr_post$anomaly, c(0.1, 0.9), na.rm = T)
+quantile(sr_post$anomaly, c(0.1, 0.5, 0.9), na.rm = T)
 
 plot(sr_post$year, sr_post$anomaly)
 abline(h = h90_post)
+abline(h = h50_post)
 
 
 #get the value for the lowest index to generate large recruitment (or a large index)
 R_quant_post <- quantile(sr_post$R, c(0.1, 0.5, 0.9), na.rm = T)
-y1 <- subset(sr_post, R >= R_quant_post[3], na.rm = T)
-y2 <- subset(sr_post, R >= R_quant_post[2], na.rm = T)
-v90_post <- min(y1$biomass_tm2, na.rm = T)
-v50_post <- min(y2$biomass_tm2, na.rm = T)
-# Again, the problem is that this is the biomass for 2014 so I extended the next most is 2013 which is 206
-v50_post_alt <- 98
+y1_post <- subset(sr_post, R >= R_quant_post[3], na.rm = T)
+y2_post <- subset(sr_post, R >= R_quant_post[2], na.rm = T)
+y3_post <- subset(sr_post[-20,], R >= R_quant_post[2], na.rm = T) # removes 2010
+v90_post <- min(y1_post$biomass_tm2, na.rm = T)
+v50_post <- min(y2_post$biomass_tm2, na.rm = T)
+v50_post_alt <- min(y3_post$biomass_tm2, na.rm = T)
+#h50_post <- y2_post[which.min(y2_post[,4]), 6]
+h50_post_alt <- y3_post[which.min(y3_post[,4]), 6]
+
 
 
 
@@ -752,19 +775,19 @@ Scatter2(df = sr_post,
 
 
 
-# Historical proxies----
+# Hist proxies----
 ##A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 
 ##A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. 
 
 # this reflects the highest time period on record and could be a historical Bo although this doesn't reflect the begnining of exploitation it is the max value of the indicator.
 str(df_cap)
-df_cap$year[1:7]
-ma1 <- mean(df_cap$abundance_med[1:7])
-mb1 <- mean(df_cap$biomass_med[1:7])
-mda1 <- median(df_cap$abundance_med[1:7])
-mdb1 <- median(df_cap$biomass_med[1:7])
-gmb1 <- exp(mean(log(df_cap$biomass_med[1:7])))
+df_cap$year[1:6]
+ma1 <- mean(df_cap$abundance_med[1:6])
+mb1 <- mean(df_cap$biomass_med[1:6])
+mda1 <- median(df_cap$abundance_med[1:6])
+mdb1 <- median(df_cap$biomass_med[1:6])
+gmb1 <- exp(mean(log(df_cap$biomass_med[1:6])))
 
 # Bmsy: this is the time period from 1999:2018.  It "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015
 # probelm that there is no productive period since 1991 except for 2013-2015
@@ -797,6 +820,7 @@ histLRP$indicator <- c(sort(rep(c("abund", "biomass"), 2)), "biomass")
 histLRP$mct <- c(rep(c("mean", "median"), 2), "geometric mean")
 
 multBmsy <- 0.4
+
 # put all values in the table and multiple by 0.4
 histLRP$`<=1991`[1] <- multBmsy*ma1
 histLRP$`<=1991`[2] <- multBmsy*mda1

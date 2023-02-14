@@ -192,12 +192,13 @@ Column
 ### Capelin Index (t)
   
 ```{r}
-par(mar= c(5, 4, 4, 2) + 0.1)
+#par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_dis, xaxis = year, yaxis = I, colour = NULL, 
+Scatter4(df = df_dis, xaxis = year, yaxis = I, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions)",
-         filename = "figs/2-cond-rank-year.pdf", save = "no")
+         filename = "figs/2-cond-rank-year.pdf", save = "no", 
+         font = 30, size = 18)
 ```
 
 Column {.tabset}
@@ -206,7 +207,7 @@ Column {.tabset}
 ### Age-2
 
 ```{r}
-Scatter1(df = df_dis, xaxis = year, yaxis = I2, colour = NULL, 
+Scatter4(df = df_dis, xaxis = year, yaxis = I2, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions) - age-2",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -215,7 +216,7 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I2, colour = NULL,
 ### Age-3
 
 ```{r}
-Scatter1(df = df_dis, xaxis = year, yaxis = I3, colour = NULL, 
+Scatter4(df = df_dis, xaxis = year, yaxis = I3, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions) - age-3",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -224,7 +225,7 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I3, colour = NULL,
 ### Age-4
 
 ```{r}
-Scatter1(df = df_dis, xaxis = year, yaxis = I4, colour = NULL, 
+Scatter4(df = df_dis, xaxis = year, yaxis = I4, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions) - age-4",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -233,7 +234,7 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I4, colour = NULL,
 ### Age-5
 
 ```{r}
-Scatter1(df = df_dis, xaxis = year, yaxis = I5, colour = NULL, 
+Scatter4(df = df_dis, xaxis = year, yaxis = I5, colour = NULL, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions) - age-5",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -249,7 +250,7 @@ Column
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
+Scatter4(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -261,7 +262,7 @@ Column {.tabset}
 ### Age-2
 
 ```{r}
-Scatter1(df = df_bio, xaxis = year, yaxis = bio2, colour = NULL, 
+Scatter4(df = df_bio, xaxis = year, yaxis = bio2, colour = NULL, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-2",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -270,7 +271,7 @@ Scatter1(df = df_bio, xaxis = year, yaxis = bio2, colour = NULL,
 ### Age-3
 
 ```{r}
-Scatter1(df = df_bio, xaxis = year, yaxis = bio3, colour = NULL, 
+Scatter4(df = df_bio, xaxis = year, yaxis = bio3, colour = NULL, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-3",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -279,7 +280,7 @@ Scatter1(df = df_bio, xaxis = year, yaxis = bio3, colour = NULL,
 ### Age-4
 
 ```{r}
-Scatter1(df = df_bio, xaxis = year, yaxis = bio4, colour = NULL, 
+Scatter4(df = df_bio, xaxis = year, yaxis = bio4, colour = NULL, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-4",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -288,7 +289,7 @@ Scatter1(df = df_bio, xaxis = year, yaxis = bio4, colour = NULL,
 ### Age-5
 
 ```{r}
-Scatter1(df = df_bio, xaxis = year, yaxis = bio5, colour = NULL, 
+Scatter4(df = df_bio, xaxis = year, yaxis = bio5, colour = NULL, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes) - age-5",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -312,7 +313,7 @@ par(mar= c(5, 4, 4, 2) + 0.1)
 #          errorbar = "limit",
 #          ymin= df_cap$bm_lci, ymax = df_cap$bm_uci)
 
- Scatter1(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
+ Scatter4(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
            c2 = "Year: ", c3 = "Biomass: ", 
           xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
           filename = "figs/2-cond-rank-year.pdf", save = "no")
@@ -326,7 +327,7 @@ Column
 ```{r fig-4}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_ld, 
+Scatter4(df = df_ld, 
          xaxis = year, yaxis = avg_density, 
          colour = rank,
          c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", 
@@ -342,7 +343,7 @@ Scatter1(df = df_ld,
 ```{r fig-5}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_ice, xaxis = year, yaxis = tice, colour = rank, 
+Scatter4(df = df_ice, xaxis = year, yaxis = tice, colour = rank, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
          xlab = "Year", ylab = "Ice retreat (tice - DOY)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -355,7 +356,7 @@ Column
 
 ```{r fig-6}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank, 
+Scatter4(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -365,7 +366,7 @@ Scatter1(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank,
 
 ```{r}
 par(mar= c(5, 4, 4, 2) + 0.1)
-Scatter1(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL, 
+Scatter4(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "%Mmat_A2: ", 
          xlab = "Year", ylab = "Age 2 Mature (%)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -378,18 +379,18 @@ Scatter1(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL,
 ```{r}
 d <- highlight_key(df_lag)
 
-cap_fig <- Scatter1(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
+cap_fig <- Scatter4(df = d, xaxis = year, yaxis = abundance_med, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
-ld_fig <- Scatter1(df = d, xaxis = year, yaxis = avg_density_tm2, colour = NULL, 
+ld_fig <- Scatter4(df = d, xaxis = year, yaxis = avg_density_tm2, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", 
          xlab = "Year[t-2]", ylab = "Larval Density (#/m^-3)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 
-ice_fig <- Scatter1(df = d, xaxis = year, yaxis = tice, colour = NULL, 
+ice_fig <- Scatter4(df = d, xaxis = year, yaxis = tice, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
          xlab = "Year[t]", ylab = "Ice retreat (tice - DOY)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -401,7 +402,7 @@ cond_fig <- Scatter1(df = d, xaxis = year, yaxis = cond_tm1, colour = NULL,
          xlab = "Year[t-1]", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-mat_fig <- Scatter1(df = d, xaxis = year, yaxis = mat2_tm1, colour = NULL, 
+mat_fig <- Scatter4(df = d, xaxis = year, yaxis = mat2_tm1, colour = NULL, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "Age 2 Mature (%): ", 
          xlab = "Year[t-1]", ylab = "Age 2 Mature (%)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
@@ -424,23 +425,23 @@ d_ld <- df_lag %>% filter(year > 2000)
 d_co <- df_lag %>% filter(year > 1993)
 d <- highlight_key(df_lag)
 
-bio_ld <- Scatter1(df = d_ld, xaxis = avg_density_tm2, yaxis = biomass_med, colour = year, 
+bio_ld <- Scatter4(df = d_ld, xaxis = avg_density_tm2, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Density: ", c3 = "Biomass: ", 
          xlab = "Larval Density (#/m^-3: t-2)", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
-bio_tice <- Scatter1(df = d, xaxis = tice, yaxis = biomass_med, colour = year, 
+bio_tice <- Scatter4(df = d, xaxis = tice, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "tice: ", c3 = "Biomass: ", xlab = "Ice retreat (tice - DOY: t)", 
          ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
 
-bio_cond <- Scatter1(df = d_co, xaxis = cond_tm1, yaxis = biomass_med, colour = year, 
+bio_cond <- Scatter4(df = d_co, xaxis = cond_tm1, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Cond: ", c3 = "Biomass: ", 
          xlab = "Condition [t-1]", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
-bio_mat <- Scatter1(df = d, xaxis = mat2_tm1, yaxis = biomass_med, colour = year, 
+bio_mat <- Scatter4(df = d, xaxis = mat2_tm1, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Age 2 Mature (%): ", c3 = "Biomass: ", xlab = "Age 2 Mature (%) [t-1]", ylab = "Capelin biomass (ktonnes)",
          filename = "figs/2-cond-year-rank.pdf", save = "no")
 
@@ -466,7 +467,12 @@ p <- p + geom_line(aes(y = log10(c3)), colour = "green")
 p <- p + geom_line(aes(y = log10(c4)), colour = "blue")
 p <- p + geom_line(aes(y = log10(c2+c3+c4)))
 p
-ggplotly(p)
+ggplotly(p) %>%
+  layout(
+    xaxis=list(title=list(text = "Year", font = 20), 
+               tickfont = list(size = 15)),
+    yaxis=list(title=list(text = "Catch (log(kt)", font = 20), 
+               tickfont = list(size = 15)))
 ```
 
 # Larval Density-Capelin Index
@@ -479,7 +485,7 @@ Column
 ```{r fig-1}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
+Scatter4(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", 
                     filename = "figs/1-larvae-density-rank.pdf", save = "no")
 ```
 
@@ -491,6 +497,6 @@ Column
 ```{r fig-2}
 par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter1(df = df_cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
+Scatter4(df = df_cap, xaxis = rankB, yaxis = biomass_med, colour = year, 
          c1 = "Year: ", c2 = "Rank: ", c3 = "Biomass: ", xlab = "Rank", ylab = "Capelin biomass (ktonnes)", filename = "figs/2-Abundance-rank-year.pdf", save = "no")
 ```

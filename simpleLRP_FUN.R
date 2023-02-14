@@ -23,7 +23,8 @@
 
 Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, 
                      c1 = NULL, c2 = c2, c3 = c3, 
-                     xlab = xlab, ylab = ylab, 
+                     xlab = xlab, ylab = ylab,
+                     #xlab = xlab, ylab = ylab,
                      filename = filename, save = save, 
                      errorbar = "no", ymin = NULL, ymax = NULL){
   #browser()
@@ -42,7 +43,7 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
   }
   p <- p + xlab(xlab)
   p <- p + ylab(ylab)
-  p <- p + theme(axis.title = element_text(size = 10))
+  p <- p + theme(axis.title = element_text(size = 20))
   p <- p + theme_bw()
   
   if(!! save == "yes"){  # the !! just unquotes the arguement
@@ -233,5 +234,66 @@ anomaly <- function(df, x){
   return(df)
 }
 
+
+#' Scatter4 - the purpose of this function is to create interactive scatter plots with a third variable in colour.  This differs from 1 in that the font size of the axis labels can be adjusted
+#'
+#' @param df - data frame
+#' @param xaxis - variable used in xaxis and in plotly label
+#' @param yaxis - variable used in yaxis and in plotly label
+#' @param colour - variable used for fill - usually year
+#' @param c1 - variable used for the label in plotly - corresponds to colour
+#' @param c2 - name used for the label in plotly - corresponds to xaxis
+#' @param c3 - name used for the label in plotly - corresponds to yaxis
+#' @param xlab - label for xaxis
+#' @param ylab - label for yaxis
+#' @param filename - name of file to be produced - naming convention (folder/[figure # in order of data file-][xaxis][yaxis].file type )
+#' @param save - save file as pdf or not. "Yes" in run of simpleLRP_dat, no in simpleLRP.Rmd
+#' @param errorbar - "yes" for graph to include an errorbar, else "no"
+#' 
+#' @return - plotly figure
+#' @export
+#'
+#' @examples 
+#' Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", filename = "figs/1-larvae-density-rank.pdf", save = "no")
+
+Scatter4 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, 
+                     c1 = NULL, c2 = c2, c3 = c3, 
+                     xlab = xlab, ylab = ylab,
+                     #xlab = xlab, ylab = ylab,
+                     filename = filename, save = save, 
+                     errorbar = "no", ymin = NULL, ymax = NULL,
+                     font = 20, size = 15){
+  #browser()
+  p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, colour = {{colour}}, text = paste(
+    c1, {{colour}}, "\n",
+    c2, {{xaxis}}, "\n",
+    c3, {{yaxis}}, "\n",  
+    sep = ""
+  )))
+  p <- p + geom_point()
+  p <- p + scale_colour_continuous(type = "viridis")
+  if(!! errorbar == "se"){
+    p <- p + geom_errorbar(aes(ymin = {{yaxis}}-{{ymin}}*1.96, ymax = {{yaxis}}+{{ymin}}*1.96))
+  } else if(!! errorbar == "limit"){
+    p <- p + geom_errorbar(aes(ymin = ymin, ymax = ymax))
+  }
+  p <- p + xlab(NULL)
+  p <- p + ylab(NULL)
+  #p <- p + theme(axis.title = element_text(size = 20))
+  p <- p + theme_bw()
+  
+  if(!! save == "yes"){  # the !! just unquotes the arguement
+    ggsave(paste(filename))
+    return(ggplotly(p, tooltip = "text"))  
+  } else {
+    return(ggplotly(p, tooltip = "text") %>%
+             layout(
+               xaxis=list(title=list(text = xlab, font = font), 
+                          tickfont = list(size = size)),
+               yaxis=list(title=list(text = ylab, font = font), 
+                          tickfont = list(size = size)))
+    )
+  }
+}
 
 

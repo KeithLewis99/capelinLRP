@@ -60,30 +60,34 @@ Fisheries Act (revisions) {data-navmenu="Background"}
 =====
 
 <p style="font-size: 30pt">
-This dashboard presents a variety of possible LRPs for 2J3KL capelin.  A LRP is mandated for capelin under the revised Fisheries Act (FA) for 2023.  
-Copy/paste relevant sections from Res Doc.....
+This dashboard presents a variety of possible LRPs for 2J3KL capelin.  
+
+The Government of Canada has a number of polices designed to ensure healthy stocks and sustainable fisheries including the precautionary approach framework which outlines reference points ans stock status zones, i.e., Healthy, Cautions, and Critical Zones  https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-eng.htm  
+
+However, revisions to the Fisheries Act (R.S.C., 1985, c.F-14) on June 21, 2019 resulted in new Considerations and Fish Stocks provisions (FSP).  Interpreted through the lens of the Sustainable Fisheries Framework and the PA Policy, the FSPs identify objectives for sustainable use of stocks including determining a single LRP per stock and the status of the stock relative to the LRP.
+
+LRPs are being determined for important commercial fish stocks in Canada to help align with the Fish Stocks Provisions (FSP) of the revised Fisheries Act (R.S.C., 1985, c. F-14). The FSP requires a single LRP for each of these stocks and an associated determination of stock status relative to the LRP. 
 </p>
 
-<p style="font-size: 30pt">
-Make sure to have Sections on environmental covariates (Section 6.) and regime shifts.  Long term environmental conditions and time period of LRP - set the stage here (and talk to Fran)
-</p>
 
-
-SAR {data-navmenu="Background"}
+LRP Options and Criteria {data-navmenu="Background"}
 =====
+Summary of LRP options with general estimation, method of calculation, and criteria (see next page).
+
 ```{r}
 
-knitr::include_graphics("images/Presentation1/SAR_table.PNG")
+knitr::include_graphics("images/Presentation2/SAR_table1.PNG")
 
 ```
 
 
-Criteria {data-navmenu="Background"}
+Criteria defined {data-navmenu="Background"}
 =====
 
-<p style="font-size: 20pt"> 1. Feasible -can be operationalized by science advice and appropriate management measures (but in SAR: it should be feasible to monitor indicators and estimate stock status relative to the LRP on time scales and frequencies relevant to its role as the trigger for a rebuilding plan) capable of being done or carried out.</p>   
-2. Reliable - can be interpreted as acceptable consistency, accuracy or precision of estimates (i.e., acceptably low variance or low bias), and robustness to a range of possible uncertainties (assumptions, stock scale, data points, etc). As the “true” values of reference points are unknown, evaluations of the accuracy and precision (or robustness) of estimates can be conducted in simulation tests of systems with known values. Sensitivity analyses can also be conducted to evaluate the influence of model parameters on reference point estimates.   
-3. Plausible - refers to whether estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. (does the threshold make sense – clearly 0 or Bo would be both be implausible values.)  
+<p style="font-size: 20pt"> 1. Feasible  simply means that the data are available and of sufficient quality that a LRP can be calculated using a given approach.  For example, only stocks with age data can employ age-structured models and only stocks with estimates of biomass and recruitment can use LRPs based on stock recruit relationships (SRR).</p>   
+2. Reliable means that “estimates should be acceptably robust (considering consistency, variance and bias) to key uncertainties and assumptions in the advice framework”, i.e., just because it is feasible to calculate a LRP using a given approach does not mean it should be if the variance of an estimate is unacceptably high.  The accuracy or precision of estimates can help separate reliable from unreliable approaches.     
+3. Plausible  means that estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. LRP values should identify the point below which serious harm to the stock occurs.  Values too low will mean that the stock is already experiencing serious harm while a value too high will mean the stock is not experiencing serious harm but would be below its LRP which triggers a rebuilding plan under the new legislation.  
+4. Uncertainty - TBD
 
 
 References {- data-navmenu="Background"}
@@ -218,10 +222,15 @@ Column
 
 ### All
 
-```{r, fig.width=2, fig.height=2}
-Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
+```{r}
+# Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
+#          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
+#          xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
+#          filename = "figs/2-cond-rank-year.pdf", save = "no")
+
+Scatter4(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
-         xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
+         xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -229,10 +238,10 @@ Column
 -------------------------------------
 
 ### Post-collapse
-```{r, fig.width=5, fig.height=5}
-Scatter1(df = df_ssb[6:37, ], xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
+```{r}
+Scatter4(df = df_ssb[6:37, ], xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
          c1 = "Year: ", c2 = "SSB: ", c3 = "Recruitment: ", 
-         xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2)",
+         xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2)",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
@@ -429,8 +438,8 @@ knitr::include_graphics("images/Presentation1/capcod.png")
 
 # Summary
 
-Table of approaches (rows), time periods (columns), and LRPs (cells) 
+```{r}
 
-or 
+knitr::include_graphics("images/Presentation2/SAR_table2.PNG")
 
-Graph of approaches v biomass
+```

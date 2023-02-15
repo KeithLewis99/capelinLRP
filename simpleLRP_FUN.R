@@ -177,7 +177,8 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
                      xlab = xlab, ylab = ylab, 
                      hline1 = hline1, hline2 = NULL, hline3 = NULL, hline4 = NULL, 
                      filename = filename, save = save, 
-                     text = NULL, xlabel = NULL, ylabel = NULL){
+                     text = NULL, xlabel = NULL, ylabel = NULL,
+                     font = 20, size = 15){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     #"Year: ", year, "\n",
@@ -204,11 +205,17 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
   p <- p + theme_bw()
   
   
-  if(save == "yes"){
+  if(!! save == "yes"){  # the !! just unquotes the arguement
     ggsave(paste(filename))
     return(ggplotly(p, tooltip = "text"))  
   } else {
-    return(ggplotly(p, tooltip = "text")) 
+    return(ggplotly(p, tooltip = "text") %>%
+             layout(
+               xaxis=list(title=list(text = xlab, font = list(size = font)), 
+                          tickfont = list(size = size)),
+               yaxis=list(title=list(text = ylab, font = list(size = font)), 
+                          tickfont = list(size = size))
+             ))
   }
 }
 
@@ -288,11 +295,11 @@ Scatter4 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
   } else {
     return(ggplotly(p, tooltip = "text") %>%
              layout(
-               xaxis=list(title=list(text = xlab, font = font), 
+               xaxis=list(title=list(text = xlab, font = list(size = font)), 
                           tickfont = list(size = size)),
-               yaxis=list(title=list(text = ylab, font = font), 
-                          tickfont = list(size = size)))
-    )
+               yaxis=list(title=list(text = ylab, font = list(size = font)), 
+                          tickfont = list(size = size))
+    ))
   }
 }
 

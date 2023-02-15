@@ -141,7 +141,8 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
               hline3 = NULL, hline4 = NULL, 
               filename = "figs/2-cond-rank-year.pdf", save = "no",
               text = "black = 1985-2022, \n red = 1991-2022",
-              xlabel = 2013, ylabel = 600
+              xlabel = 2013, ylabel = 600, 
+              font = 25, size = 18
               )
 ```
 
@@ -155,8 +156,9 @@ Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med,
          hline1 = 0.2*B0_bio_all, hline2 = B0_bio_recent, 
           hline3 = NULL, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-2022, \n red = 1991-2022",
-              xlabel = 2013, ylabel = 5000)
+         text = "black = 1985-2022, \n red = 1991-2022",
+         xlabel = 2013, ylabel = 5000, 
+         font = 25, size = 18)
 ```
 
 
@@ -281,7 +283,8 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
           hline3 = Bloss_abund_recent, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
               text = "red-dashed = 1985-2022/1991-2022, \n black-dashed = 2011-2022",
-              xlabel = 2013, ylabel = 600)
+              xlabel = 2013, ylabel = 600, 
+         font = 25, size = 18)
 
 ```
 
@@ -295,7 +298,8 @@ Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med,
           hline3 = Bloss_bio_post_n2010, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
               text = "black = 1985-2022/1991-2022, \n red-dashed = 2011-2022, \n black-dashed = 1985-2022/1991-2022 w/o 2010",
-              xlabel = 2013, ylabel = 5000)
+              xlabel = 2013, ylabel = 5000, 
+         font = 25, size = 18)
 ```
 
 
@@ -304,7 +308,7 @@ Brecover {data-navmenu="Historical"}
 
 <p style="font-size: 20pt">
 Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery.  
-It is a matter of some debate whether this has occurred for capelin.  If yes, we would use the 2012 which would be analagos to one of the Bmin values.
+It is a matter of some debate whether this has occurred for capelin.  If yes, we would use the 2012 which would be analagous to one of the Bmin values.
 </p>
 
 
@@ -408,7 +412,8 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
           hline3 = multBmsy*mda3, hline4 = multBmsy*mda4, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
               text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
-              xlabel = 2013, ylabel = 600)
+              xlabel = 2013, ylabel = 600, 
+         font = 25, size = 18)
 ```
 
 ### Biomass
@@ -421,7 +426,8 @@ Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med,
           hline3 = multBmsy*mdb3, hline4 = multBmsy*mdb4, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
               text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
-              xlabel = 2013, ylabel = 5000)
+              xlabel = 2013, ylabel = 5000, 
+         font = 25, size = 18)
 ```
 
 

@@ -792,7 +792,7 @@ mda1 <- median(df_cap$abundance_med[1:6])
 mdb1 <- median(df_cap$biomass_med[1:6])
 gmb1 <- exp(mean(log(df_cap$biomass_med[1:6])))
 
-# Bmsy: this is the time period from 1999:2018.  It "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015
+# Bmsy: this is the time period from 1991:2018.  It "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015
 # probelm that there is no productive period since 1991 except for 2013-2015
 df_cap$year[7:37] 
 ma2 <- mean(df_cap$abundance_med[7:37], na.rm = T)
@@ -817,41 +817,83 @@ mda4 <- median(df_cap$abundance_med[29:31], na.rm = T)
 mdb4 <- median(df_cap$biomass_med[29:31], na.rm = T)
 gmb4 <- exp(mean(log(df_cap$biomass_med[29:31])))
 
+# histLRP <- as.data.frame(matrix(NA, 5, 6))
+# histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1991-2022" = V4, "2011-2018" = V5, "2013-2015" = V6)
+# histLRP$indicator <- c(sort(rep(c("abund", "biomass"), 2)), "biomass")
+# histLRP$mct <- c(rep(c("mean", "median"), 2), "geometric mean")
+
+# put all values in the table and multiple by 0.4
+# histLRP$`<=1991`[1] <- multBmsy*ma1
+# histLRP$`<=1991`[2] <- multBmsy*mda1
+# histLRP$`<=1991`[3] <- multBmsy*mb1
+# histLRP$`<=1991`[4] <- multBmsy*mdb1
+# histLRP$`<=1991`[5] <- multBmsy*gmb1
+# 
+# histLRP$`1999-2018`[1] <- multBmsy*ma2
+# histLRP$`1999-2018`[2] <- multBmsy*mda2
+# histLRP$`1999-2018`[3] <- multBmsy*mb2
+# histLRP$`1999-2018`[4] <- multBmsy*mdb2
+# histLRP$`1999-2018`[5] <- multBmsy*gmb2
+# 
+# histLRP$`2011-2018`[1] <- multBmsy*ma3
+# histLRP$`2011-2018`[2] <- multBmsy*mda3
+# histLRP$`2011-2018`[3] <- multBmsy*mb3
+# histLRP$`2011-2018`[4] <- multBmsy*mdb3
+# histLRP$`2011-2018`[5] <- multBmsy*gmb3
+# 
+# histLRP$`2013-2015`[1] <- multBmsy*ma4
+# histLRP$`2013-2015`[2] <- multBmsy*mda4
+# histLRP$`2013-2015`[3] <- multBmsy*mb4
+# histLRP$`2013-2015`[4] <- multBmsy*mdb4
+# histLRP$`2013-2015`[5] <- multBmsy*gmb4
+# 
+# histLRP1 <- histLRP %>% mutate_if(is.numeric, round) 
+
+
+# put all values in the table and multiple by 0.2
+
 histLRP <- as.data.frame(matrix(NA, 5, 6))
 histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1991-2022" = V4, "2011-2018" = V5, "2013-2015" = V6)
 histLRP$indicator <- c(sort(rep(c("abund", "biomass"), 2)), "biomass")
 histLRP$mct <- c(rep(c("mean", "median"), 2), "geometric mean")
 
+
+histLRP$`<=1991`[1] <- ma1
+histLRP$`<=1991`[2] <- mda1
+histLRP$`<=1991`[3] <- mb1
+histLRP$`<=1991`[4] <- mdb1
+histLRP$`<=1991`[5] <- gmb1
+
+histLRP$`1991-2018`[1] <- ma2
+histLRP$`1991-2018`[2] <- mda2
+histLRP$`1991-2018`[3] <- mb2
+histLRP$`1991-2018`[4] <- mdb2
+histLRP$`1991-2018`[5] <- gmb2
+
+histLRP$`2011-2018`[1] <- ma3
+histLRP$`2011-2018`[2] <- mda3
+histLRP$`2011-2018`[3] <- mb3
+histLRP$`2011-2018`[4] <- mdb3
+histLRP$`2011-2018`[5] <- gmb3
+
+histLRP$`2013-2015`[1] <- ma4
+histLRP$`2013-2015`[2] <- mda4
+histLRP$`2013-2015`[3] <- mb4
+histLRP$`2013-2015`[4] <- mdb4
+histLRP$`2013-2015`[5] <- gmb4
+
 multBmsy <- 0.4
+multB0 <- 0.2
+histBmsy <- histLRP
+histB0 <- histLRP
 
-# put all values in the table and multiple by 0.4
-histLRP$`<=1991`[1] <- multBmsy*ma1
-histLRP$`<=1991`[2] <- multBmsy*mda1
-histLRP$`<=1991`[3] <- multBmsy*mb1
-histLRP$`<=1991`[4] <- multBmsy*mdb1
-histLRP$`<=1991`[5] <- multBmsy*gmb1
+cols <- sapply(histBmsy, is.numeric)
+histBmsy[, cols] <- histBmsy[, cols]*multBmsy
+histBmsy1 <- histBmsy %>% mutate_if(is.numeric, round) 
 
-histLRP$`1999-2018`[1] <- multBmsy*ma2
-histLRP$`1999-2018`[2] <- multBmsy*mda2
-histLRP$`1999-2018`[3] <- multBmsy*mb2
-histLRP$`1999-2018`[4] <- multBmsy*mdb2
-histLRP$`1999-2018`[5] <- multBmsy*gmb2
-
-histLRP$`2011-2018`[1] <- multBmsy*ma3
-histLRP$`2011-2018`[2] <- multBmsy*mda3
-histLRP$`2011-2018`[3] <- multBmsy*mb3
-histLRP$`2011-2018`[4] <- multBmsy*mdb3
-histLRP$`2011-2018`[5] <- multBmsy*gmb3
-
-histLRP$`2013-2015`[1] <- multBmsy*ma4
-histLRP$`2013-2015`[2] <- multBmsy*mda4
-histLRP$`2013-2015`[3] <- multBmsy*mb4
-histLRP$`2013-2015`[4] <- multBmsy*mdb4
-histLRP$`2013-2015`[5] <- multBmsy*gmb4
-
-histLRP <- histLRP %>% mutate_if(is.numeric, round) 
-
-
+cols <- sapply(histB0, is.numeric)
+histB0[, cols] <- histB0[, cols]*multB0
+histB01 <- histB0 %>% mutate_if(is.numeric, round)
 
 # Empirical LRP ----
 ## Thresholds set from empirical indicators such as catch, catch per unit effort (CPUE), survey indices, etc.

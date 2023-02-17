@@ -153,7 +153,7 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
 Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-         hline1 = 0.2*B0_bio_all, hline2 = B0_bio_recent, 
+         hline1 = 0.2*B0_bio_all, hline2 = 0.2*B0_bio_recent, 
           hline3 = NULL, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
          text = "black = 1985-2022, \n red = 1991-2022",
@@ -161,6 +161,7 @@ Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med,
          font = 25, size = 18)
 ```
 
+# F_X%SPR
 
 SRR {data-navmenu="X Rmax"}
 =====
@@ -396,7 +397,13 @@ Column
 ```{r tab1, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(histLRP, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+datatable(histBmsy1, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+```
+
+```{r tab3, eval=T,prompt=T, comment = F}
+#df_keep_rows <- keep_rows("N2", 25)
+#tab1 <- tabParm(histLRP, df_keep_rows)
+datatable(histB01, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
 ```
 
 Column {.tabset}

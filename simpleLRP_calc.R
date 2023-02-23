@@ -469,6 +469,7 @@ bhr <- srFuns("BevertonHolt" ,1)
 bhr(S=135, a = svBH$a, svBH$b)
 srBH1 <- nls(R ~ bhr(biomass_tm2, a, b), data = na.omit(sr_noCollapse), start=svBH)
 
+
 cbind(estimates=coef(srBH1), confint(srBH1))
 coef_srBH <- coef(srBH1)
 bhr(S=135, a = coef(srBH1))
@@ -864,11 +865,11 @@ histLRP$`<=1991`[3] <- mb1
 histLRP$`<=1991`[4] <- mdb1
 histLRP$`<=1991`[5] <- gmb1
 
-histLRP$`1991-2018`[1] <- ma2
-histLRP$`1991-2018`[2] <- mda2
-histLRP$`1991-2018`[3] <- mb2
-histLRP$`1991-2018`[4] <- mdb2
-histLRP$`1991-2018`[5] <- gmb2
+histLRP$`1991-2022`[1] <- ma2
+histLRP$`1991-2022`[2] <- mda2
+histLRP$`1991-2022`[3] <- mb2
+histLRP$`1991-2022`[4] <- mdb2
+histLRP$`1991-2022`[5] <- gmb2
 
 histLRP$`2011-2018`[1] <- ma3
 histLRP$`2011-2018`[2] <- mda3

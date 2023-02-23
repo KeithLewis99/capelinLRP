@@ -141,7 +141,7 @@ str(df_agg_abun)
 df_agg_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_biomass_1985-2022.csv")
 str(df_agg_bio)
 
-df_cap <- merge(df_agg_abun, df_agg_bio, by = "year")
+df_cap <- merge(df_agg_abun, df_agg_bio[4:40,], by = "year")
 str(df_cap)
 
 df_cap$abundance_med <- round(df_cap$abundance_med, 0)

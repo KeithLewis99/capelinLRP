@@ -254,7 +254,7 @@ Column
 ```{r}
 #par(mar= c(5, 4, 4, 2) + 0.1)
 
-Scatter4(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
+Scatter4(df = df_agg_bio, xaxis = year, yaxis = biomass_med, colour = NULL, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
          filename = "figs/2-cond-rank-year.pdf", save = "no", 
@@ -322,7 +322,7 @@ Column {data-width=600 data-height=400}
 #          errorbar = "limit",
 #          ymin= df_cap$bm_lci, ymax = df_cap$bm_uci)
 
- Scatter4(df = df_bio, xaxis = year, yaxis = biomass, colour = NULL, 
+ Scatter4(df = df_agg_bio, xaxis = year, yaxis = biomass_med, colour = NULL, 
            c2 = "Year: ", c3 = "Biomass: ", 
           xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
           filename = "figs/2-cond-rank-year.pdf", save = "no", 
@@ -479,24 +479,27 @@ subplot(sp1, sp2, widths = c(0.4, 0.35), heights = 0.8, titleX = TRUE, titleY = 
 ```
 
 
-# Catch-at-age (log(kt))
+# Catch (kt)
 
-red = age-2, green = age-3, blue = age-4
 ```{r}
-caa <- read.csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/CAA.csv")
-p <- ggplot(data = caa, aes(x = year))
-p <- p + geom_line(aes(y = log10(c2)), colour = "red")
-p <- p + geom_line(aes(y = log10(c3)), colour = "green")
-p <- p + geom_line(aes(y = log10(c4)), colour = "blue")
-p <- p + geom_line(aes(y = log10(c2+c3+c4)))
+df_catch <- read.csv("C:/Users/lewiske/Documents/capelin_LRP/stateSpace/JABBA/JABBA_testruns/CAP1/catchCAP1.csv")
+
+p <- ggplot(data = df_catch, aes(x = Year, y = Catch))
+p <- p + geom_line()
+p <- p + theme_bw()
 p
-ggplotly(p) %>%
-layout(
-               xaxis=list(title=list(text = "Year", font = list(size = 20)), 
-                          tickfont = list(size = 15)),
-               yaxis=list(title=list(text = "Catch (log(kt)", font = list(size = 20)), 
-                          tickfont = list(size = 15))
-)
+
+# caa <- read.csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/CAA.csv")
+# p <- ggplot(data = caa, aes(x = year))
+# p <- p + geom_line(aes(y = c2, colour = "red"))
+# p <- p + geom_line(aes(y = c3, colour = "green"))
+# p <- p + geom_line(aes(y = c4, colour = "blue"))
+# p <- p + geom_line(aes(y = c2+c3+c4))
+# p <- p + theme(legend.position = "none")
+# p <- p + theme_bw()
+# p <- p + annotate("text", x = 2013, y = 2300, label = "black = age2-4 \n red = age-2 \n green = age-3, \n blue = age-4 ", size = 4)
+# p
+
 ```
 
 # Larval Density-Capelin Index

@@ -104,62 +104,62 @@ Perhaps present two JABBA graphs showing very low and very high Bmsy
 Plus Oceana - need rationale why this is not a good approach - extract summary from  Res Doc
 </p>
 
-B0 {- data-navmenu="Proportions"}
-=====
+<!-- B0 {- data-navmenu="Proportions"} -->
+<!-- ===== -->
 
-Column 
--------------------------------------
+<!-- Column  -->
+<!-- ------------------------------------- -->
 
-<p style="font-size: 20pt">
-B0 is multipled by 0.2. This is the standard in the Canadian PA but probably not appropriate here.  
-</p>
+<!-- <p style="font-size: 20pt"> -->
+<!-- B0 is multipled by 0.2. This is the standard in the Canadian PA but probably not appropriate here.   -->
+<!-- </p> -->
 
-```{r eval=T,prompt=T, comment = F}
-#df_keep_rows <- keep_rows("N2", 25)
-#tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(B0, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS("
-                        function(settings, json) {
-                          $(this.api().table().header()).css({
-                          'font-size': '20px',
-                          });
-                        }
-                    "))) %>%
-  formatStyle(columns = colnames(.$x$data), `font-size` = "20px")
-```
+<!-- ```{r eval=T,prompt=T, comment = F} -->
+<!-- #df_keep_rows <- keep_rows("N2", 25) -->
+<!-- #tab1 <- tabParm(histLRP, df_keep_rows) -->
+<!-- datatable(B0, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS(" -->
+<!--                         function(settings, json) { -->
+<!--                           $(this.api().table().header()).css({ -->
+<!--                           'font-size': '20px', -->
+<!--                           }); -->
+<!--                         } -->
+<!--                     "))) %>% -->
+<!--   formatStyle(columns = colnames(.$x$data), `font-size` = "20px") -->
+<!-- ``` -->
 
-Column {.tabset}
--------------------------------------
+<!-- Column {.tabset} -->
+<!-- ------------------------------------- -->
 
-### Abundance
-
-
-```{r}
-Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
-              c2 = "Year: ", c3 = "Abundance: ", 
-              xlab = "Year", ylab = "Index of capelin abundance (billions)",
-              hline1 = 0.2*B0_abund_all, hline2 = 0.2*B0_abund_recent, 
-              hline3 = NULL, hline4 = NULL, 
-              filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-2022, \n red = 1991-2022",
-              xlabel = 2013, ylabel = 600, 
-              font = 25, size = 18
-              )
-```
+<!-- ### Abundance -->
 
 
-### Biomass
+<!-- ```{r} -->
+<!-- Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,  -->
+<!--               c2 = "Year: ", c3 = "Abundance: ",  -->
+<!--               xlab = "Year", ylab = "Index of capelin abundance (billions)", -->
+<!--               hline1 = 0.2*B0_abund_all, hline2 = 0.2*B0_abund_recent,  -->
+<!--               hline3 = NULL, hline4 = NULL,  -->
+<!--               filename = "figs/2-cond-rank-year.pdf", save = "no", -->
+<!--               text = "black = 1985-2022, \n red = 1991-2022", -->
+<!--               xlabel = 2013, ylabel = 600,  -->
+<!--               font = 25, size = 18 -->
+<!--               ) -->
+<!-- ``` -->
 
-```{r}
-Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
-         c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-         hline1 = 0.2*B0_bio_all, hline2 = 0.2*B0_bio_recent, 
-          hline3 = NULL, hline4 = NULL, 
-         filename = "figs/2-cond-rank-year.pdf", save = "no",
-         text = "black = 1985-2022, \n red = 1991-2022",
-         xlabel = 2013, ylabel = 5000, 
-         font = 25, size = 18)
-```
+
+<!-- ### Biomass -->
+
+<!-- ```{r} -->
+<!-- Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med,  -->
+<!--          c2 = "Year: ", c3 = "Biomass: ",  -->
+<!--          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)", -->
+<!--          hline1 = 0.2*B0_bio_all, hline2 = 0.2*B0_bio_recent,  -->
+<!--           hline3 = NULL, hline4 = NULL,  -->
+<!--          filename = "figs/2-cond-rank-year.pdf", save = "no", -->
+<!--          text = "black = 1985-2022, \n red = 1991-2022", -->
+<!--          xlabel = 2013, ylabel = 5000,  -->
+<!--          font = 25, size = 18) -->
+<!-- ``` -->
 
 # F_X%SPR
 
@@ -172,7 +172,7 @@ Column
 ### <b><font face="Georgia" size="3em" color="#000000">Beaverton-Holt  </font></b> (w/o collapse years 1991-1992)
 <p style="font-size: 10pt"> Bmsy = `r BmsyBH` </p>
 ```{r}
-plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits (billions)", xlab = "Biomass (ktonnes)")
 polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
 points(R~biomass_tm2, data = sr_noCollapse, pch =19, col=rgb(0,0,0,1/2))
 lines(pBH~x, lwd=2)
@@ -186,7 +186,7 @@ Column
 <p style="font-size: 10pt">Bmsy = `r BmsyRkr` </p>
 
 ```{r}
-plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits", xlab = "Biomass (ktonnes)")
+plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits (billions)", xlab = "Biomass (ktonnes)")
 polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
 points(R~biomass_tm2, data = sr, pch =19, col=rgb(0,0,0,1/2))
 lines(pR~xr, lwd=2)
@@ -202,7 +202,7 @@ Column
 
 ### All
 ```{r}
-plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
+plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue', ylab = 'Recruits (billions; t)', xlab = 'biomass (kt; t-2)')
 plot(segmented.fit, add=T)
 ```
 
@@ -211,7 +211,7 @@ Column
 
 ### Post-collapse
 ```{r}
-plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue')
+plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue', ylab = 'Recruits (billions; t)', xlab = 'biomass (kt; t-2)')
 plot(segmented.fit_post, add=T)
 ```
 
@@ -292,7 +292,7 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
 ### Biomass
 
 ```{r}
-Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
+Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
          hline1 = Bloss_bio_all, hline2 = Bloss_bio_recent, 
@@ -308,9 +308,17 @@ Brecover {data-navmenu="Historical"}
 =====
 
 <p style="font-size: 20pt">
-Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery.  
-It is a matter of some debate whether this has occurred for capelin.  If yes, we would use the 2012 which would be analagous to one of the Bmin values.
+Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery.  If 1982 value is accepted, it could serve as a biomass from which recovery occurred.
 </p>
+
+```{r}
+Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
+         hline1 = 446, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no",
+         font = 25, size = 18)
+```
 
 
 Bmin {data-navmenu="Historical"}
@@ -384,7 +392,7 @@ Background {data-navmenu="Historical proxy"}
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 </p>
 
-A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator.
+A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator. A proportion of B0 (e.g., 0.2 B0) is commonly adopted as an LRP, which may provide a reasonable proxy threshold for recruitment overfishing for productive stocks because there is often at least some reduction in per-capita recruitment below this threshold (Myers et al. 1994; Sainsbury 2008).
 
 The mean, median, and geometric abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
 
@@ -415,10 +423,11 @@ Column {.tabset}
 Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions)",
-        hline1 = multBmsy*mda1, hline2 = multBmsy*mda2, 
-          hline3 = multBmsy*mda3, hline4 = multBmsy*mda4, 
+        hline1 = multBmsy*mda1, hline2 = multB0*mda1, 
+          #hline3 = multBmsy*mda3, hline4 = multBmsy*mda4, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
+              #text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
+          text = "1985-1990: black = Bmsy, red = B0",
               xlabel = 2013, ylabel = 600, 
          font = 25, size = 18)
 ```
@@ -426,13 +435,14 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
 ### Biomass
 
 ```{r}
-Scatter3(df = df_cap, xaxis = year, yaxis = biomass_med, 
+Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-         hline1 = multBmsy*mdb1, hline2 = multBmsy*mdb2, 
-          hline3 = multBmsy*mdb3, hline4 = multBmsy*mdb4, 
+         hline1 = multBmsy*mdb1, hline2 = multB0*mdb1, 
+          hline3 = 0.2*5783,
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
+              #text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
+         text = "1985-1990: black = Bmsy, red = B0, \n black-dashed = 0.2*max(biomass)",
               xlabel = 2013, ylabel = 5000, 
          font = 25, size = 18)
 ```

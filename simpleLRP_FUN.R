@@ -178,7 +178,7 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
                      hline1 = hline1, hline2 = NULL, hline3 = NULL, hline4 = NULL, 
                      filename = filename, save = save, 
                      text = NULL, xlabel = NULL, ylabel = NULL,
-                     font = 20, size = 15){
+                     font = 20, size = 15, width = NULL){
   #browser()
   p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
     #"Year: ", year, "\n",
@@ -210,7 +210,7 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
     return(ggplotly(p, tooltip = "text"))  
   } else {
     return(ggplotly(p, tooltip = "text") %>%
-             layout(
+             layout(width = width,
                xaxis=list(title=list(text = xlab, font = list(size = font)), 
                           tickfont = list(size = size)),
                yaxis=list(title=list(text = ylab, font = list(size = font)), 
@@ -303,4 +303,40 @@ Scatter4 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
   }
 }
 
+
+
+# as Scatter 3 but with potential to resize 
+Scatter5 <- function(df = df, xaxis = xaxis, yaxis = yaxis, 
+                     c2 = c2, c3 = c3, 
+                     xlab = xlab, ylab = ylab, 
+                     hline1 = hline1, hline2 = NULL, hline3 = NULL, hline4 = NULL, 
+                     filename = filename, save = save, 
+                     text = NULL, xlabel = NULL, ylabel = NULL,
+                     font = 20, size = 15, width = NULL){
+  #browser()
+  p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, text = paste(
+    #"Year: ", year, "\n",
+    c2, {{xaxis}}, "\n",
+    c3, {{yaxis}}, "\n",  
+    sep = ""
+  )))
+  p <- p + geom_point()
+  #p <- p + scale_colour_continuous(type = "viridis")
+  p <- p + xlab(xlab)
+  p <- p + ylab(ylab)
+  p <- p + geom_hline(yintercept = hline1)
+  if(is.numeric(hline2)){
+    p <- p + geom_hline(yintercept = hline2, colour = 'red')   
+  }
+  if(is.numeric(hline3)){
+    p <- p + geom_hline(yintercept = hline3, linetype = "dashed")    
+  }
+  if(is.numeric(hline4)){
+    p <- p + geom_hline(yintercept = hline4, colour = 'red', linetype = "dashed")
+  }
+  #p + geom_text(aes(x = xlabel, y = ylabel), label = text)
+  p <- p + annotate("text", x = xlabel, y = ylabel, label = text, size = 4)
+  p <- p + theme_bw()
+  return(p)
+}  
 

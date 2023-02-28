@@ -52,6 +52,7 @@ library(DT)
 #library(here)
 source("simpleLRP_dat.R")
 source("simpleLRP_calc.R")
+source("Barrett/RPcalcs_230223.R")
 #source("simpleLRP_figs.R")
 shD <- SharedData$new(df_lag)
 ```
@@ -61,22 +62,27 @@ Fisheries Act (revisions) {data-navmenu="Background"}
 
 <p style="font-size: 30pt">
 This dashboard presents a variety of possible LRPs for 2J3KL capelin.  
+</p>
 
+<p style="font-size: 20pt">
 The Government of Canada has a number of polices designed to ensure healthy stocks and sustainable fisheries including the precautionary approach framework which outlines reference points ans stock status zones, i.e., Healthy, Cautions, and Critical Zones  https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-eng.htm  
+</p>
 
+<p style="font-size: 20pt">
 However, revisions to the Fisheries Act (R.S.C., 1985, c.F-14) on June 21, 2019 resulted in new Considerations and Fish Stocks provisions (FSP).  Interpreted through the lens of the Sustainable Fisheries Framework and the PA Policy, the FSPs identify objectives for sustainable use of stocks including determining a single LRP per stock and the status of the stock relative to the LRP.
+</p>
 
+<p style="font-size: 20pt">
 LRPs are being determined for important commercial fish stocks in Canada to help align with the Fish Stocks Provisions (FSP) of the revised Fisheries Act (R.S.C., 1985, c. F-14). The FSP requires a single LRP for each of these stocks and an associated determination of stock status relative to the LRP. 
 </p>
 
 
 LRP Options and Criteria {data-navmenu="Background"}
 =====
-Summary of LRP options with general estimation, method of calculation, and criteria (see next page).
 
 ```{r}
 
-knitr::include_graphics("images/Presentation2/SAR_table1.PNG")
+knitr::include_graphics("images/Presentation3.PNG")
 
 ```
 
@@ -87,7 +93,7 @@ Criteria defined {data-navmenu="Background"}
 <p style="font-size: 20pt"> 1. Feasible  simply means that the data are available and of sufficient quality that a LRP can be calculated using a given approach.  For example, only stocks with age data can employ age-structured models and only stocks with estimates of biomass and recruitment can use LRPs based on stock recruit relationships (SRR).</p>   
 2. Reliable means that “estimates should be acceptably robust (considering consistency, variance and bias) to key uncertainties and assumptions in the advice framework”, i.e., just because it is feasible to calculate a LRP using a given approach does not mean it should be if the variance of an estimate is unacceptably high.  The accuracy or precision of estimates can help separate reliable from unreliable approaches.     
 3. Plausible  means that estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. LRP values should identify the point below which serious harm to the stock occurs.  Values too low will mean that the stock is already experiencing serious harm while a value too high will mean the stock is not experiencing serious harm but would be below its LRP which triggers a rebuilding plan under the new legislation.  
-4. Uncertainty - TBD
+4. Uncertainty - The PA policy explicitly states that “Both scientific uncertainty and uncertainty related to the implementation of a management approach must be explicitly considered and the management decisions taken must be tempered when necessary to give effect to the PA.”.  Scientific uncertainty includes observation error, imprecision or bias in model parameters, and model assumptions, e.g., form of the SRR (DFO 2023, Barrett et al. Working Paper).  
 
 
 References {- data-navmenu="Background"}
@@ -95,15 +101,40 @@ References {- data-navmenu="Background"}
 <div id="refs"></div>
 
 
-Bmsy {- data-navmenu="Proportions"}
+age-structured {- data-navmenu="Proportions"}
 =====
 
 <p style="font-size: 20pt">
-Done lots of work here on IPM and SPM approaches  
-Perhaps present two JABBA graphs showing very low and very high Bmsy  
-Plus Oceana - need rationale why this is not a good approach - extract summary from  Res Doc
+Considerable efforts were devoted to developing a Bayesian state-space, age-structured model that incorporated the environmental aspects of the capelin forecast model (Lewis 2019).  Significant progress was made but a functioning model with all the associated diagnostics is still 1-2 months away at the time of the capelin RAP. See Res Doc for full details.
 </p>
 
+SPM {- data-navmenu="Proportions"}
+=====
+<p style="font-size: 20pt">
+Considerable efforts were devoted to developing a Bayesian state-space, surplus production model. See Res Doc for full details.  The main issue with this approach is that the outcome of the model (bimoass trends) was largely driven by process error which resulted in the model being very sensitive to the choice of the prior for r (intrinsic rate of growth).  Therefore, this approach is not reliable.
+</p>
+
+Column
+-------------------------------------
+
+### Predicted biomass trends
+
+```{r}
+
+knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/stateSpace/JABBA/JABBA_testruns/CAP38/Scenario1_noFA_Schaefer/Output/Biomass_CAP38_Scenario1_noFA.png")
+
+```
+
+Column
+-------------------------------------
+
+### Process error
+
+```{r}
+
+knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/stateSpace/JABBA/JABBA_testruns/CAP38/Scenario1_noFA_Schaefer/Output/ProcDev_CAP38_Scenario1_noFA.png")
+
+```
 <!-- B0 {- data-navmenu="Proportions"} -->
 <!-- ===== -->
 
@@ -163,90 +194,117 @@ Plus Oceana - need rationale why this is not a good approach - extract summary f
 
 # F_X%SPR
 
+<p style="font-size: 20pt">
+FX%SPR is the fishing related mortality rate that results in a spawning potential ratio (SPR) of X% (i.e., results in X% of the unfished SSB-per-recruit).  Estimates of M at-age are required for this approach but the variability of these estimates is very high (SD = 0.91) for the lower age-classes and there are many years with no estimates for the higher age-classes due to the truncation of the age-structure of this stock .  Therefore, this approach is not reliable.  See Res Doc for full details.
+</p>
+
+
 SRR {data-navmenu="X Rmax"}
 =====
 
 Column
 -------------------------------------
 
-### <b><font face="Georgia" size="3em" color="#000000">Beaverton-Holt  </font></b> (w/o collapse years 1991-1992)
-<p style="font-size: 10pt"> Bmsy = `r BmsyBH` </p>
+### <b><font face="Georgia" size="3em" color="#000000">Stock Recruit Relationship: Beverton-Holt and Ricker  </font></b>
+
+<!-- # <p style="font-size: 10pt"> Bmsy =  BmsyBH </p> put rcode around new BmsyBH -->
+<!-- # <p style="font-size: 10pt"> Bmsy =  BmsyRkr</p> -->
+
 ```{r}
-plot(sr_noCollapse$biomass_tm2, sr_noCollapse$R, xlim=xlmts, ylim=ylmts, col="white", ylab="Recruits (billions)", xlab = "Biomass (ktonnes)")
-polygon(c(x, rev(x)), c(LCI,rev(UCI)), col = "gray80", border=NA)
-points(R~biomass_tm2, data = sr_noCollapse, pch =19, col=rgb(0,0,0,1/2))
-lines(pBH~x, lwd=2)
-#abline(v = 0.4*(b*sqrt(1/a)-b/a))
+p <- ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
+  theme_classic() + labs(x="Index of capelin \n spawning biomass (ktonnes; t)", y="Recruitment (millions; t+2)") +
+  geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
+  geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1)
+p
+#ggplotly(p, tooltip = "text")
 ```
 
 Column
 -------------------------------------
 
-### <b><font face="Georgia" size="3em" color="#000000">Ricker </font></b> (all years)
-<p style="font-size: 10pt">Bmsy = `r BmsyRkr` </p>
-
-```{r}
-plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits (billions)", xlab = "Biomass (ktonnes)")
-polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA)
-points(R~biomass_tm2, data = sr, pch =19, col=rgb(0,0,0,1/2))
-lines(pR~xr, lwd=2)
-abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261
-```
-
-
-Iceland {data-navmenu="X Rmax"}
-=====
-
-Column
--------------------------------------
-
-### All
-```{r}
-plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue', ylab = 'Recruits (billions; t)', xlab = 'biomass (kt; t-2)')
-plot(segmented.fit, add=T)
-```
-
-Column
--------------------------------------
-
-### Post-collapse
-```{r}
-plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue', ylab = 'Recruits (billions; t)', xlab = 'biomass (kt; t-2)')
-plot(segmented.fit_post, add=T)
-```
-
-"SSB" {data-navmenu="X Rmax"}
-=====
-
-Plots of the mature biomass from the spring survey at time t and age-2 at t+2
-
-Column
--------------------------------------
-
-### All
+### interactive 
 
 ```{r}
 # Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
-#          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
+#          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ",
 #          xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
 #          filename = "figs/2-cond-rank-year.pdf", save = "no")
 
 Scatter4(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
-         c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", 
+         c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ",
          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
 ```
 
-Column
--------------------------------------
+<!-- Column -->
+<!-- ------------------------------------- -->
 
-### Post-collapse
+<!-- ### <b><font face="Georgia" size="3em" color="#000000">Ricker </font></b> (all years) -->
+
+<!-- ```{r} -->
+<!-- plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits (billions)", xlab = "Biomass (ktonnes)") -->
+<!-- polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA) -->
+<!-- points(R~biomass_tm2, data = sr, pch =19, col=rgb(0,0,0,1/2)) -->
+<!-- lines(pR~xr, lwd=2) -->
+<!-- abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261 -->
+<!-- ``` -->
+
+
+ICES approach {data-navmenu="X Rmax"}
+=====
+
+<!-- Column -->
+<!-- ------------------------------------- -->
+
 ```{r}
-Scatter4(df = df_ssb[6:37, ], xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
-         c1 = "Year: ", c2 = "SSB: ", c3 = "Recruitment: ", 
-         xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2)",
-         filename = "figs/2-cond-rank-year.pdf", save = "no")
+#plot original data
+plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruits (billions; t+2)', xlab = 'index of spawning biomass (kt; t)')
+
+#add segmented regression model
+plot(segmented.fit, add=T)
 ```
+
+<!-- Column -->
+<!-- ------------------------------------- -->
+
+<!-- ### Post-collapse -->
+<!-- ```{r} -->
+<!-- plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue', ylab = 'Recruits (billions; t)', xlab = 'biomass (kt; t-2)') -->
+<!-- plot(segmented.fit_post, add=T) -->
+<!-- ``` -->
+
+<!-- "SSB" {data-navmenu="X Rmax"} -->
+<!-- ===== -->
+
+<!-- Plots of the mature biomass from the spring survey at time t and age-2 at t+2 -->
+
+<!-- Column -->
+<!-- ------------------------------------- -->
+
+<!-- ### All -->
+
+<!-- ```{r} -->
+<!-- # Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year, -->
+<!-- #          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", -->
+<!-- #          xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ", -->
+<!-- #          filename = "figs/2-cond-rank-year.pdf", save = "no") -->
+
+<!-- Scatter4(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year, -->
+<!--          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", -->
+<!--          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ", -->
+<!--          filename = "figs/2-cond-rank-year.pdf", save = "no") -->
+<!-- ``` -->
+
+<!-- Column -->
+<!-- ------------------------------------- -->
+
+<!-- ### Post-collapse -->
+<!-- ```{r} -->
+<!-- Scatter4(df = df_ssb[6:37, ], xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year, -->
+<!--          c1 = "Year: ", c2 = "SSB: ", c3 = "Recruitment: ",  -->
+<!--          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2)", -->
+<!--          filename = "figs/2-cond-rank-year.pdf", save = "no") -->
+<!-- ``` -->
 
 Bloss {data-navmenu="Historical"}
 =====
@@ -280,10 +338,10 @@ Column {.tabset}
 Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
          c2 = "Year: ", c3 = "Abundance: ", 
          xlab = "Year", ylab = "Index of capelin abundance (billions)",
-        hline1 = Bloss_abund_all, hline2 = Bloss_abund_post, 
-          hline3 = Bloss_abund_recent, hline4 = NULL, 
+        hline1 = Bloss_abund_all, hline2 = Bloss_abund_all_n2010, 
+          hline3 = NULL, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "red-dashed = 1985-2022/1991-2022, \n black-dashed = 2011-2022",
+              text = "black = 1985-2022, \n red = 1985-2022 without 2010",
               xlabel = 2013, ylabel = 600, 
          font = 25, size = 18)
 
@@ -295,10 +353,10 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
 Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-         hline1 = Bloss_bio_all, hline2 = Bloss_bio_recent, 
-          hline3 = Bloss_bio_post_n2010, hline4 = NULL, 
+         hline1 = Bloss_bio_all, hline2 = Bloss_bio_all_n2010, 
+          hline3 = NULL, hline4 = NULL, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              text = "black = 1985-2022/1991-2022, \n red-dashed = 2011-2022, \n black-dashed = 1985-2022/1991-2022 w/o 2010",
+              text = "black = 1985-2022, \n red = 1985-2022 without 2010",
               xlabel = 2013, ylabel = 5000, 
          font = 25, size = 18)
 ```
@@ -311,13 +369,23 @@ Brecover {data-navmenu="Historical"}
 Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery.  If 1982 value is accepted, it could serve as a biomass from which recovery occurred.
 </p>
 
+
 ```{r}
-Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
-         c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-         hline1 = 446, 
-         filename = "figs/2-cond-rank-year.pdf", save = "no",
-         font = 25, size = 18)
+# Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
+#          c2 = "Year: ", c3 = "Biomass: ", 
+#          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
+#          hline1 = 446, 
+#          filename = "figs/2-cond-rank-year.pdf", save = "no",
+#          font = 25, size = 18, width = 500)
+
+p1 <- Scatter5(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
+               c2 = "Year: ", c3 = "Biomass: ", 
+               xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
+               hline1 = 446, 
+               filename = "figs/2-cond-rank-year.pdf", save = "no",
+               font = 25, size = 18, width = 500)
+
+ggplotly(p1, width = 900, height = 700, tooltip = "text") 
 ```
 
 
@@ -377,11 +445,11 @@ Scatter2(df = sr_post,
 ```
 
 
-Values from Models {data-navmenu="Historical"}
+Modeled values {data-navmenu="Historical"}
 =====
 
 <p style="font-size: 20pt">
-Only viable if we get the IPM up and running.  
+Because the IPM was not completed, this approach is not feasible.
 </p>
 
 
@@ -392,9 +460,13 @@ Background {data-navmenu="Historical proxy"}
 A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 </p>
 
-A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical Bo although this doesn't reflect the beginning of exploitation it is the max value of the indicator. A proportion of B0 (e.g., 0.2 B0) is commonly adopted as an LRP, which may provide a reasonable proxy threshold for recruitment overfishing for productive stocks because there is often at least some reduction in per-capita recruitment below this threshold (Myers et al. 1994; Sainsbury 2008).
+<p style="font-size: 20pt">
+A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. This reflects the highest time period on record and could be a historical B0 although this doesn't reflect the beginning of exploitation it is the max value of the indicator. A proportion of B0 (e.g., 0.2 B0) is commonly adopted as an LRP, which may provide a reasonable proxy threshold for recruitment overfishing for productive stocks because there is often at least some reduction in per-capita recruitment below this threshold (Myers et al. 1994; Sainsbury 2008).
+</p>
 
-The mean, median, and geometric abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) and three post-collapse periods multiplied by 0.4.  1999-2018 "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015, 2011-2018 captures the high point without the 2010 issue while 2012-2015 is just the high point.
+<p style="font-size: 20pt">
+The mean, median, and geometric abundance (units) and biomass(ktonnes) for the pre-collapse(<=1991) period for Bmsy and B0.
+</p>
 
 Output {data-navmenu="Historical proxy"}
 =====
@@ -405,13 +477,13 @@ Column
 ```{r tab1, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(histBmsy1, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+#datatable(histBmsy1, rownames = F, class = 'cell-border stripe', height = 50,  #options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
 ```
 
 ```{r tab3, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(histB01, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+datatable(histLRP1, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
 ```
 
 Column {.tabset}
@@ -455,14 +527,5 @@ Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med,
 ```{r}
 
 knitr::include_graphics("images/Presentation1/capcod.png")
-
-```
-
-
-# Summary
-
-```{r}
-
-knitr::include_graphics("images/Presentation2/SAR_table2.PNG")
 
 ```

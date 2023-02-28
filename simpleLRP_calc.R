@@ -898,9 +898,9 @@ histLRP1$`B0<=1991`[5] <- gmb1
 multBmsy <- 0.4
 multB0 <- 0.2
 
-cols <- sapply(histLRP1, is.numeric)
-histLRP1[, cols] <- histLRP1[, 3]*multBmsy
-histLRP1[, cols] <- histLRP1[, 3]*multB0
+#cols <- sapply(histLRP1, is.numeric)
+histLRP1[, 3] <- histLRP1[, 3]*multBmsy
+histLRP1[, 4] <- histLRP1[, 4]*multB0
 histLRP1 <- histLRP1 %>% mutate_if(is.numeric, round) 
 
 
@@ -923,9 +923,9 @@ B0$indicator <- c("abund", "biomass")
 B0$LRP <- rep(c("B0"), 2)
 
 # put values from above
-B0$`1985-2019`[1] <- multBmsy*B0_abund_all
-B0$`1991-2019`[1] <- multBmsy*B0_abund_post
-B0$`2011-2019`[1] <- multBmsy*B0_abund_recent
+B0$`1985-2019`[1] <- multB0*B0_abund_all
+B0$`1991-2019`[1] <- multB0*B0_abund_post
+B0$`2011-2019`[1] <- multB0*B0_abund_recent
 
 
 B0$`1985-2019`[2] <- multB0*B0_bio_all

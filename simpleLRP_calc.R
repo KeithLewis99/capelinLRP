@@ -922,11 +922,10 @@ B0 <- rename(B0, indicator = V1, "LRP" = V2, "1985-2019" = V3, "1991-2019" = V4,
 B0$indicator <- c("abund", "biomass")
 B0$LRP <- rep(c("B0"), 2)
 
-multB0 <- 0.2
 # put values from above
-B0$`1985-2019`[1] <- multB0*B0_abund_all
-B0$`1991-2019`[1] <- multB0*B0_abund_post
-B0$`2011-2019`[1] <- multB0*B0_abund_recent
+B0$`1985-2019`[1] <- multBmsy*B0_abund_all
+B0$`1991-2019`[1] <- multBmsy*B0_abund_post
+B0$`2011-2019`[1] <- multBmsy*B0_abund_recent
 
 
 B0$`1985-2019`[2] <- multB0*B0_bio_all

@@ -68,7 +68,7 @@ This dashboard includes interactive figures for all data relevant to the capelin
 
 * Background  
     - The study area and data (time series) and temporal relationships among indices used in the capelin forecast model (spring acoustic survey, larval density, timing of ice retreat, fall condition, and maturity)  
-    - Overveiw of relevant capelin biology: capelin life cycle and supporting studies surrounding the capelin forecast model (Lewis 2019) including figures showing that capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition.  
+    - Overveiw of relevant capelin biology: capelin life cycle and supporting studies surrounding the capelin forecast model [@lewis2019forecasting] including figures showing that capelin biomass depends on larval density [@murphy2018re], the timing of ice retreat [@buren2014bottom], and capelin fall condition.  
     - References   
 * ranks of the capelin larval and spring acoustic index (biomass)  
 * indices by year  

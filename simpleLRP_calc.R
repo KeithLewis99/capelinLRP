@@ -878,10 +878,16 @@ histB01 <- histB0 %>% mutate_if(is.numeric, round)
 
 
 # reformat to just B0 Bmsy
-histLRP1 <- as.data.frame(matrix(NA, 5, 4))
-histLRP1 <- rename(histLRP1, indicator = V1, mct = V2, "Bmsy<=1991" = V3, "B0<=1991" = V4)
+histLRP1 <- as.data.frame(matrix(NA, 5, 5))
+histLRP1 <- rename(histLRP1, indicator = V1, mct = V2, "<=1991" = V3, "Bmsy<=1991" = V4, "B0<=1991" = V5)
 histLRP1$indicator <- c(sort(rep(c("abund", "biomass"), 2)), "biomass")
 histLRP1$mct <- c(rep(c("mean", "median"), 2), "geometric mean")
+
+histLRP1$`<=1991`[1] <- ma1
+histLRP1$`<=1991`[2] <- mda1
+histLRP1$`<=1991`[3] <- mb1
+histLRP1$`<=1991`[4] <- mdb1
+histLRP1$`<=1991`[5] <- gmb1
 
 histLRP1$`Bmsy<=1991`[1] <- ma1
 histLRP1$`Bmsy<=1991`[2] <- mda1

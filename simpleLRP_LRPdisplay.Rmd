@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output:
   flexdashboard::flex_dashboard:
     theme: flatly
-bibliography: refs/simpleLRP.bib
+bibliography: refs/LRPdisplay.bib
 ---
 
 <style>
@@ -65,7 +65,7 @@ This dashboard presents a variety of possible LRPs for 2J3KL capelin.
 </p>
 
 <p style="font-size: 20pt">
-The Government of Canada has a number of polices designed to ensure healthy stocks and sustainable fisheries including the precautionary approach framework which outlines reference points ans stock status zones, i.e., Healthy, Cautions, and Critical Zones  https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-eng.htm  
+The Government of Canada has a number of polices designed to ensure healthy stocks and sustainable fisheries including the precautionary approach framework which outlines reference points and stock status zones, i.e., Healthy, Cautions, and Critical Zones  https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-eng.htm  
 </p>
 
 <p style="font-size: 20pt">
@@ -89,23 +89,26 @@ knitr::include_graphics("images/Presentation3.PNG")
 
 Criteria defined {data-navmenu="Background"}
 =====
+<p style="font-size: 20pt">
+@LRPSAR suggest, in part, that certain criteria that should be considered when developing an LRP, i.e., that LRPs should be feasible (Principle 3), and that LRPs should take into account reliability, plausibility, and uncertainty (Principle 4; see also @Barrett_LRP_WP).  
+</p>
 
 <p style="font-size: 20pt"> 1. Feasible  simply means that the data are available and of sufficient quality that a LRP can be calculated using a given approach.  For example, only stocks with age data can employ age-structured models and only stocks with estimates of biomass and recruitment can use LRPs based on stock recruit relationships (SRR).</p>   
 2. Reliable means that “estimates should be acceptably robust (considering consistency, variance and bias) to key uncertainties and assumptions in the advice framework”, i.e., just because it is feasible to calculate a LRP using a given approach does not mean it should be if the variance of an estimate is unacceptably high.  The accuracy or precision of estimates can help separate reliable from unreliable approaches.     
 3. Plausible  means that estimates, assumptions or hypotheses are consistent with empirical data, ecosystem and population dynamics theory. LRP values should identify the point below which serious harm to the stock occurs.  Values too low will mean that the stock is already experiencing serious harm while a value too high will mean the stock is not experiencing serious harm but would be below its LRP which triggers a rebuilding plan under the new legislation.  
-4. Uncertainty - The PA policy explicitly states that “Both scientific uncertainty and uncertainty related to the implementation of a management approach must be explicitly considered and the management decisions taken must be tempered when necessary to give effect to the PA.”.  Scientific uncertainty includes observation error, imprecision or bias in model parameters, and model assumptions, e.g., form of the SRR (DFO 2023, Barrett et al. Working Paper).  
-
+4. Uncertainty - The PA policy explicitly states that “Both scientific uncertainty and uncertainty related to the implementation of a management approach must be explicitly considered and the management decisions taken must be tempered when necessary to give effect to the PA.”.  Scientific uncertainty includes observation error, imprecision or bias in model parameters, and model assumptions, e.g., form of the SRR. 
+</p>
 
 References {- data-navmenu="Background"}
 =====
 <div id="refs"></div>
 
 
-age-structured {- data-navmenu="Proportions"}
+Age-structured {- data-navmenu="Proportions"}
 =====
 
 <p style="font-size: 20pt">
-Considerable efforts were devoted to developing a Bayesian state-space, age-structured model that incorporated the environmental aspects of the capelin forecast model (Lewis 2019).  Significant progress was made but a functioning model with all the associated diagnostics is still 1-2 months away at the time of the capelin RAP. See Res Doc for full details.
+Considerable efforts were devoted to developing a Bayesian state-space, age-structured model that incorporated the environmental aspects of the capelin forecast model (Lewis 2019).  Significant progress was made but a functioning model with all the associated diagnostics is still 1-2 months away at the time of the capelin RAP. Assuming that this approach is feasible, it is not known if results will be reliable or plausible.  See Res Doc for full details.
 </p>
 
 SPM {- data-navmenu="Proportions"}
@@ -195,7 +198,15 @@ knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/stateSpace/JABBA
 # F_X%SPR
 
 <p style="font-size: 20pt">
-FX%SPR is the fishing related mortality rate that results in a spawning potential ratio (SPR) of X% (i.e., results in X% of the unfished SSB-per-recruit).  Estimates of M at-age are required for this approach but the variability of these estimates is very high (SD = 0.91) for the lower age-classes and there are many years with no estimates for the higher age-classes due to the truncation of the age-structure of this stock .  Therefore, this approach is not reliable.  See Res Doc for full details.
+FX%SPR is the fishing related mortality rate that results in a spawning potential ratio (SPR) of X% (i.e., results in X% of the unfished SSB-per-recruit).  
+</p>
+
+<p style="font-size: 20pt">
+Estimates of M at-age are required for this approach but the variability of these estimates is very high (SD = 0.91) for the lower age-classes and there are many years with no estimates for the higher age-classes due to the truncation of the age-structure of this stock.  
+</p>
+
+<p style="font-size: 20pt">
+Therefore, this approach is not reliable.  See Res Doc for full details.
 </p>
 
 
@@ -222,7 +233,7 @@ p
 Column
 -------------------------------------
 
-### interactive 
+### Interactive 
 
 ```{r}
 # Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
@@ -255,10 +266,11 @@ ICES approach {data-navmenu="X Rmax"}
 
 <!-- Column -->
 <!-- ------------------------------------- -->
+or other thresholds to impaired recruitment.  This is an ICES approach - see Res Doc for details.
 
 ```{r}
 #plot original data
-plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruits (billions; t+2)', xlab = 'index of spawning biomass (kt; t)')
+plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruits (millions; t+2)', xlab = 'Index of spawning biomass (kt; t)')
 
 #add segmented regression model
 plot(segmented.fit, add=T)

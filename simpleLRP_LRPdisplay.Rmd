@@ -108,7 +108,7 @@ Age-structured {- data-navmenu="Proportions"}
 =====
 
 <p style="font-size: 20pt">
-Considerable efforts were devoted to developing a Bayesian state-space, age-structured model that incorporated the environmental aspects of the capelin forecast model (Lewis 2019).  Significant progress was made but a functioning model with all the associated diagnostics is still 1-2 months away at the time of the capelin RAP. Assuming that this approach is feasible, it is not known if results will be reliable or plausible.  See Res Doc for full details.
+Considerable efforts were devoted to developing a Bayesian state-space, age-structured model that incorporated the environmental aspects of the capelin forecast model (Lewis 2019).  Significant progress was made but a functioning model with all the associated diagnostics is still sometime away. Assuming that this approach is feasible, it is not known if results will be reliable or plausible.  See Res Doc for full details.
 </p>
 
 SPM {- data-navmenu="Proportions"}
@@ -206,7 +206,7 @@ Estimates of M at-age are required for this approach but the variability of thes
 </p>
 
 <p style="font-size: 20pt">
-Therefore, this approach is not reliable.  See Res Doc for full details.
+Therefore, this approach is not feasible.  See Res Doc for full details.
 </p>
 
 

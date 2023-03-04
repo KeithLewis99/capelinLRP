@@ -16,7 +16,7 @@ library(lsmeans)
 
 
 #clear environment
-rm(list=ls())
+#rm(list=ls())
 
 
 # Source files ----
@@ -905,8 +905,8 @@ multBmsy <- 0.4
 multB0 <- 0.2
 
 #cols <- sapply(histLRP1, is.numeric)
-histLRP1[, 3] <- histLRP1[, 3]*multBmsy
-histLRP1[, 4] <- histLRP1[, 4]*multB0
+histLRP1[, 4] <- histLRP1[, 4]*multBmsy
+histLRP1[, 5] <- histLRP1[, 5]*multB0
 histLRP1 <- histLRP1 %>% mutate_if(is.numeric, round) 
 
 

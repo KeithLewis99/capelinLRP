@@ -572,3 +572,9 @@ ggplotly(temp5)
 # Z & M Barents Sea (BS) style----
 ## See IPM project
 
+# capelin - log scale ----
+
+str(df_lag)
+ggplot(data = df_lag, aes(x = year, y = log10(biomass_med))) +
+  geom_point() + xlab("Year") + ylab("capelin biomass index(log10(kt))") + theme_bw()
+ggsave("log10Biomass.png", width = 12, heigh = 8, units = "cm")

@@ -82,7 +82,7 @@ LRP Options and Criteria {data-navmenu="Background"}
 
 ```{r}
 
-knitr::include_graphics("images/Presentation3.PNG")
+knitr::include_graphics("images/Presentation4.PNG")
 
 ```
 
@@ -266,7 +266,7 @@ ICES approach {data-navmenu="X Rmax"}
 
 <!-- Column -->
 <!-- ------------------------------------- -->
-or other thresholds to impaired recruitment.  This is an ICES approach - see Res Doc for details.
+....or other thresholds to impaired recruitment.  This is an ICES approach - see Res Doc for details.
 
 ```{r}
 #plot original data
@@ -331,7 +331,7 @@ Bloss is the lowest observed biomass
 ```{r tab2, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS("
+datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(dom = 't', searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS("
                         function(settings, json) {
                           $(this.api().table().header()).css({
                           'font-size': '20px',
@@ -395,17 +395,17 @@ p1 <- Scatter5(df = df_agg_bio, xaxis = year, yaxis = biomass_med,
                xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
                hline1 = 446, 
                filename = "figs/2-cond-rank-year.pdf", save = "no",
-               font = 25, size = 18, width = 500)
+               font = 30, size = 20, width = 500)
 
-ggplotly(p1, width = 900, height = 700, tooltip = "text") 
+ggplotly(p1, width = 800, height = 600, tooltip = "text") 
 ```
 
 
 Bmin {data-navmenu="Historical"}
 =====
 <p style="font-size: 15pt">
-Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment.  Close to Barents Sea approach.
-black = 90th percentile, red = 80th, black-dashed = 50th w/o 2010, red-dashed = 40th
+Bmin is the lowest observed biomass from which a recovery to average has been observed or other minimum biomass that produced “good” recruitment.  Close to Barents Sea approach.  
+black = 90th percentile, red = 80th, black-dashed = 50th
 </p>
 
 Column {.tabset}
@@ -495,8 +495,9 @@ Column
 ```{r tab3, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
-datatable(histLRP1, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
+datatable(histLRP1, rownames = F, class = 'cell-border stripe', height = 50,  options = list(dom = 't', searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
 ```
+mct = measure of central tendency
 
 Column {.tabset}
 -------------------------------------
@@ -511,7 +512,7 @@ Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,
           #hline3 = multBmsy*mda3, hline4 = multBmsy*mda4, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
               #text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
-          text = "1985-1990: black = Bmsy, red = B0",
+          text = "1985-1990: black = 0.4*median, \n red = 0.2*median",
               xlabel = 2013, ylabel = 600, 
          font = 25, size = 18)
 ```
@@ -526,7 +527,7 @@ Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med,
           hline3 = 0.2*5783,
          filename = "figs/2-cond-rank-year.pdf", save = "no",
               #text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
-         text = "1985-1990: black = Bmsy, red = B0, \n black-dashed = 0.2*max(biomass)",
+         text = "1985-1990: black = 0.4*median, \n red = 0.2*median, \n black-dashed = 0.2*max(biomass)",
               xlabel = 2013, ylabel = 5000, 
          font = 25, size = 18)
 ```

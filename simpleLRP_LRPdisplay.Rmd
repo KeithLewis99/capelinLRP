@@ -114,7 +114,7 @@ Considerable efforts were devoted to developing a Bayesian state-space, age-stru
 SPM {- data-navmenu="Proportions"}
 =====
 <p style="font-size: 20pt">
-Considerable efforts were devoted to developing a Bayesian state-space, surplus production model. See Res Doc for full details.  The main issue with this approach is that the outcome of the model (bimoass trends) was largely driven by process error which resulted in the model being very sensitive to the choice of the prior for r (intrinsic rate of growth).  Therefore, this approach is not reliable.
+Considerable efforts were devoted to developing a Bayesian state-space, surplus production model. See Res Doc for full details.  The main issue with this approach is that the outcome of the model (biomass trends) was largely driven by process error which resulted in the model being very sensitive to the choice of the prior for r (intrinsic rate of growth).  Therefore, this approach is not reliable.
 </p>
 
 Column
@@ -440,7 +440,7 @@ Column {.tabset}
 Bar1(df = sr_post, xaxis = year, yaxis = anomaly, 
      c2 = "Biomass[t-2]: ", c3 = "Anomaly: ", 
      xlab = "Year[t]", ylab = "Recruitment anomolies[t]", 
-     hline = h90_post, hline3 = h50_post, hline4 = h50_post_alt,
+     hline = h90_post, hline2 = h50_post, hline3 = h50_post_alt,
      filename = "figs/5-Biomass_postCollapse-year-anomaly.pdf", save = "no")
 ```
 
@@ -451,7 +451,7 @@ Scatter2(df = sr_post,
          xaxis = biomass_tm2, yaxis = R, 
          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
          xlab = "Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
-         vline1 = v90_post, vline3 = v50_post, vline4 = v50_post_alt,
+         vline1 = v90_post, vline2 = v50_post, vline3 = v50_post_alt,
          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 ```
 

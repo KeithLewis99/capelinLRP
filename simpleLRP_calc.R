@@ -646,7 +646,7 @@ Bmin$`2011-2019`[3] <- Bloss_bio_recent
 # calculate anomalies - get mean and SD
 str(sr, give.attr = FALSE)
 #source("simpleLRP_FUN.R")
-sr <- anomaly(sr, "R")
+sr <- anomaly(sr[3:38,], "R")
 
 
 # get the quantile and extract the 90th for the hline
@@ -672,17 +672,17 @@ abline(h = h50)
 
 #R_quant_all <- quantile(sr$R, c(0.1, 0.5, 0.9), na.rm = T)
 R_quant_all <- quantile(sr$R, c(0.1, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = T)
-y1 <- subset(sr[3:38, ], R >= R_quant_all[3], na.rm = T)
-y1 <- subset(sr[3:38, ], R >= R_quant_all[6], na.rm = T)
+#y1 <- subset(sr[3:38, ], R >= R_quant_all[3], na.rm = T)
+y1 <- subset(sr, R >= R_quant_all[6], na.rm = T)
 v90 <- min(y1$biomass_tm2, na.rm = T)
 #h90 <- y1[which.min(y1[,4]), 6]
 
-y80 <- subset(sr[3:38, ], R >= R_quant_all[5], na.rm = T)
+y80 <- subset(sr, R >= R_quant_all[5], na.rm = T)
 v80 <- min(y80$biomass_tm2, na.rm = T)
 
 
-y70 <- subset(sr[3:38, ], R >= R_quant_all[4], na.rm = T)
-v70 <- min(y70$biomass_tm2, na.rm = T)
+#y70 <- subset(sr, R >= R_quant_all[4], na.rm = T)
+#v70 <- min(y70$biomass_tm2, na.rm = T)
 
 # y2 <- subset(df_cap, biomass_med_lead >= biomass90_1[2], na.rm = T)
 # v50 <- min(y2$biomass_med, na.rm = T)
@@ -692,16 +692,17 @@ v50 <- min(y2$biomass_tm2, na.rm = T)
 #h50 <- y2[which.min(y2[,4]), 6]
 
 
-source("simpleLRP_FUN.R")
-Scatter2(df = sr, width = 400, height = 300, xaxis = biomass_tm2, yaxis = R, 
-         c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
-         xlab = "Biomass Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
-         vline1 = v90, vline2 = v50,  
-         filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
+# source("simpleLRP_FUN.R")
+# Scatter2(df = sr, width = 400, height = 300, xaxis = biomass_tm2, yaxis = R, 
+#          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
+#          xlab = "Biomass Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
+#          vline1 = v90, vline2 = v50,  
+#          filename = "figs/6-Biomass_postCollapse-index-recruit.pdf", save = "no")
 
 # simple test plot
 plot(sr$biomass_tm2, sr$R)
 abline(v = v90)
+abline(v = v80)
 abline(v = v50, lty=2)
 #abline(v = v50_alt3, lty=2, col = 'red')
 #source("simpleLRP_FUN.R")
@@ -713,30 +714,32 @@ abline(v = v50, lty=2)
 ### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 #calculate anomalies - get mean and SD
-sr_post <- anomaly(sr[9:37,], "R")
+sr_post <- anomaly(sr[5:37,], "R")
 
 
 # get the quantile and extract the 90th for the hline
 h90_post <- quantile(sr_post$anomaly, c(0.1, 0.9), na.rm = T)[2]
 h50_post <- quantile(sr_post$anomaly, c(0.1, 0.5, 0.9), na.rm = T)[2]
+h50_post_alt <- quantile(sr_post$anomaly[-20], c(0.1, 0.5, 0.9), na.rm = T)[2]
 # confirm above value and check on plot
 quantile(sr_post$anomaly, c(0.1, 0.5, 0.9), na.rm = T)
 
 plot(sr_post$year, sr_post$anomaly)
 abline(h = h90_post)
 abline(h = h50_post)
+abline(h = h50_post_alt)
 
 
 #get the value for the lowest index to generate large recruitment (or a large index)
 R_quant_post <- quantile(sr_post$R, c(0.1, 0.5, 0.9), na.rm = T)
 y1_post <- subset(sr_post, R >= R_quant_post[3], na.rm = T)
 y2_post <- subset(sr_post, R >= R_quant_post[2], na.rm = T)
-y3_post <- subset(sr_post[-20,], R >= R_quant_post[2], na.rm = T) # removes 2010
+y3_post <- subset(sr_post[-22,], R >= R_quant_post[2], na.rm = T) # removes 2010
 v90_post <- min(y1_post$biomass_tm2, na.rm = T)
 v50_post <- min(y2_post$biomass_tm2, na.rm = T)
 v50_post_alt <- min(y3_post$biomass_tm2, na.rm = T)
 #h50_post <- y2_post[which.min(y2_post[,4]), 6]
-h50_post_alt <- y3_post[which.min(y3_post[,4]), 6]
+#h50_post_alt <- y3_post[which.min(y3_post[,4]), 6]
 
 
 
@@ -748,6 +751,7 @@ plot(sr_post$year, sr_post$biomass_tm2)
 plot(sr_post$biomass_tm2, sr_post$R)
 abline(v = v90_post)
 abline(v = v50_post)
+abline(v = v50_post_alt)
 
 Scatter2(df = sr_post, 
          xaxis = biomass_tm2, yaxis = R, 

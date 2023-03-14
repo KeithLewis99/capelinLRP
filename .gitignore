@@ -18,7 +18,9 @@ setUpProject_testOnly.R
 linkedPlots_Tests1.Rmd
 archive/
 refs/
+capcod/
 
 debug.log
 scratch_pad.R
 tmp.Rmd
+graphs.R

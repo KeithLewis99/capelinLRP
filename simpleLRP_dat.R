@@ -1,4 +1,4 @@
-# The purpose of this file is to import data and do some simple exploratory analyses in the effort to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc.
+# The purpose of this file is to import data and do some simple exploratory analyses in the effort to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc.  Some EDA is done after the import but others are done after the dataframes have been joined.  More complex analyses are done in simpleLRP_calc and RPcalcs_230223.R from Tim BArrett.  These analyses are fed into simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  It is supported by simpleLRP_FUN
 
 # Set up a project - see the below link fir directions.
 #https://happygitwithr.com/rstudio-git-github.html
@@ -22,7 +22,7 @@ if(!dir.exists("refs"))dir.create("refs") #for rmd report
 
 
 # Start----
-# shouldn't need the above after the first day
+# shouldn't need the above after the first dayfff
 #libraries
 library(readr)
 library(dplyr)
@@ -36,23 +36,17 @@ options(dplyr.print_max = 1e9)
 # Source files
 source("simpleLRP_FUN.R")
 save <- "no"
+disaggregated <- "1985-present"
 
 # Data ----
+
+
 ## read larval density data----
-#read and check data
-# ld  <- read_csv("data/larvae.csv", col_types = cols(
-#   year = col_integer(),
-#   avg_density = col_double()
-# ))
-# str(ld)
-
-
 # larval density but with error bars
 ## year range: 1985-2022
 df_ld  <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/larvae2001_2022.csv")
 str(df_ld)
 
-disaggregated <- "1985-present"
 
 # add extra years to start the time series
 if(disaggregated == "1985-present") {
@@ -68,16 +62,12 @@ if(disaggregated == "1985-present") {
   df_ld <- rbind(df_tmp, df_ld)
 } 
 
-# change column names
-# df_ld <- df_ld %>% rename(year = SurveyYear,
-#                           larvae = `Bellevue_larvae_m-3`,
-#                           log_larvae = `log_Bellevue_larvae_m-3`) 
-# df_ld$lnlarvae <- log(df_ld$larvae)
-
+# rename columns
 df_ld <- df_ld %>% rename(year = `Year`,
                           avg_density = `Larval densities_ind_m-3`,
                           se_auc = `SE_AUC`)
 
+# get the natural log
 df_ld$lnlarvae <- log(df_ld$avg_density)
 
 
@@ -89,12 +79,8 @@ quant <- quantile(df_ld$avg_density, c(0.1, 0.9), na.rm = TRUE)
 m1 <- mean(df_ld$avg_density, na.rm = TRUE)
 median(df_ld$avg_density, na.rm = TRUE)
 sd1 <- sd(df_ld$avg_density, na.rm = TRUE)
-3*sd(df_ld$avg_density, na.rm = TRUE)
-# 68-95-99.7
 
-m1-3*sd1
-
-## Brecover
+## create a density plot of larval density
 p <- ggplot(data = df_ld, aes(x = avg_density))
 p <- p + geom_density()
 p
@@ -105,6 +91,7 @@ arrange(df_ld, rank)
 ## create a lag column so that avg_density[t-2] corresponds to year[t]
 df_ld$avg_density_tm2 <- lag(df_ld$avg_density, 2)
 
+# round the values
 df_ld <- df_ld %>%
  mutate(across(avg_density:avg_density_tm2, round, 0))
 
@@ -131,19 +118,22 @@ Scatter1(df = df_ld,
 
 
 ## read in capelin data----
-#read and check data
-#### replacing this with summations from the age-disaggregated data
+###read and check data
+#### replacing this with summations from the age-aggregated data
 #  df_cap <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin-2021.csv", col_types = cols(
 #   year = col_integer()
 # ))
+##### age aggregated data for the two time periods, 1985-1998 & 1999-present are imported into the IPM project, where the column names are made the same and the frames bound together.
 df_agg_abun <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_abundance_1985-2022.csv")
 str(df_agg_abun)
 df_agg_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_biomass_1985-2022.csv")
 str(df_agg_bio)
 
+# merge aggregation and biomass dataframes
 df_cap <- merge(df_agg_abun, df_agg_bio[4:40,], by = "year")
 str(df_cap)
 
+# round values
 df_cap$abundance_med <- round(df_cap$abundance_med, 0)
 df_cap$biomass_med <- round(df_cap$biomass_med, 0)
 
@@ -154,6 +144,7 @@ quantile(df_cap$abundance_med, na.rm = T)
 # create a rank column
 df_cap$rankA <- rank(df_cap$abundance_med)
 df_cap$rankB <- rank(df_cap$biomass_med)
+
 #arrange(df_cap, rankB)
 df_cap$abundance_med_tm2 <- lag(df_cap$abundance_med, 2)
 
@@ -224,71 +215,8 @@ df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
 
 ## #read in disaggregated data----
-# deleted the "Unknown" from row 105, col "age"
-### This is only 2014-2019
-# ageD <- read_csv("data/spring-acoustic-age-disaggregated.csv", col_types = cols(
-#   year = col_integer(),
-#   age = col_integer()
-# ))
-# str(ageD)
+### as for age-aggregated data above, bring in data from IPM project
 
-# year	=	Year
-# stratum	=	 My stratum
-# age	=	 Age
-# n	=	 N (millions)
-# proportion	=	 Proportion by age in that strata
-# n_mat	=	 N mature (millions)
-# prop_mat	=	 Proportion mature
-# weight	=	 Weight (tonnes)
-# mean_length	=	 Mean length (mm)
-# mean_weight	=	 Mean weight (g)
-
-#manipulate 
-
-# get biomass and abundance by strata and year
-## n_mat is a percentage
-# temp1 <- ageD %>%
-#   group_by(year, age) %>%
-#   #select(n, weight, proportion) %>%
-#   mutate(abun=sum(n), biomass=sum(weight*0.000001))
-
-# # exploratory plot to look at prop mature at age by stratum and year
-# p <- ggplot(ageD, aes(x = factor(year), y = prop_mat, colour = factor(age), text = paste(year, "Year")))
-# p <- p + geom_point(position = "jitter")
-# p
-# ggplotly(p, tooltip = "text")
-# 
-# 
-# # get total biomass and abundance by year
-# temp2 <- temp1 %>%
-#   group_by(year) %>%
-#   summarize (abun = sum(abun), biomass = sum(biomass))
-# 
-# ageD %>% select(year, stratum, age, prop_mat) %>% filter(age ==1 & prop_mat > 0.1)
-# 
-# 
-# 
-# # prop mature
-# ## n_mat is a percentage
-# temp4 <- temp1 %>%
-#   group_by(year)
-# 
-# # experiment with "spread" to produce a table of prop_mat
-# temp3 <- temp1 %>%
-#   select(year, stratum, age, prop_mat) %>%
-#   pivot_wider(id_cols = c(year, stratum), names_from = age, values_from = prop_mat)
-
-
-
-#make variables
-#ageD$rank <- rank(ageD$age2)
-#df_mat$mat2_lag1 <- lag(df_mat$age2, 1)
-
-# bring in age disaggregated data
-# df_dis_all <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin_age_disaggregate_abundance.csv")
-# str(df_dis_all)
-
-#df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/capelin_abundance_1985-2021.csv")
 df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_abundance_1985-2022.csv")
 str(df_dis) 
 
@@ -306,6 +234,9 @@ Scatter1(df = df_dis, xaxis = year, yaxis = I5, colour = NULL,
 df_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_biomass_1985-2022.csv")
 str(df_bio) 
 
+#################################################################
+# clean and commented to this point
+#################################################################
 
 # join all dataframes with lags----
 # this is for the "Indices Lagged" tab in the dashboard.  It makes it easier to see the relations because all indices are put to the survey year, i.e., abundance and biomass are at time t, larval density is t-2 and condition is t-1.
@@ -533,7 +464,14 @@ sr_lead <- as.data.frame(cbind(year = df_dis$year[1:35],
 str(sr_lead)
 
 plot(sr_lead$biomass_t, sr_lead$R_tp2) # this produces exactly the same plot as with lag because the NAs move too.  
-
+temp <- ggplot(data = sr_lead, aes(x = biomass_t, y = R_tp2, text = paste(
+  "Biomass[kt; t] ", biomass_t, "\n", 
+  "Rec[billions; t+2] ", R_tp2, "\n", 
+  "Year ", year,
+  sep = ""))) + geom_point() + xlab("Biomass(kt; t)") + ylab("Recruitment(billions; t+2)") + theme_bw()
+temp
+ggsave("figs_temp/SRR.png", width = 12, heigh = 8, units = "cm")
+ggplotly(temp,  tooltip = "text")
 
 #  Aaron's file
 

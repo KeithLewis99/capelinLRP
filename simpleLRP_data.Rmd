@@ -246,7 +246,7 @@ Scatter4(df = df_dis, xaxis = year, yaxis = I5, colour = NULL,
 
 # Biomass-at-age
 
-Column
+Column {.tabset}
 -------------------------------------
   
 ### Capelin Index (t)
@@ -260,6 +260,15 @@ Scatter4(df = df_agg_bio, xaxis = year, yaxis = biomass_med, colour = NULL,
          filename = "figs/2-cond-rank-year.pdf", save = "no", 
          font = 30, size = 18)
 ```
+
+### Capelin Index (log(t))
+
+```{r}
+ggplot(data = df_lag, aes(x = year, y = log10(biomass_med))) +
+  geom_point() + xlab("Year") + ylab("capelin biomass index (log10(kt))") + theme_bw()
+ggsave("log10Biomass.png", width = 12, heigh = 8, units = "cm")
+```
+
 
 Column {.tabset}
 -------------------------------------

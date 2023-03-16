@@ -230,10 +230,13 @@ p
 #ggplotly(p, tooltip = "text")
 ```
 
+Interactive {data-navmenu="X Rmax"}
+=====
+
 Column
 -------------------------------------
 
-### Interactive 
+### "SSB" 
 
 ```{r}
 # Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
@@ -245,6 +248,24 @@ Scatter4(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), col
          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ",
          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
          filename = "figs/2-cond-rank-year.pdf", save = "no")
+```
+
+Column
+-------------------------------------
+
+### Biomass 
+
+```{r}
+temp <- ggplot(data = sr_lead, aes(x = biomass_t, y = R_tp2, text = paste("Biomass[kt; t] ", biomass_t, "\n", 
+  "Rec[billions; t+2] ", R_tp2, "\n", 
+  "Year ", year,
+  sep = ""))) + 
+  geom_point() + 
+  xlab("Biomass(kt; t)") + ylab("Recruitment(billions; t+2)") + 
+  theme_bw()
+temp
+ggsave("figs_temp/SRR.png", width = 12, heigh = 8, units = "cm")
+ggplotly(temp,  tooltip = "text")
 ```
 
 <!-- Column -->

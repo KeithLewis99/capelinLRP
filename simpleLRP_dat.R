@@ -1,6 +1,6 @@
-# The purpose of this file is to import data and do some simple exploratory analyses in the effort to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc.  Some EDA is done after the import but others are done after the dataframes have been joined.  More complex analyses are done in simpleLRP_calc and RPcalcs_230223.R from Tim BArrett.  These analyses are fed into simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  It is supported by simpleLRP_FUN
+# The purpose of this file is to import a number of data sets in support of the development of various Limit Reference Points.  While data importing and manipulation (joining data sets and creating derived variables) is the main purpose, some simple exploratory analyses are conducted and LRPs generated.  Much of this is in support of efforts to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc (see simpleLRP_calc and RPcalcs_230223.R).  Some EDA is done after the import but others are done after the dataframes have been joined.  More complex analyses are done in simpleLRP_calc and RPcalcs_230223.R from Tim BArrett.  These analyses are fed into simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  It is supported by simpleLRP_FUN
 
-# Set up a project - see the below link fir directions.
+# Set up a project - see the below link for directions.
 #https://happygitwithr.com/rstudio-git-github.html
 
 # But basically:
@@ -22,7 +22,6 @@ if(!dir.exists("refs"))dir.create("refs") #for rmd report
 
 
 # Start----
-# shouldn't need the above after the first dayfff
 #libraries
 library(readr)
 library(dplyr)
@@ -38,10 +37,10 @@ source("simpleLRP_FUN.R")
 save <- "no"
 disaggregated <- "1985-present"
 
+
 # Data ----
 
-
-## read larval density data----
+## larval density data----
 # larval density but with error bars
 ## year range: 1985-2022
 df_ld  <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/larvae2001_2022.csv")
@@ -67,7 +66,7 @@ df_ld <- df_ld %>% rename(year = `Year`,
                           avg_density = `Larval densities_ind_m-3`,
                           se_auc = `SE_AUC`)
 
-# get the natural log
+# natural log
 df_ld$lnlarvae <- log(df_ld$avg_density)
 
 
@@ -106,26 +105,15 @@ abline(v = quantile(df_ld$rank, c(0.1), na.rm = TRUE))
 abline(v = quantile(df_ld$rank, c(0.5), na.rm = TRUE))
 abline(v = quantile(df_ld$rank, c(0.9), na.rm = TRUE))
 
-## plot year v density couloured by rank
-Scatter1(df = df_ld, 
-         xaxis = year, yaxis = avg_density, 
-         colour = rank,
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Density: ", 
-         xlab = "Year", ylab = "Larval Density (#/m^3)", 
-         filename = "figs/2-Abundance-rank-year.pdf", save = "no", 
-         errorbar = "yes", 
-         ymin= se_auc, ymax = se_auc)
 
-
-## read in capelin data----
+## aggregated capelin data----
 ###read and check data
-#### replacing this with summations from the age-aggregated data
-#  df_cap <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/capelin-2021.csv", col_types = cols(
-#   year = col_integer()
-# ))
-##### age aggregated data for the two time periods, 1985-1998 & 1999-present are imported into the IPM project, where the column names are made the same and the frames bound together.
+##### age aggregated data for the two time periods, 1985-1998 & 1999- these data are imported into the IPM project, where the column names are made the same and the frames bound together and exported to below csv files.
+# abundance
 df_agg_abun <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_abundance_1985-2022.csv")
 str(df_agg_abun)
+
+# biomass
 df_agg_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_biomass_1985-2022.csv")
 str(df_agg_bio)
 
@@ -150,6 +138,7 @@ df_cap$abundance_med_tm2 <- lag(df_cap$abundance_med, 2)
 
 #View(df_cap)
 
+## exploratory plots
 # plot biomass and abundance
 plot(df_cap$abundance_med, df_cap$biomass_med)
 
@@ -162,7 +151,7 @@ abline(v = 22.5) #everything to the right is pre1991
 
 
 
-## read in ice data----
+## ice data----
 #read and check data
 df_ice <- read_csv("data/capelin-m1-2021.csv", col_types = cols(
   year = col_integer()
@@ -174,7 +163,7 @@ df_ice$rank <- rank(df_ice$tice)
 
 
 
-## read in condition data----
+## condition data----
 #read and check data
 df_cond <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/data/fromAaron/condition_2JK_ag1_2_MF_2022.csv", col_types = cols(
   year = col_integer()
@@ -187,26 +176,14 @@ df_cond$cond_tm1 <- lag(df_cond$meanCond)
 
 
 
-## read in maturity data----
+## maturity data----
 #read and check data - note that these are percentages
-## However, there are some errors/discrepancies between this and the biochar file (BIOCHAR FROM ACOUSTICS_revised to use Monte Carlo abundnace for 1988-1996 in annual page (003).xls; C:\Users\lewiske\Documents\capelin_LRP\IPM\data)  
 ### Therefore, bring in values from IPM - deprecated the area that has been commented out but keep derived variables
-
-# df_mat <- read_csv("data/springAcoustics-percentMature.csv", col_types = cols(
-#   year = col_integer()
-# ))
-# str(df_mat)
-# df_mat <- df_mat %>%
-#             rename(mat1 = age1, mat2 = age2, mat3 = age3, mat4 = age4, mat5 = age5, mat6=age6)
-# 
-# str(df_mat)
-
 
 df_mat <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_perMat_1985-2022.csv", col_types = cols(
   year = col_integer()
 ))
 str(df_mat, give.attr = F)
-
 
 #make variables
 df_mat$rank <- rank(df_mat$mat2)
@@ -214,7 +191,7 @@ df_mat$mat2_tm1 <- lag(df_mat$mat2, 1)
 
 
 
-## #read in disaggregated data----
+## disaggregated data----
 ### as for age-aggregated data above, bring in data from IPM project
 
 df_dis <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_abundance_1985-2022.csv")
@@ -225,10 +202,7 @@ df_dis <- left_join(df_dis, df_ld, by = 'year')
 df_dis <- left_join(df_dis, df_mat, by = 'year')
 str(df_dis)
 
-Scatter1(df = df_dis, xaxis = year, yaxis = I5, colour = NULL, 
-         c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Capelin abundance (millions) - age-5",
-         filename = "figs/2-cond-rank-year.pdf", save = "no")
+
 
 ## read in biomass- age disaggregated
 df_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_biomass_1985-2022.csv")
@@ -278,7 +252,6 @@ temp1a <- df_lag %>%
 ggplotly(temp1a)
 
 
-  
 # Influence of the larvae (t-2) on Age3 (t3): this is a bit of a stretch.  Good correlation between ld and abundance_med but this is taking it three years beyond that  
 temp1c <- df_lag %>%
     filter(year > 1992) %>%
@@ -327,6 +300,7 @@ sr$R <- sr$age2 # this creates redundant columns but solves a short term problem
 # sr$R <- sr$age2*1000*sr$age2PerMat*0.01
 str(sr)
 
+# use this data set for the SRR work that Tim Barrett did in RPcalcs_230223.R
 #write.csv(sr, "Barrett/data_for_Tim.csv")
 
 
@@ -385,4 +359,4 @@ plot(sr_lead$biomass_t, sr_lead$R_tp2) # this produces exactly the same plot as 
 
 
 # Z & M Barents Sea (BS) style----
-## See IPM project
+## See IPM project - but bring in here when you clean up that project

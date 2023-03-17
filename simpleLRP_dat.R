@@ -1,4 +1,4 @@
-# The purpose of this file is to import a number of data sets in support of the development of various Limit Reference Points for 2J3KL capelin.  While data importing and manipulation (joining data sets and creating derived variables) is the main purpose, some simple exploratory analyses are conducted.  This file supports efforts to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc (see simpleLRP_calc and RPcalcs_230223.R - Tim BArrett).  Some EDA is done after the import but others are done after the dataframes have been joined.  These analyses are fed into simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  This file and others are supported by simpleLRP_FUN.
+# The purpose of this file is to import a number of data sets in support of the development of various Limit Reference Points for 2J3KL capelin.  While data importing and manipulation (joining data sets and creating derived variables) is the main purpose, some simple exploratory analyses are conducted.  This file supports efforts to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc (see simpleLRP_calc and RPcalcs_230223.R - Tim BArrett).  Some EDA is done after the import but others are done after the dataframes have been joined.  These datasets are imported by simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  This file and others are supported by simpleLRP_FUN.
 
 # Set up a project - see the below link for directions.
 #https://happygitwithr.com/rstudio-git-github.html
@@ -14,6 +14,7 @@
 #put this file in the folder with the project and create the following subfolders
 if(!dir.exists("archive"))dir.create("archive")
 if(!dir.exists("data"))dir.create("data")
+if(!dir.exists("data_derived"))dir.create("data_derived")
 if(!dir.exists("figs"))dir.create("figs") #for publication quality only
 if(!dir.exists("output"))dir.create("output") # for tables and figures
 if(!dir.exists("ms"))dir.create("ms") # manuscript
@@ -112,11 +113,11 @@ abline(v = quantile(df_ld$rank, c(0.9), na.rm = TRUE))
 df_agg_abun <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_abundance_1985-2022.csv")
 str(df_agg_abun)
 
-# biomass
+# biomass - not that 1982-1984 values have been added to this
 df_agg_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_biomass_1985-2022.csv")
 str(df_agg_bio)
 
-# merge aggregation and biomass dataframes
+# merge aggregation and biomass dataframes - chop off the 1982-84 values for all analyses but the Brec
 df_cap <- merge(df_agg_abun, df_agg_bio[4:40,], by = "year")
 str(df_cap)
 

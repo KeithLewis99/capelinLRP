@@ -1,6 +1,7 @@
-# this file is meant to calculate LRPs for the simple approaches as outlined in the NAP SAR.
 
 # The purpose of this file is to calculate various Limit Reference Points for 2J3KL capelin as outlined in DFO 2023 (the SAR from the June 2022 developing guidance for LRPs, see ResDoc for ref). The order of analyses follows the same order as the tables in DFO 2023 specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc (see RPcalcs_230223.R - Tim BArrett).  These analyses are fed into and simpleLRP_LRPdisplay.Rmd.  This file and others are supported by simpleLRP_FUN and simpleLRP_dat.R.
+
+## Note that I have not been consistent in removing code from a truncated time series, e.g., the 1991-present.  But I have indicated where this code is not appropirate by indicating its DEPRECATED
 
 library(readr)
 library(dplyr)
@@ -25,13 +26,6 @@ library(lsmeans)
 source("simpleLRP_FUN.R")
 source("simpleLRP_dat.R")
 
-#################################################################
-# clean and commented to this point
-#################################################################
-
-#################################################################
-# clean and commented to this point
-#################################################################
 
 # Bmsy: proportion-----
 ## At this point, I have no viable approach for calculating Bmsy or B0 with a model.
@@ -55,6 +49,7 @@ source("simpleLRP_dat.R")
 
 library(segmented)
 
+# plot SRR
 plot(sr$biomass_tm2, sr$R)
 
 #fit simple linear regression model
@@ -73,7 +68,8 @@ plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
 plot(segmented.fit, add=T)
 
  
-# # post - collapse
+## DEPRECATED - NOT USED BECAUSE WE USE FULL TIME SERIES
+# # post - collapse 
 # plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R)
 # fit_post <- lm(R ~ biomass_tm2, data=sr[9:37,])
 # 
@@ -132,7 +128,10 @@ Bmin$`1985-2019`[3] <- Bloss_bio_all_n2010
 Bmin$`1991-2019`[3] <- Bloss_bio_post_n2010
 Bmin$`2011-2019`[3] <- Bloss_bio_recent
 
+# table summarizing Bmin values 
+Bmin
 
+## Brecover ----
 ### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
 #### FROM MODELS: These will only be viable IF we get the IPM up and running
@@ -194,6 +193,7 @@ abline(v = v50, lty=2)
 
 
 ## ICES Type I - post collapse----
+## DEPRECATED - NOT USED BECAUSE WE USE FULL TIME SERIES
 ### Haddock type approach
 ### Brecover is the lowest observed biomass which produced recruitment that lead to stock recovery 
 
@@ -240,7 +240,7 @@ abline(v = v50_post_alt)
 # Hist proxies----
 ##A historical proxy for BMSY can be estimated as the mean or median value of an indicator over a historical time period when the indicator is high (and assumed recruitment is stable) and catches are high; or the mean or median value of an indicator over a productive period. 
 
-##A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. 
+##A historical proxy for B0 can be estimated as the mean/median indicator over a historical time period reflecting the beginning of exploitation, or the maximum value of the indicator if the stock has a history of exploitation. See Res Doc for details on why we chose B0 over Bmsy.
 
 # this reflects the highest time period on record and could be a historical Bo although this doesn't reflect the begnining of exploitation it is the max value of the indicator.
 str(df_cap)
@@ -251,6 +251,7 @@ mda1 <- median(df_cap$abundance_med[1:6])
 mdb1 <- median(df_cap$biomass_med[1:6])
 gmb1 <- exp(mean(log(df_cap$biomass_med[1:6])))
 
+# DEPRECATED
 # this is the time period from 1991:2018.  It "captures" the post collapse period without the data gaps of the 1990s and has the high point of 2013-2015
 # probelm that there is no productive period since 1991 except for 2013-2015
 df_cap$year[7:37] 
@@ -260,6 +261,7 @@ mda2 <- median(df_cap$abundance_med[7:37], na.rm = T)
 mdb2 <- median(df_cap$biomass_med[7:37], na.rm = T)
 gmb2 <- exp(mean(log(df_cap$biomass_med[7:37]), na.rm = T))
 
+# DEPRECATED
 # this time period is 2011-2018.  It captures the high period of 2013-2015 without the low of 2010.
 df_cap$year[27:34] 
 ma3 <- mean(df_cap$abundance_med[27:34], na.rm = T)
@@ -268,6 +270,7 @@ mda3 <- median(df_cap$abundance_med[27:34], na.rm = T)
 mdb3 <- median(df_cap$biomass_med[27:34], na.rm = T)
 gmb3 <- exp(mean(log(df_cap$biomass_med[27:34]), na.rm = T))
 
+# DEPRECATED
 # this time period is 2013-2015.  It captures the high period of 2013-2015, i.e., the indicator is high.
 df_cap$year[29:31] 
 ma4 <- mean(df_cap$abundance_med[29:31], na.rm = T)
@@ -276,7 +279,7 @@ mda4 <- median(df_cap$abundance_med[29:31], na.rm = T)
 mdb4 <- median(df_cap$biomass_med[29:31], na.rm = T)
 gmb4 <- exp(mean(log(df_cap$biomass_med[29:31])))
 
-## This is deprecated but keeping just in case
+## This is # DEPRECATED but keeping just in case
 # create a table to hold the above values
 # histLRP <- as.data.frame(matrix(NA, 5, 6))
 # histLRP <- rename(histLRP, indicator = V1, mct = V2, "<=1991" = V3, "1991-2022" = V4, "2011-2018" = V5, "2013-2015" = V6)

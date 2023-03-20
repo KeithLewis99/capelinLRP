@@ -8,6 +8,7 @@ output:
 bibliography: refs/simpleLRP.bib
 ---
 
+<!-- The below are to manipulate font sizes in the body, the navbar, the titles, and the tabs as well as colour for tabs  -->
 <style>
 .navbar-brand {
   color:white;
@@ -46,11 +47,6 @@ library(ggplot2)
 library(crosstalk)
 library(xtable)
 library(DT)
-#library(tidyverse)
-#library(lubridate)
-#library(kableExtra)
-#library(ezknitr)
-#library(here)
 source("simpleLRP_dat.R")
 source("simpleLRP_calc.R")
 #source("simpleLRP_figs.R")
@@ -322,16 +318,7 @@ Column {data-width=600 data-height=400}
 ### Capelin Index
   
 ```{r fig-3}
-#par(mar= c(5, 4, 4, 2) + 0.1)
-
-# Scatter1(df = df_cap, xaxis = year, yaxis = biomass_med, colour = rankB,
-#          c1 = "Rank: ", c2 = "Year: ", c3 = "Biomass: ",
-#          xlab = "Year", ylab = "Capelin biomass (ktonnes)",
-#          filename = "figs/2-cond-rank-year.pdf", save = "no",
-#          errorbar = "limit",
-#          ymin= df_cap$bm_lci, ymax = df_cap$bm_uci)
-
- Scatter4(df = df_agg_bio, xaxis = year, yaxis = biomass_med, colour = NULL, 
+Scatter4(df = df_agg_bio, xaxis = year, yaxis = biomass_med, colour = NULL, 
            c2 = "Year: ", c3 = "Biomass: ", 
           xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
           filename = "figs/2-cond-rank-year.pdf", save = "no", 
@@ -344,8 +331,6 @@ Column
 ### Larval Index
 
 ```{r fig-4}
-#par(mar= c(5, 4, 4, 2) + 0.1)
-
 Scatter4(df = df_ld, 
          xaxis = year, yaxis = avg_density, 
          colour = rank,
@@ -355,14 +340,11 @@ Scatter4(df = df_ld,
          errorbar = "se", 
          ymin= se_auc, ymax = se_auc, 
          font = 30, size = 18)
-
 ```
 
 ### Ice Index
   
 ```{r fig-5}
-#par(mar= c(5, 4, 4, 2) + 0.1)
-
 Scatter4(df = df_ice, xaxis = year, yaxis = tice, colour = rank, 
          c1 = "Rank: ", c2 = "Year: ", c3 = "tice: ", 
          xlab = "Year", ylab = "Ice retreat (tice - DOY)",
@@ -378,7 +360,8 @@ Column
 ```{r fig-6}
 #par(mar= c(5, 4, 4, 2) + 0.1)
 Scatter4(df = df_cond, xaxis = year, yaxis = meanCond, colour = rank, 
-         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", xlab = "Year", ylab = "Condition",
+         c1 = "Rank: ", c2 = "Year: ", c3 = "Cond: ", 
+         xlab = "Year", ylab = "Condition",
          filename = "figs/2-cond-year-rank.pdf", save = "no", 
          font = 30, size = 18)
 
@@ -393,7 +376,6 @@ Scatter4(df = df_lag, xaxis = year, yaxis = mat2, colour = NULL,
          xlab = "Year", ylab = "Age 2 Mature (%)",
          filename = "figs/2-cond-year-rank.pdf", save = "no", 
          font = 30, size = 18)
-
 ```
 
 
@@ -441,8 +423,6 @@ subplot(cap_fig, sp1, sp2, widths = c(0.4, 0.3, 0.3), heights = 0.7, titleX = TR
 #  subplot(ld_fig, ice_fig, nrows=2, titleX = TRUE, titleY = TRUE) %>%
 #  subplot(cond_fig, immat_fig,  nrows=1, titleX = TRUE, titleY = TRUE) %>%
   highlight("plotly_selected", selectize = TRUE, colour = "yellow")
-# 
-#
 ```
 
 
@@ -497,18 +477,6 @@ p <- ggplot(data = df_catch, aes(x = Year, y = Catch))
 p <- p + geom_line()
 p <- p + theme_bw()
 p
-
-# caa <- read.csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/CAA.csv")
-# p <- ggplot(data = caa, aes(x = year))
-# p <- p + geom_line(aes(y = c2, colour = "red"))
-# p <- p + geom_line(aes(y = c3, colour = "green"))
-# p <- p + geom_line(aes(y = c4, colour = "blue"))
-# p <- p + geom_line(aes(y = c2+c3+c4))
-# p <- p + theme(legend.position = "none")
-# p <- p + theme_bw()
-# p <- p + annotate("text", x = 2013, y = 2300, label = "black = age2-4 \n red = age-2 \n green = age-3, \n blue = age-4 ", size = 4)
-# p
-
 ```
 
 # Larval Density-Capelin Index

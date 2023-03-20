@@ -8,6 +8,7 @@ output:
 bibliography: refs/LRPdisplay.bib
 ---
 
+<!-- The below are to manipulate font sizes in the body, the navbar, the titles, and the tabs as well as colour for tabs  -->
 <style>
 .navbar-brand {
   color:white;
@@ -45,15 +46,11 @@ library(ggplot2)
 library(crosstalk)
 library(xtable)
 library(DT)
-#library(tidyverse)
-#library(lubridate)
-#library(kableExtra)
-#library(ezknitr)
-#library(here)
+
 source("simpleLRP_dat.R")
 source("simpleLRP_calc.R")
 source("Barrett/RPcalcs_230223.R")
-#source("simpleLRP_figs.R")
+
 shD <- SharedData$new(df_lag)
 ```
 
@@ -111,11 +108,13 @@ Age-structured {- data-navmenu="Proportions"}
 Considerable efforts were devoted to developing a Bayesian state-space, age-structured model that incorporated the environmental aspects of the capelin forecast model (Lewis 2019).  Significant progress was made but a functioning model with all the associated diagnostics is still sometime away. Assuming that this approach is feasible, it is not known if results will be reliable or plausible.  See Res Doc for full details.
 </p>
 
+
 SPM {- data-navmenu="Proportions"}
 =====
 <p style="font-size: 20pt">
 Considerable efforts were devoted to developing a Bayesian state-space, surplus production model. See Res Doc for full details.  The main issue with this approach is that the outcome of the model (biomass trends) was largely driven by process error which resulted in the model being very sensitive to the choice of the prior for r (intrinsic rate of growth).  Therefore, this approach is not reliable.
 </p>
+
 
 Column
 -------------------------------------
@@ -136,64 +135,7 @@ Column
 ```{r}
 
 knitr::include_graphics("C:/Users/lewiske/Documents/capelin_LRP/stateSpace/JABBA/JABBA_testruns/CAP38/Scenario1_noFA_Schaefer/Output/ProcDev_CAP38_Scenario1_noFA.png")
-
 ```
-<!-- B0 {- data-navmenu="Proportions"} -->
-<!-- ===== -->
-
-<!-- Column  -->
-<!-- ------------------------------------- -->
-
-<!-- <p style="font-size: 20pt"> -->
-<!-- B0 is multipled by 0.2. This is the standard in the Canadian PA but probably not appropriate here.   -->
-<!-- </p> -->
-
-<!-- ```{r eval=T,prompt=T, comment = F} -->
-<!-- #df_keep_rows <- keep_rows("N2", 25) -->
-<!-- #tab1 <- tabParm(histLRP, df_keep_rows) -->
-<!-- datatable(B0, rownames = F, class = 'cell-border stripe', height = 50,  options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS(" -->
-<!--                         function(settings, json) { -->
-<!--                           $(this.api().table().header()).css({ -->
-<!--                           'font-size': '20px', -->
-<!--                           }); -->
-<!--                         } -->
-<!--                     "))) %>% -->
-<!--   formatStyle(columns = colnames(.$x$data), `font-size` = "20px") -->
-<!-- ``` -->
-
-<!-- Column {.tabset} -->
-<!-- ------------------------------------- -->
-
-<!-- ### Abundance -->
-
-
-<!-- ```{r} -->
-<!-- Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med,  -->
-<!--               c2 = "Year: ", c3 = "Abundance: ",  -->
-<!--               xlab = "Year", ylab = "Index of capelin abundance (billions)", -->
-<!--               hline1 = 0.2*B0_abund_all, hline2 = 0.2*B0_abund_recent,  -->
-<!--               hline3 = NULL, hline4 = NULL,  -->
-<!--               filename = "figs/2-cond-rank-year.pdf", save = "no", -->
-<!--               text = "black = 1985-2022, \n red = 1991-2022", -->
-<!--               xlabel = 2013, ylabel = 600,  -->
-<!--               font = 25, size = 18 -->
-<!--               ) -->
-<!-- ``` -->
-
-
-<!-- ### Biomass -->
-
-<!-- ```{r} -->
-<!-- Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med,  -->
-<!--          c2 = "Year: ", c3 = "Biomass: ",  -->
-<!--          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)", -->
-<!--          hline1 = 0.2*B0_bio_all, hline2 = 0.2*B0_bio_recent,  -->
-<!--           hline3 = NULL, hline4 = NULL,  -->
-<!--          filename = "figs/2-cond-rank-year.pdf", save = "no", -->
-<!--          text = "black = 1985-2022, \n red = 1991-2022", -->
-<!--          xlabel = 2013, ylabel = 5000,  -->
-<!--          font = 25, size = 18) -->
-<!-- ``` -->
 
 # F_X%SPR
 
@@ -239,11 +181,6 @@ Column
 ### "SSB" 
 
 ```{r}
-# Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
-#          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ",
-#          xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
-#          filename = "figs/2-cond-rank-year.pdf", save = "no")
-
 Scatter4(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year,
          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ",
          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ",
@@ -268,25 +205,11 @@ ggsave("figs_temp/SRR.png", width = 12, heigh = 8, units = "cm")
 ggplotly(temp,  tooltip = "text")
 ```
 
-<!-- Column -->
-<!-- ------------------------------------- -->
-
-<!-- ### <b><font face="Georgia" size="3em" color="#000000">Ricker </font></b> (all years) -->
-
-<!-- ```{r} -->
-<!-- plot(sr$biomass_tm2, sr$R, xlim=xlmts_r, ylim=ylmts_r, col="white", ylab="Recruits (billions)", xlab = "Biomass (ktonnes)") -->
-<!-- polygon(c(xr, rev(xr)), c(LCI_r,rev(UCI_r)), col = "gray80", border=NA) -->
-<!-- points(R~biomass_tm2, data = sr, pch =19, col=rgb(0,0,0,1/2)) -->
-<!-- lines(pR~xr, lwd=2) -->
-<!-- abline(v = 0.4*(log(a_r)/b_r)*(0.5-0.07*log(a_r)))  # from standard for Bmsy = 261 -->
-<!-- ``` -->
 
 
 ICES approach {data-navmenu="X Rmax"}
 =====
 
-<!-- Column -->
-<!-- ------------------------------------- -->
 ....or other thresholds to impaired recruitment.  This is an ICES approach - see Res Doc for details.
 
 ```{r}
@@ -297,47 +220,7 @@ plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruits (millions; t+2)',
 plot(segmented.fit, add=T)
 ```
 
-<!-- Column -->
-<!-- ------------------------------------- -->
 
-<!-- ### Post-collapse -->
-<!-- ```{r} -->
-<!-- plot(sr[9:37,]$biomass_tm2, sr[9:37,]$R, pch=16, col='steelblue', ylab = 'Recruits (billions; t)', xlab = 'biomass (kt; t-2)') -->
-<!-- plot(segmented.fit_post, add=T) -->
-<!-- ``` -->
-
-<!-- "SSB" {data-navmenu="X Rmax"} -->
-<!-- ===== -->
-
-<!-- Plots of the mature biomass from the spring survey at time t and age-2 at t+2 -->
-
-<!-- Column -->
-<!-- ------------------------------------- -->
-
-<!-- ### All -->
-
-<!-- ```{r} -->
-<!-- # Scatter1(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year, -->
-<!-- #          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", -->
-<!-- #          xlab = "Index of capelin spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ", -->
-<!-- #          filename = "figs/2-cond-rank-year.pdf", save = "no") -->
-
-<!-- Scatter4(df = df_ssb, xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year, -->
-<!--          c1 = "Year: ", c2 = "Biomass: ", c3 = "Recruitment: ", -->
-<!--          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2) ", -->
-<!--          filename = "figs/2-cond-rank-year.pdf", save = "no") -->
-<!-- ``` -->
-
-<!-- Column -->
-<!-- ------------------------------------- -->
-
-<!-- ### Post-collapse -->
-<!-- ```{r} -->
-<!-- Scatter4(df = df_ssb[6:37, ], xaxis = round(ssb,1), yaxis = round(abundance_tp2, 1), colour = year, -->
-<!--          c1 = "Year: ", c2 = "SSB: ", c3 = "Recruitment: ",  -->
-<!--          xlab = "Index of capelin \n spawning biomass (ktonnes; t)", ylab = "Recruitment (billions; t+2)", -->
-<!--          filename = "figs/2-cond-rank-year.pdf", save = "no") -->
-<!-- ``` -->
 
 Bloss {data-navmenu="Historical"}
 =====
@@ -350,8 +233,6 @@ Bloss is the lowest observed biomass
 </p>
 
 ```{r tab2, eval=T,prompt=T, comment = F}
-#df_keep_rows <- keep_rows("N2", 25)
-#tab1 <- tabParm(histLRP, df_keep_rows)
 datatable(Bmin, rownames = F, class = 'cell-border stripe', height = 50,  options = list(dom = 't', searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F, initComplete = JS("
                         function(settings, json) {
                           $(this.api().table().header()).css({
@@ -404,13 +285,6 @@ Brecover is the lowest observed biomass which produced recruitment that lead to 
 
 
 ```{r}
-# Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
-#          c2 = "Year: ", c3 = "Biomass: ", 
-#          xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
-#          hline1 = 446, 
-#          filename = "figs/2-cond-rank-year.pdf", save = "no",
-#          font = 25, size = 18, width = 500)
-
 p1 <- Scatter5(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
                c2 = "Year: ", c3 = "Biomass: ", 
                xlab = "Year", ylab = "Index of capelin biomass (ktonnes)",
@@ -445,7 +319,8 @@ Bar1(df = sr,
 ### All data: stock-recruit
 
 ```{r fig-9}
-Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, width = 300, height = 200,
+Scatter2(df = sr, xaxis = biomass_tm2, yaxis = R, 
+         width = 300, height = 200,
          c2 = "Biomass[t-2]: ", c3 = "Recruitment[t]: ", 
          xlab = "Biomass Index[t-2] (ktonnes)", ylab = "Recruitment[t]", 
          vline1 = v90, vline2 = v80, vline3 = v50,  
@@ -506,12 +381,6 @@ Output {data-navmenu="Historical proxy"}
 Column
 -------------------------------------
 
-```{r tab1, eval=T,prompt=T, comment = F}
-#df_keep_rows <- keep_rows("N2", 25)
-#tab1 <- tabParm(histLRP, df_keep_rows)
-#datatable(histBmsy1, rownames = F, class = 'cell-border stripe', height = 50,  #options = list(searching = F, pageLength = 30, autoWidth = TRUE, scrollY = F))
-```
-
 ```{r tab3, eval=T,prompt=T, comment = F}
 #df_keep_rows <- keep_rows("N2", 25)
 #tab1 <- tabParm(histLRP, df_keep_rows)
@@ -527,14 +396,12 @@ Column {.tabset}
 ```{r}
 Scatter3(df = df_cap, xaxis = year, yaxis = abundance_med, 
          c2 = "Year: ", c3 = "Abundance: ", 
-         xlab = "Year", ylab = "Index of capelin abundance (billions)",
+       xlab = "Year", ylab = "Index of capelin abundance (billions)",
         hline1 = multBmsy*mda1, hline2 = multB0*mda1, 
-          #hline3 = multBmsy*mda3, hline4 = multBmsy*mda4, 
-         filename = "figs/2-cond-rank-year.pdf", save = "no",
-              #text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
-          text = "1985-1990: black = 0.4*median, \n red = 0.2*median",
-              xlabel = 2013, ylabel = 600, 
-         font = 25, size = 18)
+       filename = "figs/2-cond-rank-year.pdf", save = "no",
+        text = "1985-1990: black = 0.4*median, \n red = 0.2*median",
+        xlabel = 2013, ylabel = 600, 
+       font = 25, size = 18)
 ```
 
 ### Biomass
@@ -546,7 +413,6 @@ Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med,
          hline1 = multBmsy*mdb1, hline2 = multB0*mdb1, 
           hline3 = 0.2*5783,
          filename = "figs/2-cond-rank-year.pdf", save = "no",
-              #text = "black = 1985-1990, red = 1991-2022, \n black-dashed = 2011-2018, red-dashed = 2013-2015",
          text = "1985-1990: black = 0.4*median, \n red = 0.2*median, \n black-dashed = 0.2*max(biomass)",
               xlabel = 2013, ylabel = 5000, 
          font = 25, size = 18)

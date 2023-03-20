@@ -41,31 +41,32 @@ source("simpleLRP_dat.R")
 
 ## Thresholds - Hockey stick ----
 
-## Iceland approach----
+## Iceland approach
 # https://www.statology.org/piecewise-regression-in-r/
 #  https://www.r-bloggers.com/2012/08/r-for-ecologists-putting-together-a-piecewise-regression/
 # ICES may use FLR but I can't find the segmented regression associated with this; https://flr-project.org/
 
 
-library(segmented)
-
-# plot SRR
-plot(sr$biomass_tm2, sr$R)
-
-#fit simple linear regression model
-fit <- lm(R ~ biomass_tm2, data=sr)
-
-#fit piecewise regression model to original model, estimating a breakpoint at x=9
-segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=1000)
-
-#view summary of segmented model
-summary(segmented.fit)
-
-#plot original data
-plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
-
-#add segmented regression model
-plot(segmented.fit, add=T)
+# DEPRECATED - see RPcalcs_230223.R for this code
+# library(segmented)
+# 
+# # plot SRR
+# plot(sr$biomass_tm2, sr$R)
+# 
+# #fit simple linear regression model
+# fit <- lm(R ~ biomass_tm2, data=sr)
+# 
+# #fit piecewise regression model to original model, estimating a breakpoint at x=9
+# segmented.fit <- segmented(fit, seg.Z = ~ biomass_tm2, psi=1000)
+# 
+# #view summary of segmented model
+# summary(segmented.fit)
+# 
+# #plot original data
+# plot(sr$biomass_tm2, sr$R, pch=16, col='steelblue')
+# 
+# #add segmented regression model
+# plot(segmented.fit, add=T)
 
  
 ## DEPRECATED - NOT USED BECAUSE WE USE FULL TIME SERIES

@@ -1,59 +1,4 @@
-# FUNCTION FILE FOR simpleLRP_dat.R
-
-#' Scatter1 - the purpose of this function is to create interactive scatter plots with a third variable in colour.  
-#'
-#' @param df - data frame
-#' @param xaxis - variable used in xaxis and in plotly label
-#' @param yaxis - variable used in yaxis and in plotly label
-#' @param colour - variable used for fill - usually year
-#' @param c1 - variable used for the label in plotly - corresponds to colour
-#' @param c2 - name used for the label in plotly - corresponds to xaxis
-#' @param c3 - name used for the label in plotly - corresponds to yaxis
-#' @param xlab - label for xaxis
-#' @param ylab - label for yaxis
-#' @param filename - name of file to be produced - naming convention (folder/[figure # in order of data file-][xaxis][yaxis].file type )
-#' @param save - save file as pdf or not. "Yes" in run of simpleLRP_dat, no in simpleLRP.Rmd
-#' @param errorbar - "yes" for graph to include an errorbar, else "no"
-#' 
-#' @return - plotly figure
-#' @export
-#'
-#' @examples 
-#' Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", filename = "figs/1-larvae-density-rank.pdf", save = "no")
-
-Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, 
-                     c1 = NULL, c2 = c2, c3 = c3, 
-                     xlab = xlab, ylab = ylab,
-                     #xlab = xlab, ylab = ylab,
-                     filename = filename, save = save, 
-                     errorbar = "no", ymin = NULL, ymax = NULL){
-  #browser()
-  p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, colour = {{colour}}, text = paste(
-    c1, {{colour}}, "\n",
-    c2, {{xaxis}}, "\n",
-    c3, {{yaxis}}, "\n",  
-    sep = ""
-  )))
-  p <- p + geom_point()
-  p <- p + scale_colour_continuous(type = "viridis")
-  if(!! errorbar == "se"){
-    p <- p + geom_errorbar(aes(ymin = {{yaxis}}-{{ymin}}*1.96, ymax = {{yaxis}}+{{ymin}}*1.96))
-  } else if(!! errorbar == "limit"){
-    p <- p + geom_errorbar(aes(ymin = ymin, ymax = ymax))
-  }
-  p <- p + xlab(xlab)
-  p <- p + ylab(ylab)
-  p <- p + theme(axis.title = element_text(size = 20))
-  p <- p + theme_bw()
-  
-  if(!! save == "yes"){  # the !! just unquotes the arguement
-    ggsave(paste(filename))
-    return(ggplotly(p, tooltip = "text"))  
-  } else {
-    return(ggplotly(p, tooltip = "text")) 
-  }
-}
-
+# FUNCTION FILE FOR simpleLRP_dat.R and dashboards
 
 
 #' Bar1 - the purpose of this function is to create interactive bar plots with a third variable in colour.  
@@ -113,6 +58,97 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, width = NULL, height = N
 }
 
 
+#' Anomaly - meant to calculate anomalies for different variables
+#'
+#' @param df - the data frame 
+#' @param x - the variable of interest
+#'
+#' @return - a new column in the dataframe with the anomalies
+#' @export
+#'
+#' @examples cap <- anomaly(cap, "biomass_med_lead")
+anomaly <- function(df, x){
+  #browser()
+  
+  #calculate anomalies - get mean and SD
+  dfMean <- mean(df[[x]], na.rm = T)
+  dfSD <- sd(df[[x]], na.rm = T)
+  
+  #create variable "anomaly" and calculate
+  df$anomaly <- "NA"
+  df$anomaly <- round((df[[x]] - dfMean)/dfSD, 2)
+  return(df)
+}
+
+
+# Scatter Table ----
+# Scatter errorbar vline  text  hline adjust_size colour
+#   1       x
+#   2               x
+#   3                         x     x       x
+#   4       x                               x       x
+#   5                         x     x       1 
+## 1 - Note that Scatter 5 has the resizing done in ggplotly - this is easier and simpler than doing it in a function, i.e., Scatter5 is essentially Scatter3 but with another way of resizing.
+
+
+#' Scatter1 - the purpose of this function is to create interactive scatter plots with a third variable in colour.  
+#'
+#' @param df - data frame
+#' @param xaxis - variable used in xaxis and in plotly label
+#' @param yaxis - variable used in yaxis and in plotly label
+#' @param colour - variable used for fill - usually year
+#' @param c1 - variable used for the label in plotly - corresponds to colour
+#' @param c2 - name used for the label in plotly - corresponds to xaxis
+#' @param c3 - name used for the label in plotly - corresponds to yaxis
+#' @param xlab - label for xaxis
+#' @param ylab - label for yaxis
+#' @param filename - name of file to be produced - naming convention (folder/[figure # in order of data file-][xaxis][yaxis].file type )
+#' @param save - save file as pdf or not. "Yes" in run of simpleLRP_dat, no in simpleLRP.Rmd
+#' @param errorbar - "yes" for graph to include an errorbar, else "no"
+#' 
+#' @return - plotly figure
+#' @export
+#'
+#' @examples 
+#' Scatter1(df = df_ld, xaxis = rank, yaxis = avg_density, colour = year, c1 = "Year: ", c2 = "Rank: ", c3 = "Density: ",                     xlab = "Rank", ylab = "Larval Density (#/m^-3)", filename = "figs/1-larvae-density-rank.pdf", save = "no")
+
+Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL, 
+                     c1 = NULL, c2 = c2, c3 = c3, 
+                     xlab = xlab, ylab = ylab,
+                     #xlab = xlab, ylab = ylab,
+                     filename = filename, save = save, 
+                     errorbar = "no", ymin = NULL, ymax = NULL){
+  #browser()
+  p <- ggplot(df, aes(x = {{xaxis}}, y = {{yaxis}}, colour = {{colour}}, text = paste(
+    c1, {{colour}}, "\n",
+    c2, {{xaxis}}, "\n",
+    c3, {{yaxis}}, "\n",  
+    sep = ""
+  )))
+  p <- p + geom_point()
+  p <- p + scale_colour_continuous(type = "viridis")
+  if(!! errorbar == "se"){
+    p <- p + geom_errorbar(aes(ymin = {{yaxis}}-{{ymin}}*1.96, ymax = {{yaxis}}+{{ymin}}*1.96))
+  } else if(!! errorbar == "limit"){
+    p <- p + geom_errorbar(aes(ymin = ymin, ymax = ymax))
+  }
+  p <- p + xlab(xlab)
+  p <- p + ylab(ylab)
+  p <- p + theme(axis.title = element_text(size = 20))
+  p <- p + theme_bw()
+  
+  if(!! save == "yes"){  # the !! just unquotes the arguement
+    ggsave(paste(filename))
+    return(ggplotly(p, tooltip = "text"))  
+  } else {
+    return(ggplotly(p, tooltip = "text")) 
+  }
+}
+
+
+
+
+
 
 #' Scatter2 - the purpose of this function is to create interactive scatter plots with a vline at the lowest biomass that gives large recruitment.  
 #'
@@ -123,7 +159,7 @@ Bar1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, width = NULL, height = N
 #' @param c3 - name used for the label in plotly - corresponds to yaxis
 #' @param xlab - label for xaxis
 #' @param ylab - label for yaxis
-#' @param hline - 90th percentile of anomaly
+#' @param vline - 90th percentile of anomaly
 #' @param filename - name of file to be produced - naming convention (folder/[figure # in order of data file-][xaxis][yaxis].file type )
 #' @param save - save file as pdf or not. "Yes" in run of simpleLRP_dat, no in simpleLRP.Rmd
 #'
@@ -217,28 +253,6 @@ Scatter3 <- function(df = df, xaxis = xaxis, yaxis = yaxis,
                           tickfont = list(size = size))
              ))
   }
-}
-
-#' Anomaly - meant to calculate anomalies for different variables
-#'
-#' @param df - the data frame 
-#' @param x - the variable of interest
-#'
-#' @return - a new column in the dataframe with the anomalies
-#' @export
-#'
-#' @examples cap <- anomaly(cap, "biomass_med_lead")
-anomaly <- function(df, x){
-  #browser()
-  
-  #calculate anomalies - get mean and SD
-  dfMean <- mean(df[[x]], na.rm = T)
-  dfSD <- sd(df[[x]], na.rm = T)
-  
-  #create variable "anomaly" and calculate
-  df$anomaly <- "NA"
-  df$anomaly <- round((df[[x]] - dfMean)/dfSD, 2)
-  return(df)
 }
 
 

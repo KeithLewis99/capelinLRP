@@ -49,7 +49,7 @@ library(DT)
 
 source("simpleLRP_dat.R")
 source("simpleLRP_calc.R")
-source("Barrett/RPcalcs_230223.R")
+source("RPcalcs_230223.R")
 
 shD <- SharedData$new(df_lag)
 ```

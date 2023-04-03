@@ -248,6 +248,7 @@ str(df_cap)
 df_cap$year[1:6]
 ma1 <- mean(df_cap$abundance_med[1:6])
 mb1 <- mean(df_cap$biomass_med[1:6])
+sd(df_cap$biomass_med[1:6]) # used in Res Doc but not dashboard
 mda1 <- median(df_cap$abundance_med[1:6])
 mdb1 <- median(df_cap$biomass_med[1:6])
 gmb1 <- exp(mean(log(df_cap$biomass_med[1:6])))
@@ -391,3 +392,4 @@ histLRP1 <- histLRP1 %>% mutate_if(is.numeric, round)
 # B0$`1985-2019`[2] <- multB0*B0_bio_all
 # B0$`1991-2019`[2] <- multB0*B0_bio_post
 # B0$`2011-2019`[2] <- multB0*B0_bio_recent
+

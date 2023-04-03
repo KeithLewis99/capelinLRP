@@ -260,9 +260,13 @@ Scatter4(df = df_agg_bio, xaxis = year, yaxis = biomass_med, colour = NULL,
 ### Capelin Index (log(t))
 
 ```{r}
-ggplot(data = df_lag, aes(x = year, y = log10(biomass_med))) +
-  geom_point() + xlab("Year") + ylab("capelin biomass index (log10(kt))") + theme_bw()
-ggsave("log10Biomass.png", width = 12, heigh = 8, units = "cm")
+p <- ggplot(data = df_lag, aes(x = year, y = round(log10(biomass_med), 1), text = paste(
+    "Year[t]: ", year, "\n",
+    "Biomass (log10 kt): ", round(log10(biomass_med), 2), "\n",
+    sep = ""
+  )))
+p <- p +  geom_point() + xlab("Year") + ylab("capelin biomass index (log10(kt))") + theme_bw()
+ggplotly(p, tooltip = "text")
 ```
 
 

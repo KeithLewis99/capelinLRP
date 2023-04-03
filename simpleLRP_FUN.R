@@ -83,11 +83,11 @@ anomaly <- function(df, x){
 
 # Scatter Table ----
 # Scatter errorbar vline  text  hline adjust_size colour
-#   1       x
-#   2               x
-#   3                         x     x       x
-#   4       x                               x       x
-#   5                         x     x       1 
+#   1        x
+#   2                x
+#   3                       x     x        x
+#   4        x                             x         x
+#   5                       x     x        1 
 ## 1 - Note that Scatter 5 has the resizing done in ggplotly - this is easier and simpler than doing it in a function, i.e., Scatter5 is essentially Scatter3 but with another way of resizing.
 
 
@@ -159,7 +159,7 @@ Scatter1 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
 #' @param c3 - name used for the label in plotly - corresponds to yaxis
 #' @param xlab - label for xaxis
 #' @param ylab - label for yaxis
-#' @param vline - 90th percentile of anomaly
+#' @param vline - 90th percentile of anomaly and others
 #' @param filename - name of file to be produced - naming convention (folder/[figure # in order of data file-][xaxis][yaxis].file type )
 #' @param save - save file as pdf or not. "Yes" in run of simpleLRP_dat, no in simpleLRP.Rmd
 #'
@@ -304,7 +304,7 @@ Scatter4 <- function(df = df, xaxis = xaxis, yaxis = yaxis, colour = NULL,
   p <- p + theme_bw()
   
   if(!! save == "yes"){  # the !! just unquotes the arguement
-    ggsave(paste(filename))
+    ggsave(paste(filename), device = "png", width = 10, units = "cm")
     return(ggplotly(p, tooltip = "text"))  
   } else {
     return(ggplotly(p, tooltip = "text") %>%

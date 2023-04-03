@@ -13,12 +13,14 @@ library(plotly)
 library(purrr)
 
 #clear environment
-rm(list=ls())
+#rm(list=ls())
 
 
 # Source files
 source("simpleLRP_FUN.R")
 source("simpleLRP_dat.R")
+source("RPcalcs_230223.R")
+#source("simpleLRP_calc.R")
 save <- "no"
 
 
@@ -166,3 +168,47 @@ tmp <- metaMDS(df_dist,
 plot(tmp, type = "n")
 points(tmp, display = "sites", cex = 0.8, pch=21, col="red", bg="yellow")
 text(tmp, display = "spec", cex=0.7, col="blue")
+
+
+# SRR ----
+source("simpleLRP_FUN.R")
+
+p <- ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
+  theme_classic() + labs(x="Index of capelin \n spawning biomass (ktonnes; t)", y="Recruitment (millions; t+2)") +
+  geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
+  geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1)
+p
+ggsave("figs/resDoc/SRR.png", device = "png", width = 10, units = "cm")
+
+# ICES approach ----
+png("figs/resDoc/segReg.png")
+plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruits (millions; t+2)', xlab = 'Index of spawning biomass (kt; t)')
+
+#add segmented regression model
+plot(segmented.fit, add=T)
+dev.off()
+
+# Brec ----
+Scatter5(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin \n biomass (ktonnes)",
+         hline1 = 446, hline2 = multB0*mdb1, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no",
+         font = 30, size = 20, width = 500)
+ggsave("figs/resDoc/Brec_B0.png", device = "png", width = 10, units = "cm")
+
+
+
+# B0 proxy ----
+
+mdb1 <- median(df_cap$biomass_med[1:6])
+multB0 <- 0.2
+
+Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
+         c2 = "Year: ", c3 = "Biomass: ", 
+         xlab = "Year", ylab = "Index of capelin \n biomass (ktonnes)",
+         hline1 = multB0*mdb1, 
+         filename = "figs/2-cond-rank-year.pdf", save = "no",
+         xlabel = 2013, ylabel = 5000, 
+         font = 20, size = 18)
+ggsave("figs/resDoc/B0proxy.png", device = "png", width = 10, units = "cm")

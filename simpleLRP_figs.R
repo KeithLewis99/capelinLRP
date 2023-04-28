@@ -1,20 +1,12 @@
-
-
-
-
+# Figures for LRP Res Doc
 
 ## Start----
-# shouldn't need the above after the first day
 #libraries
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(plotly)
 library(purrr)
-
-#clear environment
-#rm(list=ls())
-
 
 # Source files
 source("simpleLRP_FUN.R")
@@ -172,17 +164,23 @@ text(tmp, display = "spec", cex=0.7, col="blue")
 
 # SRR ----
 source("simpleLRP_FUN.R")
-
+options(scipen = 999)
 p <- ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
-  theme_classic() + labs(x="Index of capelin \n spawning biomass (ktonnes; t)", y="Recruitment (millions; t+2)") +
+  theme_classic() + labs(x="Index of spawning biomass (kt; t)", y="Recruitment (millions; t+2)") +
   geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
   geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1)
+p <- p + scale_y_continuous(labels = scales::comma)
+p <- p + theme(legend.key.width = unit(0.3, 'cm'))
+p <- p + theme(axis.title.x = element_text(size = 8), 
+             axis.text.x = element_text(size = 6)) #angle = 45, vjust=0.5, 
+p <- p + theme(axis.title.y = element_text(size = 8), 
+               axis.text.y = element_text(size = 6))
 p
-ggsave("figs/resDoc/SRR.png", device = "png", width = 10, units = "cm")
+ggsave("figs/resDoc/SRR.png", device = "png") #, width = 10, units = "cm")
 
 # ICES approach ----
 png("figs/resDoc/segReg.png")
-plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruits (millions; t+2)', xlab = 'Index of spawning biomass (kt; t)')
+plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruitment (millions; t+2)', xlab = 'Index of spawning biomass (kt; t)', cex.lab = 1.55, cex.axis = 1.4)
 
 #add segmented regression model
 plot(segmented.fit, add=T)
@@ -191,11 +189,11 @@ dev.off()
 # Brec ----
 Scatter5(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
-         xlab = "Year", ylab = "Index of capelin \n biomass (ktonnes)",
+         xlab = "Year", ylab = "Index of capelin biomass (kt)",
          hline1 = 446, hline2 = multB0*mdb1, 
          filename = "figs/2-cond-rank-year.pdf", save = "no",
          font = 30, size = 20, width = 500)
-ggsave("figs/resDoc/Brec_B0.png", device = "png", width = 10, units = "cm")
+ggsave("figs/resDoc/Brec_B0.png", device = "png") #width = 10, units = "cm"
 
 
 

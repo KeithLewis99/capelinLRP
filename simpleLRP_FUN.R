@@ -89,7 +89,8 @@ anomaly <- function(df, x){
 #   4        x                             x         x
 #   5                       x     x        1 
 ## 1 - Note that Scatter 5 has the resizing done in ggplotly - this is easier and simpler than doing it in a function, i.e., Scatter5 is essentially Scatter3 but with another way of resizing.
-
+# Thought that I was being smart making functions for plots.  But really, its better to have them just for the basics, e.g., making a scatter plot.  But there's so many things to tweak after that its probably not worth the effort or you end up making a bunch of functions like I did to cover all the contingencies and need a table to keep track.
+## Take home - functions for figures that do the basics only.
 
 #' Scatter1 - the purpose of this function is to create interactive scatter plots with a third variable in colour.  
 #'

@@ -1,4 +1,4 @@
-# The purpose of this file is to import a number of data sets in support of the development of various Limit Reference Points for 2J3KL capelin.  While data importing and manipulation (joining data sets and creating derived variables) is the main purpose, some simple exploratory analyses are conducted.  This file supports efforts to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc (see simpleLRP_calc and RPcalcs_230223.R - Tim BArrett).  Some EDA is done after the import but others are done after the dataframes have been joined.  These datasets are imported by simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  This file and others are supported by simpleLRP_FUN.
+# The purpose of this file is to import a number of data sets in support of the development of various Limit Reference Points for 2J3KL capelin.  While data importing and manipulation (joining data sets and creating derived variables) is the main purpose, some simple exploratory analyses are conducted.  This file supports efforts to create simple LRPs, specifically X%Rmax, Brecover, Bmsy - historical proxies, empirical LRPs etc (see simpleLRP_calc and RPcalcs_230223.R - Tim BArrett).  Some EDA is done after the import but others are done after the dataframes have been joined.  Figures for LRP Res Doc are in simpleLRP_figs.R.  These datasets are imported by simple_LRP.Rmd and simpleLRP_LRPdisplay.Rmd.  This file and others are supported by simpleLRP_FUN.
 
 # Set up a project - see the below link for directions.
 #https://happygitwithr.com/rstudio-git-github.html
@@ -113,7 +113,7 @@ abline(v = quantile(df_ld$rank, c(0.9), na.rm = TRUE))
 df_agg_abun <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_abundance_1985-2022.csv")
 str(df_agg_abun)
 
-# biomass - not that 1982-1984 values have been added to this
+# biomass - note that 1982-1984 values have been added to this and these are Mariano Koen-Alonso's interpolated values for 83-84.
 df_agg_bio <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_aggregated_biomass_1985-2022.csv")
 str(df_agg_bio)
 
@@ -150,7 +150,6 @@ plot(df_cap$rankA, df_cap$abundance_med)
 abline(v = 22.5) #everything to the right is pre1991
 
 
-
 ## ice data----
 #read and check data
 df_ice <- read_csv("data/capelin-m1-2021.csv", col_types = cols(
@@ -177,8 +176,8 @@ df_cond$cond_tm1 <- lag(df_cond$meanCond)
 
 
 ## maturity data----
-#read and check data - note that these are percentages
-### Therefore, bring in values from IPM - deprecated the area that has been commented out but keep derived variables
+## this is from the IPM project
+# read and check data - note that these are percentages
 
 df_mat <- read_csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/capelin_perMat_1985-2022.csv", col_types = cols(
   year = col_integer()
@@ -267,6 +266,7 @@ temp1d <- df_lag %>%
   
 # note on the dashboard the strong decline in larval density from 2005 onwards - this is to try to relate it to maturity at age 2 and tehre seems to be some relation
   ## Not sure what this is giving us -
+
 plot(df_lag$mat2[21:34], df_lag$avg_density_tm2[21:34])
 summary(lm(df_lag$avg_density_tm2[21:34] ~ df_lag$mat2[21:34]))
 plot(df_lag$year[23:34], df_lag$avg_density_tm2[23:34])
@@ -307,6 +307,7 @@ str(sr)
 
 ##### Not lagging biomass bc its already lagged (or lead)
 # exploratory - as per Hilborn and Walters on pg ~ 269, plot biomass v R
+## this makes a lovely BH plot but Hannah and Fran didn't like it.
 plot(sr$biomass_tm2, sr$R)
 
 # from 269 - biomass v logaritm of S/R - spawners v recruits

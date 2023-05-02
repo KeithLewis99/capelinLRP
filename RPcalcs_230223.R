@@ -1,13 +1,14 @@
-# The purpose of this code is to perform Beverton-Holt (BHJ) and Ricker Stock Recruit Relationships (SRR), X%Rmax, and determine other thresholds for the capelin LRP.  Code is largely from Tim Barrett - see folder Barett for functions.
+# The purpose of this code is to perform Beverton-Holt (BHJ) and Ricker Stock Recruit Relationships (SRR), X%Rmax, Fx%SPR and determine other thresholds for the capelin LRP.  Code is largely from Tim Barrett - see folder Barett for functions. 
 
 library(ggplot2)
 
 source("C:/Users/lewiske/Documents/capelin_LRP/analyses/capelinLRP/Barrett/FTN_230116.R") # contains functions "survivorship_F" and "RPcalc"
 
 # Data ----
+## this data set has recruits_t+2 (age-2) and mature biomass_t.  See simpleLRP_dat.R
 DF <- read.csv("C:/Users/lewiske/Documents/capelin_LRP/IPM/data/ssb_all.csv")
 
-# format data
+# format data for Tim's functions
 names(DF)
 names(DF)[4] <- "SSB"
 names(DF)[5] <- "REC"
@@ -17,7 +18,7 @@ R <- DF$REC[!is.na(DF$SSB) & !is.na(DF$REC)]
 S <- DF$SSB[!is.na(DF$SSB) & !is.na(DF$REC)]
 
 
-## weight, maturity, M, and selectivity at age
+## For Fx%SPR: weight, maturity, M, and selectivity at age.  See excel files in Barrett's folder
 waa <- c(0.008, 0.18, 0.022, 0.0294, 0.0456)
 mat <- c(0,0.35,1,1,1) # used 0.3 for age 2 from data_for_Tim.csv (year 2017)
 sel <- mat
@@ -59,6 +60,7 @@ mle_rick <- optim(fn=ricknll,par=c(log(200000),log(700),log(0.5)),hessian = T)
 if(mle_rick$convergence!=0){print("Did not conv")}
 MLE_rk <- exp(mle_rick$par[1])
 MLE_Sk<- exp(mle_rick$par[2]) # DD with overcompensation
+
 
 # plot SRR ----
 # plot SRR fits at scale of data
@@ -112,7 +114,7 @@ ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
   geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1) +
   geom_function(fun=function(x) (1/phi0*x),colour="green",linetype=1) # what does this intersection tell us?
 
-# Plot SRR fits with all lines
+# Plot SRR fits with all lines over full range of Ricker curve
 ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
   theme_classic() + labs(x="SSB (kt)", y="Recruitment (millions)") + 
   scale_y_continuous(limits = c(0,400000), expand = c(0, 0)) +
@@ -120,20 +122,18 @@ ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
   geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
   #geom_function(fun=function(x) (BHa*x / (1+BHb*x)),colour="red",linetype=1) + #QC check on BHa and BHb values
   geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1) +
-  geom_function(fun=function(x) (1/phi0*x),colour="green",linetype=1) +
-  geom_vline(xintercept = RPcalcBH$SSBmsy, colour="black") +
-  geom_vline(xintercept = RPcalcrick$SSBmsy, colour="purple") +
-  geom_vline(xintercept = RPcalcBH$eq_SSB_f_spr_40, colour="orange") +
-  geom_hline(yintercept = median(DF$REC[DF$year <= 1990]), colour="orange") +
-  geom_vline(xintercept = RPcalcrick$eq_SSB_f_spr_40, colour="red3") +
+  geom_function(fun=function(x) (1/phi0*x),colour="green",linetype=1) + #phi0
+  geom_vline(xintercept = RPcalcBH$SSBmsy, colour="black") + # BH - SSBmsy
+  geom_vline(xintercept = RPcalcrick$SSBmsy, colour="purple") + # rick - SSBmsy
+  geom_vline(xintercept = RPcalcBH$eq_SSB_f_spr_40, colour="orange") + #Fx%SPR
+  geom_hline(yintercept = median(DF$REC[DF$year <= 1990]), colour="orange") + #Fx%SPR
+  geom_vline(xintercept = RPcalcrick$eq_SSB_f_spr_40, colour="red3") + # 
   geom_hline(yintercept = exp(mean(log(DF$REC[DF$year <= 1990]))), colour="red3") 
 
 
-# plot SRR fits over range of observed biomass
+# as above but plot SRR fits over range of observed biomass
 ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
   theme_classic() + labs(x="SSB (kt)", y="Recruitment (millions)") + 
-#  scale_y_continuous(limits = c(0,400000), expand = c(0, 0)) +
- # scale_x_continuous(limits = c(0,15000), expand = c(0, 0)) +
   geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
   #geom_function(fun=function(x) (BHa*x / (1+BHb*x)),colour="red",linetype=1) + #QC check on BHa and BHb values
   geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1) +
@@ -189,17 +189,14 @@ abline(v = df2$x[df2$R < 0.4*MLE_Rinf+10 & df2$R > 0.4*MLE_Rinf-10], col = "red"
 df2$x[df2$R < 0.6*MLE_Rinf+10 & df2$R > 0.6*MLE_Rinf-10]
 abline(v = df2$x[df2$R < 0.6*MLE_Rinf+10 & df2$R > 0.6*MLE_Rinf-10], col = "orange")
 
+# SRR plot with X%Rmax
 ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
   theme_classic() + labs(x="SSB (kt)", y="Recruitment (millions)") + 
-  #  scale_y_continuous(limits = c(0,400000), expand = c(0, 0)) +
-  # scale_x_continuous(limits = c(0,15000), expand = c(0, 0)) +
   geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
-  #geom_function(fun=function(x) (BHa*x / (1+BHb*x)),colour="red",linetype=1) + #QC check on BHa and BHb values
   geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1) + 
   geom_hline(yintercept = max(tmp)) +
   geom_vline(xintercept = MLE_Sk) +
   geom_vline(xintercept = 0.5*MLE_Sk) #+
-#  geom_vline(yintercept = DF$SSB[df1$R < 0.5*MLE_rk+30 & df1$R > 0.5*MLE_rk-30])
 
 
 # Thresholds - Hockey stick ----

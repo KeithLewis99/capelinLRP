@@ -18,7 +18,7 @@ library(FSA)
 library(car)
 library(plotrix)
 library(nlstools)
-library(lsmeans)
+#library(lsmeans)
 
 
 # Source files ----

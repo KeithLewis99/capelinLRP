@@ -1,4 +1,4 @@
-# Figures for LRP Res Doc
+# Figures for LRP Res Doc - note that many of these are depracated due to changes in source files.  See last section for what ends up in Res Doc
 
 ## Start----
 #libraries
@@ -10,9 +10,9 @@ library(purrr)
 
 # Source files
 source("simpleLRP_FUN.R")
-source("simpleLRP_dat.R")
+#source("simpleLRP_dat.R")
+source("simpleLRP_calc.R")
 source("RPcalcs_230223.R")
-#source("simpleLRP_calc.R")
 save <- "no"
 
 
@@ -210,3 +210,98 @@ Scatter3(df = df_agg_bio, xaxis = year, yaxis = biomass_med,
          xlabel = 2013, ylabel = 5000, 
          font = 20, size = 18)
 ggsave("figs/resDoc/B0proxy.png", device = "png", width = 10, units = "cm")
+
+
+
+
+
+# Res Doc----
+## Barrett SRR
+p <- ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year), size = 1) +
+  theme_classic() + labs(x="Index of capelin \n spawning biomass (kt; t)", y="Recruitment (millions; t+2)") +
+  geom_function(fun=function(x) (MLE_Rinf/ (1+MLE_S50/x)),colour="black",linetype=1) +
+  geom_function(fun=function(x) (MLE_rk*x/MLE_Sk*exp(1-(x/MLE_Sk))),colour="purple",linetype=1) +
+  guides(color = guide_legend(override.aes = list(size = 3)))
+p
+ggsave("figs/resDoc/SRR_barrett.png", device = "png", width = 12, height = 8, units = "cm")
+
+
+# ICES
+png("figs/resDoc/SRR_ICES.png", res = 500, width = 12, height = 8, units = "cm")
+plot(DF$SSB, DF$REC, pch=16, cex = 0.7, col='steelblue', ylab = 'Recruits (millions; t+2)', xlab = 'Index of spawning biomass (kt; t)')
+
+#add segmented regression model
+plot(segmented.fit, add=T)
+dev.off()
+
+# the above in ggplot
+p <- ggplot(DF) + 
+  geom_point(mapping=aes(y=REC,x=SSB), size = 1, colour = 'steelblue') +
+  theme_classic() + labs(x="Index of capelin \n spawning biomass (kt; t)", y="Recruitment (millions; t+2)")
+
+# first line
+p <- p + geom_segment(aes(x = 1, xend = segmented.fit$psi[2], 
+        y = segmented.fit$coefficients[1] + segmented.fit$coefficients[2], 
+        yend = segmented.fit$coefficients[1] + segmented.fit$coefficients[2]*segmented.fit$psi[2])) 
+p
+
+# second line
+## https://online.stat.psu.edu/stat501/lesson/8/8.8
+p <- p + geom_segment(aes(x = segmented.fit$psi[2], xend = max(SSB, na.rm = T), 
+          y = segmented.fit$coefficients[1] + segmented.fit$coefficients[2]*segmented.fit$psi[2], 
+          yend = segmented.fit$coefficients[1] + segmented.fit$coefficients[2]*max(SSB, na.rm = T) + segmented.fit$coefficients[3]*(max(SSB, na.rm = T)-segmented.fit$psi[2])))
+p <- p +  scale_x_continuous(breaks = seq(0, 2600, 500))
+p <- p + theme(plot.margin = margin(10, 10, 10, 10))
+p
+ggsave("figs/resDoc/SRR_ICES_ggplot.png", device = "png", width = 12, height = 8, units = "cm")
+
+
+# Historical proxy
+p <- ggplot(df_agg_bio, aes(x = year, y = biomass_med))
+p <- p + geom_point()
+p <- p + xlab("Index of capelin biomass (kt)")
+p <- p + ylab("Year")
+p <- p + geom_hline(yintercept = multB0*mdb1)
+p <- p + geom_hline(yintercept = 446, colour = 'red')   
+#p <- p + geom_hline(yintercept = 0.2*5783, linetype = "dashed")    
+#p <- p + annotate("text", x = xlabel, y = ylabel, label = text, size = 4)
+p <- p + theme_bw()
+p
+ggsave("figs/resDoc/historical_proxy.png", device = "png", width = 12, height = 8, units = "cm")
+
+# MKA figs ----
+## capcod figure
+df_capcod <- read_csv("../capelinLRP/data/capcod_data.csv")
+str(df_capcod)
+
+p <- ggplot(df_capcod, aes(x = capelin_biomass, y = cod_production))
+p <- p + geom_line(colour = "red")
+p <- p + xlab("Index of capelin biomass (kt)")
+p <- p + ylab("Cod per capita net biomass production")
+p <- p + xlim(0, 1000)
+p <- p + geom_hline(yintercept = 0, colour = "blue")
+p <- p + theme_bw()
+p
+ggsave("figs/resDoc/capcod.png", device = "png", width = 12, height = 8, units = "cm")
+
+# ground fish ecosystem figure
+df_gf <- read_csv("../capelinLRP/data/MKA_groundfish.csv")
+str(df_gf)
+
+# get colours right
+# fix caption
+
+p <- ggplot(data = df_gf)
+p <- p + geom_point(aes(x = cod, y = plankpiscivore, colour = "red"))
+p <- p + geom_point(aes(x = cod, y = largebenthivore, colour = "black"))
+p <- p + geom_point(aes(x = cod, y = mediumbenthivore, colour = "green"))
+p <- p + geom_point(aes(x = cod, y = non_cod_piscivore, colour = "blue"))
+p <- p + xlab("Cod biomass index")
+p <- p + ylab("Biomass index")
+p <- p + scale_colour_manual(name = "Guild", values = c("red", "gold3", "black", "grey"))
+p <- p + theme_bw()
+p <- p + theme(legend.position = "none")
+p
+ggsave("figs/resDoc/ecosystem.png", device = "png", width = 12, height = 8, units = "cm")
+
+labels = c(PlankPiscivore)

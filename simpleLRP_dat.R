@@ -30,6 +30,7 @@ library(tidyr)
 library(ggplot2)
 library(plotly)
 library(purrr)
+library(magrittr)
 
 options(dplyr.print_max = 1e9)
 
@@ -92,7 +93,8 @@ df_ld$avg_density_tm2 <- lag(df_ld$avg_density, 2)
 
 # round the values
 df_ld <- df_ld %>%
- mutate(across(avg_density:avg_density_tm2, round, 0))
+ # mutate(across(avg_density:avg_density_tm2, round, 0))
+ mutate(across(avg_density:avg_density_tm2, ~round(.x, 0)))
 
 ## basic plot of year v density
 plot(df_ld$year, df_ld$avg_density)

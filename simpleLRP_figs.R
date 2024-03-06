@@ -186,6 +186,33 @@ plot(DF$SSB, DF$REC, pch=16, col='steelblue', ylab = 'Recruitment (millions; t+2
 plot(segmented.fit, add=T)
 dev.off()
 
+
+## SRR mcp ----
+library(mcp)
+### https://lindeloev.github.io/mcp/
+### https://cran.r-project.org/web/packages/mcp/readme/README.html
+
+
+# Define the model - code from ChatGPT
+model <- list(
+  R ~ 0 + S,  # First segment: intercept + slope
+  ~ 0     # Second segment: slope only
+)
+
+# Fit the segmented regression model
+fit <- mcp(model, data = data.frame(S = S, R = R))
+
+# Summarize the model
+summary(fit)
+plot(fit)
+
+# because this is a BAyesian approach, the above plots multiple posteriors.
+plot(fit, cp_dens = F) + theme_bw()
+plot(fit, lines = 0, q_predict = c(0.5), cp_dens = F, nsamples = 9000) + theme_bw()
+ggsave("figs/resDoc/SRR_mcp.png", width = 12, heigh = 8, units = "cm")
+
+
+
 # Brec ----
 Scatter5(df = df_agg_bio, xaxis = year, yaxis = biomass_med, 
          c2 = "Year: ", c3 = "Biomass: ", 
@@ -305,3 +332,16 @@ p
 ggsave("figs/resDoc/ecosystem.png", device = "png", width = 12, height = 8, units = "cm")
 
 labels = c(PlankPiscivore)
+
+
+
+#LRP fig ----
+
+p <- ggplot(data = df_agg_bio)
+p <- p + geom_errorbar(aes(x = year, ymin = bm_lci, ymax=bm_uci))
+p <- p + geom_point(aes(x = year, y = biomass_med))
+p <- p + geom_hline(yintercept = 640, colour = "red")
+p <- p + ylab ("Index of capelin biomass (kt)") + xlab("Year") + theme_bw()
+
+p
+ggsave("figs/resDoc/LRP.png", device = "png", width = 12, height = 8, units = "cm")

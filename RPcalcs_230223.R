@@ -205,8 +205,8 @@ ggplot(DF) + geom_point(mapping=aes(y=REC,x=SSB,colour=year)) +
 #  https://www.r-bloggers.com/2012/08/r-for-ecologists-putting-together-a-piecewise-regression/
 # ICES may use FLR but I can't find the segmented regression associated with this; https://flr-project.org/
 
+# the following segemented regression works using package segmented but Brian Healey had issues with this during his review.  Specifically, he felt that the right segment (limb) should be flat as per a usual hockey stick model. I could not figure out how to make package segmented do this so I abandonded the approach and used mcp.
 library(segmented)
-
 plot(DF$SSB, DF$REC)
 
 #fit simple linear regression model
@@ -223,3 +223,36 @@ plot(DF$SSB, DF$REC, pch=16, col='steelblue')
 
 #add segmented regression model
 plot(segmented.fit, add=T)
+lines(DF$SSB, segmented.fit$fit, col = "orange", lwd = 2, na.rm = T)
+
+
+## ChatGPT ---- 
+### I used ChatGPT for this but it did not work!
+# fit <- lm(REC ~ SSB, data=DF)
+# seg_model <- segmented(fit, seg.Z = ~SSB, psi = list(SSB = c(1000)), 
+#                        control = seg.control(display=TRUE),
+#                        constraints = list(beta = c(NA, 0), alpha = c(NA, 0)))
+# 
+# 
+# # Plot the data and the segmented regression line
+# plot(DF$SSB, DF$REC, pch=16, col='steelblue')
+# plot(seg_model, add=T)
+# lines(DF$SSB, seg_model$fit, col = "red", lwd = 2, na.rm = T)
+# 
+# 
+# # try following syntax
+# R <- c(88110, 320160, 270010, 273570, 4080, 11280, 6790,  3500, 4590, 8440, 2700, 19310,  18120, 1170,  12640,  16250,  25000,  80200,  23130,  16690,  8900)
+# 
+# S <- c(772.12117, 1572.33091, 1825.65685, 1875.78971, 1205.96128, 2400.57005,  152.18608,   57.56512, 90.92454, 59.84167, 79.96873, 86.28059, 139.27109,  199.28030,  184.04877,   18.09352,  143.43644, 98.73700,  478.45559,  179.48134,  62.92118)
+# 
+# seg_model <- segmented(lm(R~S,na.action = na.exclude), 
+#                        seg.Z = ~S, psi = list(S = c(1000)), 
+#                        control = seg.control(display=TRUE),
+#                        constraints = list(alpha = c(NA, 0), beta = c(0, NA)))
+# 
+# 
+# # Plot the data and the segmented regression line
+# plot(S, R, pch=16, col='steelblue')
+# plot(seg_model, add=T)
+# lines(S, seg_model$fit, col = "red", lwd = 2)
+
